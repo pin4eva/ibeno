@@ -25,10 +25,48 @@ model Auth {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  auth      Auth?
+  id         String         @id @default(cuid())
+  email      String         @unique
+  firstName  String
+  lastName   String
+  role       UserRoleEnum   @default(User)
+  department DepartmentEnum @default(None)
+  status     UserStatusEnum @default(Active)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  auth       Auth?
+}
+
+enum UserRoleEnum {
+  User
+  Admin
+  Editor
+  Developer
+  Student
+  Contractor
+}
+
+enum UserStatusEnum {
+  Active
+  Inactive
+  Suspended
+  Blocked
+}
+
+// enum OfficeEnum {
+//   None
+//   Account
+//   Manager
+// }
+
+enum DepartmentEnum {
+  None
+  HR
+  IT
+  Sales
+  Marketing
+  Finance
+  Operations
+  Legal
+  Admin
 }

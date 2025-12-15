@@ -90,15 +90,21 @@ const Advisory = [
           <div class="relative flex justify-center items-center h-80">
             <!-- Recreating the image layout with absolute positioning or flex -->
             <div class="relative w-full h-full flex justify-center items-center">
-              <img src="/assets/images/img-3.png"
+              <img
+                src="/assets/images/img-3.png"
                 class="w-24 h-24 rounded-full absolute top-0 right-10 md:right-20 object-cover shadow-lg"
-                alt="Vision 3">
-              <img src="/assets/images/img-1.png"
+                alt="Vision 3"
+              >
+              <img
+                src="/assets/images/img-1.png"
                 class="w-64 h-64 rounded-full z-10 object-cover shadow-xl border-4 border-white dark:border-gray-700"
-                alt="Vision 1">
-              <img src="/assets/images/img-2.png"
+                alt="Vision 1"
+              >
+              <img
+                src="/assets/images/img-2.png"
                 class="w-32 h-32 rounded-full absolute bottom-0 left-10 md:left-20 object-cover shadow-lg"
-                alt="Vision 2">
+                alt="Vision 2"
+              >
             </div>
           </div>
         </div>
@@ -117,10 +123,13 @@ const Advisory = [
           </p>
           <ul class="list-disc pl-6 space-y-3 text-gray-600 dark:text-gray-300">
             <li>Addressing the multifaceted development challenges faced by Ibeno communities.</li>
-            <li>Working towards improving the overall quality of life for the people of Ibeno local government area.
+            <li>
+              Working towards improving the overall quality of life for the people of Ibeno local government area.
             </li>
-            <li>Improving the socio-economic and environmental conditions of our communities, working with the Settlers
-              as a major partner, to build a vibrant and thriving community.</li>
+            <li>
+              Improving the socio-economic and environmental conditions of our communities, working with the Settlers
+              as a major partner, to build a vibrant and thriving community.
+            </li>
           </ul>
         </UCard>
       </UContainer>
@@ -193,8 +202,16 @@ const Advisory = [
             </p>
           </div>
           <div class="grid grid-cols-3 gap-4">
-            <div v-for="bot in BOTImg" :key="bot.name" class="text-center">
-              <img :src="bot.img" class="w-32 h-32 mx-auto rounded-full object-cover mb-3 shadow-md" :alt="bot.name">
+            <div
+              v-for="bot in BOTImg"
+              :key="bot.name"
+              class="text-center"
+            >
+              <img
+                :src="bot.img"
+                class="w-32 h-32 mx-auto rounded-full object-cover mb-3 shadow-md"
+                :alt="bot.name"
+              >
               <h4 class="font-semibold text-primary-600 dark:text-primary-400 text-sm">
                 {{ bot.name }}
               </h4>
@@ -220,9 +237,16 @@ const Advisory = [
             </p>
           </div>
           <div class="lg:order-1 flex justify-center">
-            <div v-for="member in Monaco" :key="member.name" class="text-center">
-              <img :src="member.img" class="w-40 h-40 mx-auto rounded-full object-cover mb-3 shadow-md"
-                :alt="member.name">
+            <div
+              v-for="member in Monaco"
+              :key="member.name"
+              class="text-center"
+            >
+              <img
+                :src="member.img"
+                class="w-40 h-40 mx-auto rounded-full object-cover mb-3 shadow-md"
+                :alt="member.name"
+              >
               <h4 class="font-semibold text-primary-600 dark:text-primary-400">
                 {{ member.name }}
               </h4>
@@ -247,9 +271,16 @@ const Advisory = [
             </p>
           </div>
           <div class="grid grid-cols-2 gap-8">
-            <div v-for="member in Advisory" :key="member.name" class="text-center">
-              <img :src="member.img" class="w-32 h-32 mx-auto rounded-full object-cover mb-3 shadow-md"
-                :alt="member.name">
+            <div
+              v-for="member in Advisory"
+              :key="member.name"
+              class="text-center"
+            >
+              <img
+                :src="member.img"
+                class="w-32 h-32 mx-auto rounded-full object-cover mb-3 shadow-md"
+                :alt="member.name"
+              >
               <h4 class="font-semibold text-primary-600 dark:text-primary-400 text-sm">
                 {{ member.name }}
               </h4>

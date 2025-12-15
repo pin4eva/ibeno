@@ -22,7 +22,7 @@ const items = [
     icon: 'i-lucide-briefcase'
   },
   {
-    label: 'Program-Supports',
+    label: 'Support Programs',
     to: '/#programs',
     icon: 'i-lucide-heart-handshake'
   }
@@ -37,12 +37,21 @@ const items = [
       </NuxtLink>
     </template>
 
-    <UNavigationMenu :items="items" variant="link" />
+    <UNavigationMenu
+      :items="items"
+      variant="link"
+    />
 
     <template #right>
       <UColorModeButton />
 
-      <UButton to="/auth/login" label="Login" color="primary" variant="outline" icon="i-lucide-log-in" />
+      <UButton
+        to="/auth/login"
+        label="Login"
+        color="primary"
+        variant="outline"
+        icon="i-lucide-log-in"
+      />
     </template>
   </UHeader>
 </template>

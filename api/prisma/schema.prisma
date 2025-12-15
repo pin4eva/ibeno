@@ -15,8 +15,8 @@ datasource db {
 }
 
 model Auth {
-  id        String   @id @default(cuid())
-  userId    String   @unique
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -25,10 +25,12 @@ model Auth {
 }
 
 model User {
-  id         String         @id @default(cuid())
+  id         Int            @id @default(autoincrement())
   email      String         @unique
   firstName  String
   lastName   String
+  phone      String?
+  image      String?
   role       UserRoleEnum   @default(User)
   department DepartmentEnum @default(None)
   status     UserStatusEnum @default(Active)

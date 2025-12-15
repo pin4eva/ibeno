@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { UserRoleEnum } from 'src/generated/enums';
+import { UserRoleEnum } from '../../generated/enums';
 
 export class OldAuthDto {
   _id: ObjectId;

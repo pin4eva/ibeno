@@ -13,6 +13,7 @@ import {
   UserRoleEnum,
   UserStatusEnum,
 } from '../../generated/client';
+import { EmailService } from '../../email/email.service';
 
 const tokenOptions: jwt.SignOptions = {
   expiresIn: environments.ACCESS_TOKEN_EXPIRY,
@@ -32,6 +33,7 @@ export class AuthService {
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
   ) {}
 
   // login
@@ -146,8 +148,9 @@ export class AuthService {
       }
       const token = invitation.token;
       const href = origin + '/signup?token=' + token;
-      // TODO:
+
       // Send email logic here
+      await this.emailService.sendInvitationEmail(email, href);
       return { message: 'Invitation email sent successfully', success: true };
     } catch (error) {
       throw error;
@@ -175,8 +178,9 @@ export class AuthService {
         data: { otp },
       });
       const href = origin + '/reset-password?email=' + encodeURIComponent(email);
-      // TODO:
+
       // Send email logic here
+      await this.emailService.sendResetPasswordEmail(email, href);
       return { message: 'Reset password email sent successfully', success: true };
     } catch (error) {
       throw error;

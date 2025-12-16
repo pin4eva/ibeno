@@ -11,6 +11,7 @@ import { environments } from './utils/environments';
 import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RolesGuard } from './guards/roles.guard';
 
     UserModule,
     PrismaModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],

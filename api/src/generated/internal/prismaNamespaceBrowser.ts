@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Auth: 'Auth',
+  Invitation: 'Invitation',
   User: 'User'
 } as const
 
@@ -75,6 +76,7 @@ export const AuthScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   password: 'password',
+  otp: 'otp',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -82,11 +84,28 @@ export const AuthScalarFieldEnum = {
 export type AuthScalarFieldEnum = (typeof AuthScalarFieldEnum)[keyof typeof AuthScalarFieldEnum]
 
 
+export const InvitationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  role: 'role',
+  department: 'department',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   firstName: 'firstName',
   lastName: 'lastName',
+  phone: 'phone',
+  image: 'image',
+  permissions: 'permissions',
   role: 'role',
   department: 'department',
   status: 'status',
@@ -111,4 +130,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

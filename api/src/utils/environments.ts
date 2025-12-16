@@ -6,4 +6,9 @@ export const environments = {
   DATABASE_URL: process.env.DATABASE_URL || 'postgres://postgres:Ifeanyi.123@localhost/ibeno',
   ACCESS_TOKEN_EXPIRY: '15m' as ms.StringValue,
   REFRESH_TOKEN_EXPIRY: '7d' as ms.StringValue,
+  BREVO_API_KEY: process.env.BREVO_API_KEY || '',
+  MAIL_SENDER: {
+    email: 'info@ihcdt.org',
+    name: 'IHCDT',
+  },
 };

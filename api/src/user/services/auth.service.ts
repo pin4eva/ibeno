@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma.service';
 import bcrypt from 'bcryptjs';
 import { InviteUserDTO, LoginDTO, SessionInfo, SignupDTO } from '../dto/auth.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { environments } from 'src/utils/environments';
+import { environments } from '../../utils/environments';
 import * as jwt from 'jsonwebtoken';
 import { randomBytes } from 'crypto';
 import {

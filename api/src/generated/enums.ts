@@ -31,6 +31,15 @@ export const UserStatusEnum = {
 export type UserStatusEnum = (typeof UserStatusEnum)[keyof typeof UserStatusEnum]
 
 
+export const InvitationStatusEnum = {
+  Pending: 'Pending',
+  Accepted: 'Accepted',
+  Declined: 'Declined'
+} as const
+
+export type InvitationStatusEnum = (typeof InvitationStatusEnum)[keyof typeof InvitationStatusEnum]
+
+
 export const DepartmentEnum = {
   None: 'None',
   HR: 'HR',

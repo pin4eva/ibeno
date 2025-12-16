@@ -43,6 +43,11 @@ export { Prisma }
  */
 export type Auth = Prisma.AuthModel
 /**
+ * Model Invitation
+ * 
+ */
+export type Invitation = Prisma.InvitationModel
+/**
  * Model User
  * 
  */

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { OldAuthDto, OldUserDto } from '../dto/auth.dto';
 import { UserRoleEnum } from '../../generated/enums';
@@ -17,11 +17,11 @@ export class UserService {
     try {
       // connect to MongoDB
       const { MongoClient } = await import('mongodb');
-      const mongoUri = process.env.MONGO_URI;
-      if (!mongoUri) {
-        throw new Error('MONGO_URI is not defined in environment variables');
+      const mongoUrl = process.env.MONGO_URL;
+      if (!mongoUrl) {
+        throw new BadRequestException('MONGO_URL is not defined in environment variables');
       }
-      const mongoClient = new MongoClient(mongoUri);
+      const mongoClient = new MongoClient(mongoUrl);
       await mongoClient.connect();
       const mongoDb = mongoClient.db(); // use default database from URI
 
@@ -46,9 +46,16 @@ export class UserService {
         });
 
         if (auth?.password) {
-          await this.prisma.auth.create({
-            data: {
+          await this.prisma.auth.upsert({
+            create: {
               password: auth.password,
+              userId: userRecord.id,
+            },
+            update: {
+              password: auth.password,
+              userId: userRecord.id,
+            },
+            where: {
               userId: userRecord.id,
             },
           });

@@ -1,12 +1,18 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import bcrypt from 'bcryptjs';
-import { LoginDTO, SessionInfo } from '../dto/auth.dto';
+import { InviteUserDTO, LoginDTO, SessionInfo, SignupDTO } from '../dto/auth.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { environments } from 'src/utils/environments';
 import * as jwt from 'jsonwebtoken';
 import { randomBytes } from 'crypto';
-import { User } from '../../generated/client';
+import {
+  DepartmentEnum,
+  InvitationStatusEnum,
+  User,
+  UserRoleEnum,
+  UserStatusEnum,
+} from '../../generated/client';
 
 const tokenOptions: jwt.SignOptions = {
   expiresIn: environments.ACCESS_TOKEN_EXPIRY,
@@ -46,14 +52,156 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect Email or password');
     }
     this.comparePassword(password, authRecord.password);
-    return { message: 'Login successful', userId: authRecord.userId };
+
+    const tokens = await this.generateJWTToken(authRecord.userId);
+    return { message: 'Login successful', success: true, ...tokens };
+  }
+
+  // signup
+  async signup(input: SignupDTO) {
+    const { token } = input;
+    // update invitation status if token provided
+    const invitation = await this.prisma.invitation.findFirst({
+      where: { token },
+    });
+    if (!invitation) {
+      throw new UnauthorizedException('Invalid invitation token');
+    }
+
+    // check if user already exists
+    const email = input.email.toLowerCase().trim();
+    const existingUser = await this.prisma.user.findFirst({
+      where: { email },
+    });
+    if (existingUser) {
+      throw new UnauthorizedException('Email already registered');
+    }
+
+    // create user
+    const newUser = await this.prisma.user.create({
+      data: {
+        email,
+        firstName: input.firstName.trim(),
+        lastName: input.lastName.trim(),
+        phone: input.phone.trim(),
+        status: UserStatusEnum.Active,
+        role: invitation?.role || UserRoleEnum.User,
+        department: invitation?.department || DepartmentEnum.None,
+      },
+    });
+
+    // create auth record
+    const hashedPassword = this.hashPassword(input.password.trim());
+    await this.prisma.auth.create({
+      data: {
+        userId: newUser.id,
+        password: hashedPassword,
+      },
+    });
+
+    await this.prisma.invitation.update({
+      where: { id: invitation.id },
+      data: { status: InvitationStatusEnum.Accepted },
+    });
+
+    const tokens = await this.generateJWTToken(newUser.id);
+    return { message: 'Signup successful', success: true, ...tokens };
   }
 
   // invite to portal
+  async inviteUser(input: InviteUserDTO) {
+    const email = input.email.toLowerCase().trim();
+    const { role, department } = input;
+    try {
+      const existingInvitation = await this.prisma.invitation.findFirst({
+        where: { email },
+      });
+      if (existingInvitation) {
+        throw new BadRequestException('Invitation already sent to this email');
+      }
+      const token = randomBytes(16).toString('hex');
+      const invitation = await this.prisma.invitation.create({
+        data: {
+          email,
+          token,
+          role,
+          department,
+        },
+        omit: { token: true },
+      });
+      return { message: 'Invitation sent successfully', success: true, invitation };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // send invitation email
+  async sendInvitationEmail(email: string, origin: string) {
+    try {
+      const invitation = await this.prisma.invitation.findFirst({
+        where: { email },
+      });
+      if (!invitation) {
+        throw new BadRequestException('No invitation found for this email');
+      }
+      const token = invitation.token;
+      const href = origin + '/signup?token=' + token;
+      // TODO:
+      // Send email logic here
+      return { message: 'Invitation email sent successfully', success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   //send reset password email
+  async sendResetPasswordEmail(email: string, origin: string) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: { email: email.toLowerCase().trim() },
+      });
+      if (!user) {
+        throw new BadRequestException('No user found with this email');
+      }
+      const auth = await this.prisma.auth.findFirst({
+        where: { userId: user.id },
+      });
+      if (!auth) {
+        throw new BadRequestException('No user found with this email');
+      }
+      const otp = this.generateOTP();
+      await this.prisma.auth.update({
+        where: { id: auth.id },
+        data: { otp },
+      });
+      const href = origin + '/reset-password?email=' + encodeURIComponent(email);
+      // TODO:
+      // Send email logic here
+      return { message: 'Reset password email sent successfully', success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // change password
+  async changePassword(otp: number) {
+    try {
+      const auth = await this.prisma.auth.findFirst({
+        where: { otp },
+      });
+      if (!auth) {
+        throw new BadRequestException('Invalid OTP');
+      }
+      const newPassword = this.hashPassword(randomBytes(8).toString('hex'));
+      await this.prisma.auth.update({
+        where: { id: auth.id },
+        data: { password: newPassword, otp: null },
+      });
+      return { message: 'Password changed successfully', success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // private hashPassword
   private hashPassword(password: string): string {
@@ -111,7 +259,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  private async decodeJWTToken(token: string): Promise<User | null> {
+  async decodeJWTToken(token: string): Promise<User | null> {
     if (!token) {
       return null;
     }

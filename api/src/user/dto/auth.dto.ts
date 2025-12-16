@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { UserRoleEnum } from '../../generated/enums';
+import { DepartmentEnum, UserRoleEnum } from '../../generated/enums';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { User } from '../../generated/client';
 
 export class LoginDTO {
@@ -10,6 +10,39 @@ export class LoginDTO {
   email: string;
   @ApiProperty()
   password: string;
+}
+
+export class SignupDTO {
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+  @ApiProperty()
+  @IsString()
+  password: string;
+  @ApiProperty()
+  @IsString()
+  firstName: string;
+  @ApiProperty()
+  @IsString()
+  lastName: string;
+  @ApiProperty()
+  @IsString()
+  phone: string;
+  @ApiProperty()
+  @IsString()
+  token: string;
+}
+
+export class InviteUserDTO {
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+  @ApiProperty()
+  @IsEnum(UserRoleEnum)
+  role: UserRoleEnum;
+  @ApiProperty()
+  @IsEnum(DepartmentEnum)
+  department: DepartmentEnum;
 }
 
 export class SessionInfo {

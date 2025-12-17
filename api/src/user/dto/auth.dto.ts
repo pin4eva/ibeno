@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { DepartmentEnum, UserRoleEnum } from '../../generated/enums';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsInt, IsString } from 'class-validator';
 import { User } from '../../generated/client';
 
 export class LoginDTO {
@@ -9,13 +9,14 @@ export class LoginDTO {
   @IsEmail()
   email: string;
   @ApiProperty()
+  @IsString()
   password: string;
 }
 
 export class SignupDTO {
-  @ApiProperty()
-  @IsEmail()
-  email: string;
+  // @ApiProperty()
+  // @IsEmail()
+  // email: string;
   @ApiProperty()
   @IsString()
   password: string;
@@ -43,6 +44,16 @@ export class InviteUserDTO {
   @ApiProperty()
   @IsEnum(DepartmentEnum)
   department: DepartmentEnum;
+}
+
+export class ChangePasswordDTO {
+  @ApiProperty()
+  @IsInt()
+  otp: number;
+
+  @ApiProperty()
+  @IsString()
+  password: string;
 }
 
 export class SessionInfo {

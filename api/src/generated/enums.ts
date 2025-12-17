@@ -40,6 +40,15 @@ export const InvitationStatusEnum = {
 export type InvitationStatusEnum = (typeof InvitationStatusEnum)[keyof typeof InvitationStatusEnum]
 
 
+export const AuthStatusEnum = {
+  Active: 'Active',
+  Inactive: 'Inactive',
+  Locked: 'Locked'
+} as const
+
+export type AuthStatusEnum = (typeof AuthStatusEnum)[keyof typeof AuthStatusEnum]
+
+
 export const DepartmentEnum = {
   None: 'None',
   HR: 'HR',

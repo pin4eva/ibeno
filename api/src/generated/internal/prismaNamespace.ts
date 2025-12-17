@@ -672,8 +672,10 @@ export const AuthScalarFieldEnum = {
   userId: 'userId',
   password: 'password',
   otp: 'otp',
+  status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  lastLogin: 'lastLogin'
 } as const
 
 export type AuthScalarFieldEnum = (typeof AuthScalarFieldEnum)[keyof typeof AuthScalarFieldEnum]
@@ -700,6 +702,7 @@ export const UserScalarFieldEnum = {
   lastName: 'lastName',
   phone: 'phone',
   image: 'image',
+  otp: 'otp',
   permissions: 'permissions',
   role: 'role',
   department: 'department',
@@ -766,6 +769,20 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthStatusEnum'
+ */
+export type EnumAuthStatusEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthStatusEnum'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthStatusEnum[]'
+ */
+export type ListEnumAuthStatusEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthStatusEnum[]'>
     
 
 

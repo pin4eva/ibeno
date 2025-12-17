@@ -1,7 +1,7 @@
 import { Body, Controller, Patch, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
-import { InviteUserDTO, LoginDTO, SignupDTO } from '../dto/auth.dto';
+import { ChangePasswordDTO, InviteUserDTO, LoginDTO, SignupDTO } from '../dto/auth.dto';
 import { type Request } from 'express';
 
 @ApiTags('Auth')
@@ -12,8 +12,8 @@ export class AuthController {
 
   // login
   @Post('login')
-  async login(@Body() input: LoginDTO) {
-    return this.authService.login(input);
+  async login(@Body() input: LoginDTO, @Req() req: Request) {
+    return this.authService.login(input, req.headers.origin || '');
   }
 
   // signup
@@ -29,16 +29,16 @@ export class AuthController {
   }
 
   // reset password
-  @Post('reset-password')
+  @Post('forgot-password')
   async resetPassword(@Body('email') email: string, @Req() req: Request) {
     const origin = req.headers.origin || '';
     return this.authService.sendResetPasswordEmail(email, origin);
   }
 
   // change password
-  @Post('change-password')
-  changePassword(@Body('otp') otp: number) {
-    return this.authService.changePassword(otp);
+  @Post('reset-password')
+  changePassword(@Body() input: ChangePasswordDTO) {
+    return this.authService.changePassword(input);
   }
 
   // send invitation email

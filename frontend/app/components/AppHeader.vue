@@ -7,26 +7,26 @@ const items = [
       {
         label: 'IHCDT',
         to: '/about/IHCDT',
-        description: 'Ibeno Host Community Development Trust'
+        description: 'Ibeno Host Community Development Trust',
       },
       {
         label: 'Ibeno People',
         to: '/about',
-        description: 'Learn about our history and culture'
-      }
-    ]
+        description: 'Learn about our history and culture',
+      },
+    ],
   },
   {
     label: 'Procurement',
     to: '/contracts',
-    icon: 'i-lucide-briefcase'
+    icon: 'i-lucide-briefcase',
   },
   {
     label: 'Support Programs',
     to: '/#programs',
-    icon: 'i-lucide-heart-handshake'
-  }
-]
+    icon: 'i-lucide-heart-handshake',
+  },
+];
 </script>
 
 <template>

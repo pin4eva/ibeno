@@ -53,7 +53,10 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Auth: 'Auth',
   Invitation: 'Invitation',
-  User: 'User'
+  User: 'User',
+  Program: 'Program',
+  ApplicationSession: 'ApplicationSession',
+  Application: 'Application'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -117,6 +120,85 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const ProgramScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  bannerImage: 'bannerImage',
+  category: 'category',
+  subCategory: 'subCategory',
+  isActive: 'isActive',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProgramScalarFieldEnum = (typeof ProgramScalarFieldEnum)[keyof typeof ProgramScalarFieldEnum]
+
+
+export const ApplicationSessionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  year: 'year',
+  description: 'description',
+  isActive: 'isActive',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  type: 'type',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationSessionScalarFieldEnum = (typeof ApplicationSessionScalarFieldEnum)[keyof typeof ApplicationSessionScalarFieldEnum]
+
+
+export const ApplicationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  firstName: 'firstName',
+  applicationNo: 'applicationNo',
+  middleName: 'middleName',
+  lastName: 'lastName',
+  dob: 'dob',
+  gender: 'gender',
+  school: 'school',
+  faculty: 'faculty',
+  department: 'department',
+  regNo: 'regNo',
+  level: 'level',
+  programDuration: 'programDuration',
+  state: 'state',
+  lga: 'lga',
+  village: 'village',
+  address: 'address',
+  ekpuk: 'ekpuk',
+  phone: 'phone',
+  bankName: 'bankName',
+  accountNo: 'accountNo',
+  nin: 'nin',
+  passport: 'passport',
+  examsType: 'examsType',
+  nameOfSchool: 'nameOfSchool',
+  subjectGrade: 'subjectGrade',
+  year: 'year',
+  admissionLetter: 'admissionLetter',
+  lastSchoolFeeReciept: 'lastSchoolFeeReciept',
+  status: 'status',
+  type: 'type',
+  applicationSessionId: 'applicationSessionId',
+  schoolIdCard: 'schoolIdCard',
+  certificateOfOrigin: 'certificateOfOrigin',
+  ssceResult: 'ssceResult',
+  birthCertificate: 'birthCertificate',
+  comment: 'comment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
 
 
 export const SortOrder = {

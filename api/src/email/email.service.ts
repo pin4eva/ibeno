@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { environments } from '../utils/environments';
 import * as Brevo from '@getbrevo/brevo';
-console.log('Brevo API Key: ', environments.BREVO_API_KEY);
 
 export class EmailPayload {
   to: string;

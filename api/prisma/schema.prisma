@@ -61,6 +61,85 @@ model User {
   @@map("users")
 }
 
+model Program {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  bannerImage String?
+  category    String // Educational, Medical, Business etc.
+  subCategory String?
+  isActive    Boolean   @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("programs")
+}
+
+model ApplicationSession {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  year        Int
+  description String
+  isActive    Boolean   @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  type        String // Educational, Medical, Business etc.
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("application_sessions")
+}
+
+model Application {
+  id                   Int       @id @default(autoincrement())
+  email                String    @unique
+  firstName            String
+  applicationNo        String    @unique
+  middleName           String?
+  lastName             String
+  dob                  DateTime?
+  gender               String?
+  school               String?
+  faculty              String?
+  department           String?
+  regNo                String?   @unique // school registration number
+  level                Int?
+  programDuration      Int?
+  state                String?
+  lga                  String?
+  village              String?
+  address              String?
+  ekpuk                String?
+  phone                String    @unique
+  bankName             String?
+  accountNo            String?
+  nin                  String    @unique
+  passport             String?
+  examsType            String?
+  nameOfSchool         String?
+  subjectGrade         String?
+  year                 String?
+  admissionLetter      String?
+  lastSchoolFeeReciept String?
+  status               String    @default("In Progress")
+  type                 String?
+  applicationSessionId Int
+  schoolIdCard         String?
+  certificateOfOrigin  String?
+  ssceResult           String?
+  birthCertificate     String?
+  comment              String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("applications")
+}
+
 enum UserRoleEnum {
   User
   Admin

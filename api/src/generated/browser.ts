@@ -32,3 +32,18 @@ export type Invitation = Prisma.InvitationModel
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Program
+ * 
+ */
+export type Program = Prisma.ProgramModel
+/**
+ * Model ApplicationSession
+ * 
+ */
+export type ApplicationSession = Prisma.ApplicationSessionModel
+/**
+ * Model Application
+ * 
+ */
+export type Application = Prisma.ApplicationModel

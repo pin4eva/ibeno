@@ -2,17 +2,17 @@
 const BOTImg = [
   { name: 'Barr. Inyang Akpanika', position: '', img: '/assets/images/pic-5.png' },
   { name: 'Engr. Samuel Ekpenyong', position: 'Chairman', img: '/assets/images/pic-4.png' },
-  { name: 'Engr. Inyang Okon- Itrechio', position: '.', img: '/assets/images/pic-6.png' }
-]
+  { name: 'Engr. Inyang Okon- Itrechio', position: '.', img: '/assets/images/pic-6.png' },
+];
 
 const Monaco = [
-  { name: 'Engr James Utiaruk', position: 'Cordinator', img: '/assets/images/pic-5.png' }
-]
+  { name: 'Engr James Utiaruk', position: 'Cordinator', img: '/assets/images/pic-5.png' },
+];
 
 const Advisory = [
   { name: 'Elder Solomon Ukochio', position: 'Coordinator, HCAD', img: '/assets/images/pic-5.png' },
-  { name: 'Monday Williams', position: ' Secretary, HCAD.', img: '/assets/images/pic-6.png' }
-]
+  { name: 'Monday Williams', position: ' Secretary, HCAD.', img: '/assets/images/pic-6.png' },
+];
 </script>
 
 <template>

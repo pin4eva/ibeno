@@ -2,9 +2,9 @@
 useHead({
   title: 'About - IBENO',
   meta: [
-    { name: 'description', content: 'About the IBENO System' }
-  ]
-})
+    { name: 'description', content: 'About the IBENO System' },
+  ],
+});
 </script>
 
 <template>

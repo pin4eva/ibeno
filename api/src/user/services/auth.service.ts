@@ -1,7 +1,13 @@
 import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import bcrypt from 'bcryptjs';
-import { InviteUserDTO, LoginDTO, SessionInfo, SignupDTO } from '../dto/auth.dto';
+import {
+  ChangePasswordDTO,
+  InviteUserDTO,
+  LoginDTO,
+  SessionInfo,
+  SignupDTO,
+} from '../dto/auth.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { environments } from '../../utils/environments';
 import * as jwt from 'jsonwebtoken';
@@ -14,6 +20,7 @@ import {
   UserStatusEnum,
 } from '../../generated/client';
 import { EmailService } from '../../email/email.service';
+import { log } from 'console';
 
 const tokenOptions: jwt.SignOptions = {
   expiresIn: environments.ACCESS_TOKEN_EXPIRY,
@@ -37,7 +44,7 @@ export class AuthService {
   ) {}
 
   // login
-  async login(input: LoginDTO) {
+  async login(input: LoginDTO, origin: string) {
     const email = input.email.toLowerCase().trim();
     const password = input.password?.trim();
     const user = await this.prisma.user.findFirst({
@@ -51,12 +58,32 @@ export class AuthService {
       where: { userId: user.id },
     });
     if (!authRecord) {
-      throw new UnauthorizedException('Incorrect Email or password');
+      const href = origin + '/reset-password?email=' + encodeURIComponent(email);
+      const otp = this.generateOTP();
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          otp,
+        },
+      });
+
+      await this.emailService.sendPasswordUpdateRequiredEmail(email, user.firstName, href);
+      return {
+        otp,
+        message: 'Password update required',
+        success: false,
+        passwordUpdateRequired: true,
+      };
     }
+    console.log(password, authRecord.password);
     this.comparePassword(password, authRecord.password);
 
     const tokens = await this.generateJWTToken(authRecord.userId);
-    return { message: 'Login successful', success: true, ...tokens };
+    await this.prisma.auth.update({
+      where: { id: authRecord.id },
+      data: { lastLogin: new Date() },
+    });
+    return { message: 'Login successful', success: true, passwordUpdateRequired: false, ...tokens };
   }
 
   // signup
@@ -71,7 +98,7 @@ export class AuthService {
     }
 
     // check if user already exists
-    const email = input.email.toLowerCase().trim();
+    const email = invitation.email.toLowerCase().trim();
     const existingUser = await this.prisma.user.findFirst({
       where: { email },
     });
@@ -180,7 +207,7 @@ export class AuthService {
       const href = origin + '/reset-password?email=' + encodeURIComponent(email);
 
       // Send email logic here
-      await this.emailService.sendResetPasswordEmail(email, href);
+      await this.emailService.sendResetPasswordEmail(email, user.firstName, href);
       return { message: 'Reset password email sent successfully', success: true };
     } catch (error) {
       throw error;
@@ -188,18 +215,29 @@ export class AuthService {
   }
 
   // change password
-  async changePassword(otp: number) {
+  async changePassword({ otp, password }: ChangePasswordDTO) {
     try {
-      const auth = await this.prisma.auth.findFirst({
-        where: { otp },
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ otp }, { auth: { otp } }],
+        },
+        include: { auth: true },
       });
-      if (!auth) {
+      if (!user) {
         throw new BadRequestException('Invalid OTP');
       }
-      const newPassword = this.hashPassword(randomBytes(8).toString('hex'));
-      await this.prisma.auth.update({
-        where: { id: auth.id },
-        data: { password: newPassword, otp: null },
+      const newPassword = this.hashPassword(password);
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          otp: null,
+          auth: {
+            upsert: {
+              create: { password: newPassword },
+              update: { password: newPassword, otp: null },
+            },
+          },
+        },
       });
       return { message: 'Password changed successfully', success: true };
     } catch (error) {

@@ -15,12 +15,14 @@ datasource db {
 }
 
 model Auth {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
+  id        Int            @id @default(autoincrement())
+  userId    Int            @unique
   password  String
   otp       Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status    AuthStatusEnum @default(Active)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  lastLogin DateTime?
 
   user User @relation(fields: [userId], references: [id])
 
@@ -47,6 +49,7 @@ model User {
   lastName    String
   phone       String?
   image       String?
+  otp         Int?
   permissions String[]       @default([])
   role        UserRoleEnum   @default(User)
   department  DepartmentEnum @default(None)
@@ -78,6 +81,12 @@ enum InvitationStatusEnum {
   Pending
   Accepted
   Declined
+}
+
+enum AuthStatusEnum {
+  Active
+  Inactive
+  Locked
 }
 
 // enum OfficeEnum {

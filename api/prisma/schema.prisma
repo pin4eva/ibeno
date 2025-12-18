@@ -72,31 +72,16 @@ model Program {
   startDate   DateTime?
   endDate     DateTime?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 
   @@map("programs")
 }
 
-model ApplicationSession {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  year        Int
-  description String
-  isActive    Boolean   @default(true)
-  startDate   DateTime?
-  endDate     DateTime?
-  type        String // Educational, Medical, Business etc.
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("application_sessions")
-}
-
 model Application {
   id                   Int       @id @default(autoincrement())
-  email                String    @unique
+  email                String
   firstName            String
   applicationNo        String    @unique
   middleName           String?
@@ -114,10 +99,10 @@ model Application {
   village              String?
   address              String?
   ekpuk                String?
-  phone                String    @unique
+  phone                String
   bankName             String?
   accountNo            String?
-  nin                  String    @unique
+  nin                  String
   passport             String?
   examsType            String?
   nameOfSchool         String?
@@ -127,12 +112,14 @@ model Application {
   lastSchoolFeeReciept String?
   status               String    @default("In Progress")
   type                 String?
-  applicationSessionId Int
+  programId            Int
   schoolIdCard         String?
   certificateOfOrigin  String?
   ssceResult           String?
   birthCertificate     String?
   comment              String?
+
+  program Program @relation(fields: [programId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

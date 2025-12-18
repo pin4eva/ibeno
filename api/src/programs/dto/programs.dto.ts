@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
+import { ObjectId } from 'mongodb';
 
 export enum ProgramCategoryEnum {
   Education = 'Education',
@@ -60,4 +61,17 @@ export class UpdateProgramDTO extends PartialType(CreateProgramDTO) {
   @ApiProperty()
   @IsInt()
   id: number;
+}
+
+export interface OldProgramDTO {
+  _id: ObjectId;
+  name: string;
+  year: number;
+  isActive: boolean;
+  createdAt: Date;
+  description: string;
+  endDate: Date;
+  image: string;
+  startDate: Date;
+  type: string;
 }

@@ -264,6 +264,7 @@ export type ProgramWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<"Program"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Program"> | Date | string
+  applications?: Prisma.ApplicationListRelationFilter
 }
 
 export type ProgramOrderByWithRelationInput = {
@@ -278,6 +279,7 @@ export type ProgramOrderByWithRelationInput = {
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  applications?: Prisma.ApplicationOrderByRelationAggregateInput
 }
 
 export type ProgramWhereUniqueInput = Prisma.AtLeast<{
@@ -295,6 +297,7 @@ export type ProgramWhereUniqueInput = Prisma.AtLeast<{
   endDate?: Prisma.DateTimeNullableFilter<"Program"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Program"> | Date | string
+  applications?: Prisma.ApplicationListRelationFilter
 }, "id" | "name">
 
 export type ProgramOrderByWithAggregationInput = {
@@ -344,6 +347,7 @@ export type ProgramCreateInput = {
   endDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  applications?: Prisma.ApplicationCreateNestedManyWithoutProgramInput
 }
 
 export type ProgramUncheckedCreateInput = {
@@ -358,6 +362,7 @@ export type ProgramUncheckedCreateInput = {
   endDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutProgramInput
 }
 
 export type ProgramUpdateInput = {
@@ -371,6 +376,7 @@ export type ProgramUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUpdateManyWithoutProgramNestedInput
 }
 
 export type ProgramUncheckedUpdateInput = {
@@ -385,6 +391,7 @@ export type ProgramUncheckedUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutProgramNestedInput
 }
 
 export type ProgramCreateManyInput = {
@@ -478,10 +485,128 @@ export type ProgramSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
+export type ProgramScalarRelationFilter = {
+  is?: Prisma.ProgramWhereInput
+  isNot?: Prisma.ProgramWhereInput
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type ProgramCreateNestedOneWithoutApplicationsInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutApplicationsInput, Prisma.ProgramUncheckedCreateWithoutApplicationsInput>
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutApplicationsInput
+  connect?: Prisma.ProgramWhereUniqueInput
+}
+
+export type ProgramUpdateOneRequiredWithoutApplicationsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutApplicationsInput, Prisma.ProgramUncheckedCreateWithoutApplicationsInput>
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutApplicationsInput
+  upsert?: Prisma.ProgramUpsertWithoutApplicationsInput
+  connect?: Prisma.ProgramWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProgramUpdateToOneWithWhereWithoutApplicationsInput, Prisma.ProgramUpdateWithoutApplicationsInput>, Prisma.ProgramUncheckedUpdateWithoutApplicationsInput>
+}
+
+export type ProgramCreateWithoutApplicationsInput = {
+  name: string
+  description: string
+  bannerImage?: string | null
+  category: string
+  subCategory?: string | null
+  isActive?: boolean
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProgramUncheckedCreateWithoutApplicationsInput = {
+  id?: number
+  name: string
+  description: string
+  bannerImage?: string | null
+  category: string
+  subCategory?: string | null
+  isActive?: boolean
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProgramCreateOrConnectWithoutApplicationsInput = {
+  where: Prisma.ProgramWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProgramCreateWithoutApplicationsInput, Prisma.ProgramUncheckedCreateWithoutApplicationsInput>
+}
+
+export type ProgramUpsertWithoutApplicationsInput = {
+  update: Prisma.XOR<Prisma.ProgramUpdateWithoutApplicationsInput, Prisma.ProgramUncheckedUpdateWithoutApplicationsInput>
+  create: Prisma.XOR<Prisma.ProgramCreateWithoutApplicationsInput, Prisma.ProgramUncheckedCreateWithoutApplicationsInput>
+  where?: Prisma.ProgramWhereInput
+}
+
+export type ProgramUpdateToOneWithWhereWithoutApplicationsInput = {
+  where?: Prisma.ProgramWhereInput
+  data: Prisma.XOR<Prisma.ProgramUpdateWithoutApplicationsInput, Prisma.ProgramUncheckedUpdateWithoutApplicationsInput>
+}
+
+export type ProgramUpdateWithoutApplicationsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  bannerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  subCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProgramUncheckedUpdateWithoutApplicationsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  bannerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  subCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type ProgramCountOutputType
+ */
+
+export type ProgramCountOutputType = {
+  applications: number
+}
+
+export type ProgramCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  applications?: boolean | ProgramCountOutputTypeCountApplicationsArgs
+}
+
+/**
+ * ProgramCountOutputType without action
+ */
+export type ProgramCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProgramCountOutputType
+   */
+  select?: Prisma.ProgramCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProgramCountOutputType without action
+ */
+export type ProgramCountOutputTypeCountApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApplicationWhereInput
+}
 
 
 export type ProgramSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -496,6 +621,8 @@ export type ProgramSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   endDate?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  applications?: boolean | Prisma.Program$applicationsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProgramCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["program"]>
 
 export type ProgramSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -541,10 +668,18 @@ export type ProgramSelectScalar = {
 }
 
 export type ProgramOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "bannerImage" | "category" | "subCategory" | "isActive" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["program"]>
+export type ProgramInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  applications?: boolean | Prisma.Program$applicationsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProgramCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type ProgramIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ProgramIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $ProgramPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Program"
-  objects: {}
+  objects: {
+    applications: Prisma.$ApplicationPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
@@ -951,6 +1086,7 @@ readonly fields: ProgramFieldRefs;
  */
 export interface Prisma__ProgramClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  applications<T extends Prisma.Program$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Program$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1008,6 +1144,10 @@ export type ProgramFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
+  /**
    * Filter, which Program to fetch.
    */
   where: Prisma.ProgramWhereUniqueInput
@@ -1026,6 +1166,10 @@ export type ProgramFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
+  /**
    * Filter, which Program to fetch.
    */
   where: Prisma.ProgramWhereUniqueInput
@@ -1043,6 +1187,10 @@ export type ProgramFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Program
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
   /**
    * Filter, which Program to fetch.
    */
@@ -1092,6 +1240,10 @@ export type ProgramFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
+  /**
    * Filter, which Program to fetch.
    */
   where?: Prisma.ProgramWhereInput
@@ -1140,6 +1292,10 @@ export type ProgramFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
+  /**
    * Filter, which Programs to fetch.
    */
   where?: Prisma.ProgramWhereInput
@@ -1182,6 +1338,10 @@ export type ProgramCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Program
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
   /**
    * The data needed to create a Program.
    */
@@ -1230,6 +1390,10 @@ export type ProgramUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Program
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
   /**
    * The data needed to update a Program.
    */
@@ -1297,6 +1461,10 @@ export type ProgramUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
+  /**
    * The filter to search for the Program to update in case it exists.
    */
   where: Prisma.ProgramWhereUniqueInput
@@ -1323,6 +1491,10 @@ export type ProgramDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
+  /**
    * Filter which Program to delete.
    */
   where: Prisma.ProgramWhereUniqueInput
@@ -1343,6 +1515,30 @@ export type ProgramDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Program.applications
+ */
+export type Program$applicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Application
+   */
+  select?: Prisma.ApplicationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Application
+   */
+  omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  where?: Prisma.ApplicationWhereInput
+  orderBy?: Prisma.ApplicationOrderByWithRelationInput | Prisma.ApplicationOrderByWithRelationInput[]
+  cursor?: Prisma.ApplicationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApplicationScalarFieldEnum | Prisma.ApplicationScalarFieldEnum[]
+}
+
+/**
  * Program without action
  */
 export type ProgramDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1354,4 +1550,8 @@ export type ProgramDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Program
    */
   omit?: Prisma.ProgramOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramInclude<ExtArgs> | null
 }

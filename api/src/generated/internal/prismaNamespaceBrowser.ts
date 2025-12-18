@@ -55,7 +55,6 @@ export const ModelName = {
   Invitation: 'Invitation',
   User: 'User',
   Program: 'Program',
-  ApplicationSession: 'ApplicationSession',
   Application: 'Application'
 } as const
 
@@ -139,22 +138,6 @@ export const ProgramScalarFieldEnum = {
 export type ProgramScalarFieldEnum = (typeof ProgramScalarFieldEnum)[keyof typeof ProgramScalarFieldEnum]
 
 
-export const ApplicationSessionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  year: 'year',
-  description: 'description',
-  isActive: 'isActive',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  type: 'type',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ApplicationSessionScalarFieldEnum = (typeof ApplicationSessionScalarFieldEnum)[keyof typeof ApplicationSessionScalarFieldEnum]
-
-
 export const ApplicationScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -188,7 +171,7 @@ export const ApplicationScalarFieldEnum = {
   lastSchoolFeeReciept: 'lastSchoolFeeReciept',
   status: 'status',
   type: 'type',
-  applicationSessionId: 'applicationSessionId',
+  programId: 'programId',
   schoolIdCard: 'schoolIdCard',
   certificateOfOrigin: 'certificateOfOrigin',
   ssceResult: 'ssceResult',

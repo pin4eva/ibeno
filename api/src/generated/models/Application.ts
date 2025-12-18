@@ -30,14 +30,14 @@ export type ApplicationAvgAggregateOutputType = {
   id: number | null
   level: number | null
   programDuration: number | null
-  applicationSessionId: number | null
+  programId: number | null
 }
 
 export type ApplicationSumAggregateOutputType = {
   id: number | null
   level: number | null
   programDuration: number | null
-  applicationSessionId: number | null
+  programId: number | null
 }
 
 export type ApplicationMinAggregateOutputType = {
@@ -73,7 +73,7 @@ export type ApplicationMinAggregateOutputType = {
   lastSchoolFeeReciept: string | null
   status: string | null
   type: string | null
-  applicationSessionId: number | null
+  programId: number | null
   schoolIdCard: string | null
   certificateOfOrigin: string | null
   ssceResult: string | null
@@ -116,7 +116,7 @@ export type ApplicationMaxAggregateOutputType = {
   lastSchoolFeeReciept: string | null
   status: string | null
   type: string | null
-  applicationSessionId: number | null
+  programId: number | null
   schoolIdCard: string | null
   certificateOfOrigin: string | null
   ssceResult: string | null
@@ -159,7 +159,7 @@ export type ApplicationCountAggregateOutputType = {
   lastSchoolFeeReciept: number
   status: number
   type: number
-  applicationSessionId: number
+  programId: number
   schoolIdCard: number
   certificateOfOrigin: number
   ssceResult: number
@@ -175,14 +175,14 @@ export type ApplicationAvgAggregateInputType = {
   id?: true
   level?: true
   programDuration?: true
-  applicationSessionId?: true
+  programId?: true
 }
 
 export type ApplicationSumAggregateInputType = {
   id?: true
   level?: true
   programDuration?: true
-  applicationSessionId?: true
+  programId?: true
 }
 
 export type ApplicationMinAggregateInputType = {
@@ -218,7 +218,7 @@ export type ApplicationMinAggregateInputType = {
   lastSchoolFeeReciept?: true
   status?: true
   type?: true
-  applicationSessionId?: true
+  programId?: true
   schoolIdCard?: true
   certificateOfOrigin?: true
   ssceResult?: true
@@ -261,7 +261,7 @@ export type ApplicationMaxAggregateInputType = {
   lastSchoolFeeReciept?: true
   status?: true
   type?: true
-  applicationSessionId?: true
+  programId?: true
   schoolIdCard?: true
   certificateOfOrigin?: true
   ssceResult?: true
@@ -304,7 +304,7 @@ export type ApplicationCountAggregateInputType = {
   lastSchoolFeeReciept?: true
   status?: true
   type?: true
-  applicationSessionId?: true
+  programId?: true
   schoolIdCard?: true
   certificateOfOrigin?: true
   ssceResult?: true
@@ -434,7 +434,7 @@ export type ApplicationGroupByOutputType = {
   lastSchoolFeeReciept: string | null
   status: string
   type: string | null
-  applicationSessionId: number
+  programId: number
   schoolIdCard: string | null
   certificateOfOrigin: string | null
   ssceResult: string | null
@@ -500,7 +500,7 @@ export type ApplicationWhereInput = {
   lastSchoolFeeReciept?: Prisma.StringNullableFilter<"Application"> | string | null
   status?: Prisma.StringFilter<"Application"> | string
   type?: Prisma.StringNullableFilter<"Application"> | string | null
-  applicationSessionId?: Prisma.IntFilter<"Application"> | number
+  programId?: Prisma.IntFilter<"Application"> | number
   schoolIdCard?: Prisma.StringNullableFilter<"Application"> | string | null
   certificateOfOrigin?: Prisma.StringNullableFilter<"Application"> | string | null
   ssceResult?: Prisma.StringNullableFilter<"Application"> | string | null
@@ -508,6 +508,7 @@ export type ApplicationWhereInput = {
   comment?: Prisma.StringNullableFilter<"Application"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
+  program?: Prisma.XOR<Prisma.ProgramScalarRelationFilter, Prisma.ProgramWhereInput>
 }
 
 export type ApplicationOrderByWithRelationInput = {
@@ -543,7 +544,7 @@ export type ApplicationOrderByWithRelationInput = {
   lastSchoolFeeReciept?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrderInput | Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
   schoolIdCard?: Prisma.SortOrderInput | Prisma.SortOrder
   certificateOfOrigin?: Prisma.SortOrderInput | Prisma.SortOrder
   ssceResult?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -551,18 +552,18 @@ export type ApplicationOrderByWithRelationInput = {
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  program?: Prisma.ProgramOrderByWithRelationInput
 }
 
 export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  email?: string
   applicationNo?: string
   regNo?: string
-  phone?: string
-  nin?: string
+  programId_email_nin?: Prisma.ApplicationProgramIdEmailNinCompoundUniqueInput
   AND?: Prisma.ApplicationWhereInput | Prisma.ApplicationWhereInput[]
   OR?: Prisma.ApplicationWhereInput[]
   NOT?: Prisma.ApplicationWhereInput | Prisma.ApplicationWhereInput[]
+  email?: Prisma.StringFilter<"Application"> | string
   firstName?: Prisma.StringFilter<"Application"> | string
   middleName?: Prisma.StringNullableFilter<"Application"> | string | null
   lastName?: Prisma.StringFilter<"Application"> | string
@@ -578,8 +579,10 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   village?: Prisma.StringNullableFilter<"Application"> | string | null
   address?: Prisma.StringNullableFilter<"Application"> | string | null
   ekpuk?: Prisma.StringNullableFilter<"Application"> | string | null
+  phone?: Prisma.StringFilter<"Application"> | string
   bankName?: Prisma.StringNullableFilter<"Application"> | string | null
   accountNo?: Prisma.StringNullableFilter<"Application"> | string | null
+  nin?: Prisma.StringFilter<"Application"> | string
   passport?: Prisma.StringNullableFilter<"Application"> | string | null
   examsType?: Prisma.StringNullableFilter<"Application"> | string | null
   nameOfSchool?: Prisma.StringNullableFilter<"Application"> | string | null
@@ -589,7 +592,7 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   lastSchoolFeeReciept?: Prisma.StringNullableFilter<"Application"> | string | null
   status?: Prisma.StringFilter<"Application"> | string
   type?: Prisma.StringNullableFilter<"Application"> | string | null
-  applicationSessionId?: Prisma.IntFilter<"Application"> | number
+  programId?: Prisma.IntFilter<"Application"> | number
   schoolIdCard?: Prisma.StringNullableFilter<"Application"> | string | null
   certificateOfOrigin?: Prisma.StringNullableFilter<"Application"> | string | null
   ssceResult?: Prisma.StringNullableFilter<"Application"> | string | null
@@ -597,7 +600,8 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   comment?: Prisma.StringNullableFilter<"Application"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
-}, "id" | "email" | "applicationNo" | "regNo" | "phone" | "nin">
+  program?: Prisma.XOR<Prisma.ProgramScalarRelationFilter, Prisma.ProgramWhereInput>
+}, "id" | "applicationNo" | "regNo" | "programId_email_nin">
 
 export type ApplicationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -632,7 +636,7 @@ export type ApplicationOrderByWithAggregationInput = {
   lastSchoolFeeReciept?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrderInput | Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
   schoolIdCard?: Prisma.SortOrderInput | Prisma.SortOrder
   certificateOfOrigin?: Prisma.SortOrderInput | Prisma.SortOrder
   ssceResult?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -683,7 +687,7 @@ export type ApplicationScalarWhereWithAggregatesInput = {
   lastSchoolFeeReciept?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Application"> | string
   type?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
-  applicationSessionId?: Prisma.IntWithAggregatesFilter<"Application"> | number
+  programId?: Prisma.IntWithAggregatesFilter<"Application"> | number
   schoolIdCard?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
   certificateOfOrigin?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
   ssceResult?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
@@ -725,7 +729,6 @@ export type ApplicationCreateInput = {
   lastSchoolFeeReciept?: string | null
   status?: string
   type?: string | null
-  applicationSessionId: number
   schoolIdCard?: string | null
   certificateOfOrigin?: string | null
   ssceResult?: string | null
@@ -733,6 +736,7 @@ export type ApplicationCreateInput = {
   comment?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  program: Prisma.ProgramCreateNestedOneWithoutApplicationsInput
 }
 
 export type ApplicationUncheckedCreateInput = {
@@ -768,7 +772,7 @@ export type ApplicationUncheckedCreateInput = {
   lastSchoolFeeReciept?: string | null
   status?: string
   type?: string | null
-  applicationSessionId: number
+  programId: number
   schoolIdCard?: string | null
   certificateOfOrigin?: string | null
   ssceResult?: string | null
@@ -810,7 +814,6 @@ export type ApplicationUpdateInput = {
   lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  applicationSessionId?: Prisma.IntFieldUpdateOperationsInput | number
   schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -818,6 +821,7 @@ export type ApplicationUpdateInput = {
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  program?: Prisma.ProgramUpdateOneRequiredWithoutApplicationsNestedInput
 }
 
 export type ApplicationUncheckedUpdateInput = {
@@ -853,7 +857,7 @@ export type ApplicationUncheckedUpdateInput = {
   lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  applicationSessionId?: Prisma.IntFieldUpdateOperationsInput | number
+  programId?: Prisma.IntFieldUpdateOperationsInput | number
   schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -896,7 +900,7 @@ export type ApplicationCreateManyInput = {
   lastSchoolFeeReciept?: string | null
   status?: string
   type?: string | null
-  applicationSessionId: number
+  programId: number
   schoolIdCard?: string | null
   certificateOfOrigin?: string | null
   ssceResult?: string | null
@@ -938,7 +942,6 @@ export type ApplicationUpdateManyMutationInput = {
   lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  applicationSessionId?: Prisma.IntFieldUpdateOperationsInput | number
   schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -981,7 +984,7 @@ export type ApplicationUncheckedUpdateManyInput = {
   lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  applicationSessionId?: Prisma.IntFieldUpdateOperationsInput | number
+  programId?: Prisma.IntFieldUpdateOperationsInput | number
   schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -989,6 +992,22 @@ export type ApplicationUncheckedUpdateManyInput = {
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApplicationListRelationFilter = {
+  every?: Prisma.ApplicationWhereInput
+  some?: Prisma.ApplicationWhereInput
+  none?: Prisma.ApplicationWhereInput
+}
+
+export type ApplicationOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type ApplicationProgramIdEmailNinCompoundUniqueInput = {
+  programId: number
+  email: string
+  nin: string
 }
 
 export type ApplicationCountOrderByAggregateInput = {
@@ -1024,7 +1043,7 @@ export type ApplicationCountOrderByAggregateInput = {
   lastSchoolFeeReciept?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
   schoolIdCard?: Prisma.SortOrder
   certificateOfOrigin?: Prisma.SortOrder
   ssceResult?: Prisma.SortOrder
@@ -1038,7 +1057,7 @@ export type ApplicationAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   level?: Prisma.SortOrder
   programDuration?: Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
 }
 
 export type ApplicationMaxOrderByAggregateInput = {
@@ -1074,7 +1093,7 @@ export type ApplicationMaxOrderByAggregateInput = {
   lastSchoolFeeReciept?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
   schoolIdCard?: Prisma.SortOrder
   certificateOfOrigin?: Prisma.SortOrder
   ssceResult?: Prisma.SortOrder
@@ -1117,7 +1136,7 @@ export type ApplicationMinOrderByAggregateInput = {
   lastSchoolFeeReciept?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
   schoolIdCard?: Prisma.SortOrder
   certificateOfOrigin?: Prisma.SortOrder
   ssceResult?: Prisma.SortOrder
@@ -1131,7 +1150,371 @@ export type ApplicationSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   level?: Prisma.SortOrder
   programDuration?: Prisma.SortOrder
-  applicationSessionId?: Prisma.SortOrder
+  programId?: Prisma.SortOrder
+}
+
+export type ApplicationCreateNestedManyWithoutProgramInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutProgramInput, Prisma.ApplicationUncheckedCreateWithoutProgramInput> | Prisma.ApplicationCreateWithoutProgramInput[] | Prisma.ApplicationUncheckedCreateWithoutProgramInput[]
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutProgramInput | Prisma.ApplicationCreateOrConnectWithoutProgramInput[]
+  createMany?: Prisma.ApplicationCreateManyProgramInputEnvelope
+  connect?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+}
+
+export type ApplicationUncheckedCreateNestedManyWithoutProgramInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutProgramInput, Prisma.ApplicationUncheckedCreateWithoutProgramInput> | Prisma.ApplicationCreateWithoutProgramInput[] | Prisma.ApplicationUncheckedCreateWithoutProgramInput[]
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutProgramInput | Prisma.ApplicationCreateOrConnectWithoutProgramInput[]
+  createMany?: Prisma.ApplicationCreateManyProgramInputEnvelope
+  connect?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+}
+
+export type ApplicationUpdateManyWithoutProgramNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutProgramInput, Prisma.ApplicationUncheckedCreateWithoutProgramInput> | Prisma.ApplicationCreateWithoutProgramInput[] | Prisma.ApplicationUncheckedCreateWithoutProgramInput[]
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutProgramInput | Prisma.ApplicationCreateOrConnectWithoutProgramInput[]
+  upsert?: Prisma.ApplicationUpsertWithWhereUniqueWithoutProgramInput | Prisma.ApplicationUpsertWithWhereUniqueWithoutProgramInput[]
+  createMany?: Prisma.ApplicationCreateManyProgramInputEnvelope
+  set?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  disconnect?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  delete?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  connect?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  update?: Prisma.ApplicationUpdateWithWhereUniqueWithoutProgramInput | Prisma.ApplicationUpdateWithWhereUniqueWithoutProgramInput[]
+  updateMany?: Prisma.ApplicationUpdateManyWithWhereWithoutProgramInput | Prisma.ApplicationUpdateManyWithWhereWithoutProgramInput[]
+  deleteMany?: Prisma.ApplicationScalarWhereInput | Prisma.ApplicationScalarWhereInput[]
+}
+
+export type ApplicationUncheckedUpdateManyWithoutProgramNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutProgramInput, Prisma.ApplicationUncheckedCreateWithoutProgramInput> | Prisma.ApplicationCreateWithoutProgramInput[] | Prisma.ApplicationUncheckedCreateWithoutProgramInput[]
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutProgramInput | Prisma.ApplicationCreateOrConnectWithoutProgramInput[]
+  upsert?: Prisma.ApplicationUpsertWithWhereUniqueWithoutProgramInput | Prisma.ApplicationUpsertWithWhereUniqueWithoutProgramInput[]
+  createMany?: Prisma.ApplicationCreateManyProgramInputEnvelope
+  set?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  disconnect?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  delete?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  connect?: Prisma.ApplicationWhereUniqueInput | Prisma.ApplicationWhereUniqueInput[]
+  update?: Prisma.ApplicationUpdateWithWhereUniqueWithoutProgramInput | Prisma.ApplicationUpdateWithWhereUniqueWithoutProgramInput[]
+  updateMany?: Prisma.ApplicationUpdateManyWithWhereWithoutProgramInput | Prisma.ApplicationUpdateManyWithWhereWithoutProgramInput[]
+  deleteMany?: Prisma.ApplicationScalarWhereInput | Prisma.ApplicationScalarWhereInput[]
+}
+
+export type ApplicationCreateWithoutProgramInput = {
+  email: string
+  firstName: string
+  applicationNo: string
+  middleName?: string | null
+  lastName: string
+  dob?: Date | string | null
+  gender?: string | null
+  school?: string | null
+  faculty?: string | null
+  department?: string | null
+  regNo?: string | null
+  level?: number | null
+  programDuration?: number | null
+  state?: string | null
+  lga?: string | null
+  village?: string | null
+  address?: string | null
+  ekpuk?: string | null
+  phone: string
+  bankName?: string | null
+  accountNo?: string | null
+  nin: string
+  passport?: string | null
+  examsType?: string | null
+  nameOfSchool?: string | null
+  subjectGrade?: string | null
+  year?: string | null
+  admissionLetter?: string | null
+  lastSchoolFeeReciept?: string | null
+  status?: string
+  type?: string | null
+  schoolIdCard?: string | null
+  certificateOfOrigin?: string | null
+  ssceResult?: string | null
+  birthCertificate?: string | null
+  comment?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ApplicationUncheckedCreateWithoutProgramInput = {
+  id?: number
+  email: string
+  firstName: string
+  applicationNo: string
+  middleName?: string | null
+  lastName: string
+  dob?: Date | string | null
+  gender?: string | null
+  school?: string | null
+  faculty?: string | null
+  department?: string | null
+  regNo?: string | null
+  level?: number | null
+  programDuration?: number | null
+  state?: string | null
+  lga?: string | null
+  village?: string | null
+  address?: string | null
+  ekpuk?: string | null
+  phone: string
+  bankName?: string | null
+  accountNo?: string | null
+  nin: string
+  passport?: string | null
+  examsType?: string | null
+  nameOfSchool?: string | null
+  subjectGrade?: string | null
+  year?: string | null
+  admissionLetter?: string | null
+  lastSchoolFeeReciept?: string | null
+  status?: string
+  type?: string | null
+  schoolIdCard?: string | null
+  certificateOfOrigin?: string | null
+  ssceResult?: string | null
+  birthCertificate?: string | null
+  comment?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ApplicationCreateOrConnectWithoutProgramInput = {
+  where: Prisma.ApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutProgramInput, Prisma.ApplicationUncheckedCreateWithoutProgramInput>
+}
+
+export type ApplicationCreateManyProgramInputEnvelope = {
+  data: Prisma.ApplicationCreateManyProgramInput | Prisma.ApplicationCreateManyProgramInput[]
+  skipDuplicates?: boolean
+}
+
+export type ApplicationUpsertWithWhereUniqueWithoutProgramInput = {
+  where: Prisma.ApplicationWhereUniqueInput
+  update: Prisma.XOR<Prisma.ApplicationUpdateWithoutProgramInput, Prisma.ApplicationUncheckedUpdateWithoutProgramInput>
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutProgramInput, Prisma.ApplicationUncheckedCreateWithoutProgramInput>
+}
+
+export type ApplicationUpdateWithWhereUniqueWithoutProgramInput = {
+  where: Prisma.ApplicationWhereUniqueInput
+  data: Prisma.XOR<Prisma.ApplicationUpdateWithoutProgramInput, Prisma.ApplicationUncheckedUpdateWithoutProgramInput>
+}
+
+export type ApplicationUpdateManyWithWhereWithoutProgramInput = {
+  where: Prisma.ApplicationScalarWhereInput
+  data: Prisma.XOR<Prisma.ApplicationUpdateManyMutationInput, Prisma.ApplicationUncheckedUpdateManyWithoutProgramInput>
+}
+
+export type ApplicationScalarWhereInput = {
+  AND?: Prisma.ApplicationScalarWhereInput | Prisma.ApplicationScalarWhereInput[]
+  OR?: Prisma.ApplicationScalarWhereInput[]
+  NOT?: Prisma.ApplicationScalarWhereInput | Prisma.ApplicationScalarWhereInput[]
+  id?: Prisma.IntFilter<"Application"> | number
+  email?: Prisma.StringFilter<"Application"> | string
+  firstName?: Prisma.StringFilter<"Application"> | string
+  applicationNo?: Prisma.StringFilter<"Application"> | string
+  middleName?: Prisma.StringNullableFilter<"Application"> | string | null
+  lastName?: Prisma.StringFilter<"Application"> | string
+  dob?: Prisma.DateTimeNullableFilter<"Application"> | Date | string | null
+  gender?: Prisma.StringNullableFilter<"Application"> | string | null
+  school?: Prisma.StringNullableFilter<"Application"> | string | null
+  faculty?: Prisma.StringNullableFilter<"Application"> | string | null
+  department?: Prisma.StringNullableFilter<"Application"> | string | null
+  regNo?: Prisma.StringNullableFilter<"Application"> | string | null
+  level?: Prisma.IntNullableFilter<"Application"> | number | null
+  programDuration?: Prisma.IntNullableFilter<"Application"> | number | null
+  state?: Prisma.StringNullableFilter<"Application"> | string | null
+  lga?: Prisma.StringNullableFilter<"Application"> | string | null
+  village?: Prisma.StringNullableFilter<"Application"> | string | null
+  address?: Prisma.StringNullableFilter<"Application"> | string | null
+  ekpuk?: Prisma.StringNullableFilter<"Application"> | string | null
+  phone?: Prisma.StringFilter<"Application"> | string
+  bankName?: Prisma.StringNullableFilter<"Application"> | string | null
+  accountNo?: Prisma.StringNullableFilter<"Application"> | string | null
+  nin?: Prisma.StringFilter<"Application"> | string
+  passport?: Prisma.StringNullableFilter<"Application"> | string | null
+  examsType?: Prisma.StringNullableFilter<"Application"> | string | null
+  nameOfSchool?: Prisma.StringNullableFilter<"Application"> | string | null
+  subjectGrade?: Prisma.StringNullableFilter<"Application"> | string | null
+  year?: Prisma.StringNullableFilter<"Application"> | string | null
+  admissionLetter?: Prisma.StringNullableFilter<"Application"> | string | null
+  lastSchoolFeeReciept?: Prisma.StringNullableFilter<"Application"> | string | null
+  status?: Prisma.StringFilter<"Application"> | string
+  type?: Prisma.StringNullableFilter<"Application"> | string | null
+  programId?: Prisma.IntFilter<"Application"> | number
+  schoolIdCard?: Prisma.StringNullableFilter<"Application"> | string | null
+  certificateOfOrigin?: Prisma.StringNullableFilter<"Application"> | string | null
+  ssceResult?: Prisma.StringNullableFilter<"Application"> | string | null
+  birthCertificate?: Prisma.StringNullableFilter<"Application"> | string | null
+  comment?: Prisma.StringNullableFilter<"Application"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
+}
+
+export type ApplicationCreateManyProgramInput = {
+  id?: number
+  email: string
+  firstName: string
+  applicationNo: string
+  middleName?: string | null
+  lastName: string
+  dob?: Date | string | null
+  gender?: string | null
+  school?: string | null
+  faculty?: string | null
+  department?: string | null
+  regNo?: string | null
+  level?: number | null
+  programDuration?: number | null
+  state?: string | null
+  lga?: string | null
+  village?: string | null
+  address?: string | null
+  ekpuk?: string | null
+  phone: string
+  bankName?: string | null
+  accountNo?: string | null
+  nin: string
+  passport?: string | null
+  examsType?: string | null
+  nameOfSchool?: string | null
+  subjectGrade?: string | null
+  year?: string | null
+  admissionLetter?: string | null
+  lastSchoolFeeReciept?: string | null
+  status?: string
+  type?: string | null
+  schoolIdCard?: string | null
+  certificateOfOrigin?: string | null
+  ssceResult?: string | null
+  birthCertificate?: string | null
+  comment?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ApplicationUpdateWithoutProgramInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNo?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faculty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  programDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  village?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ekpuk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nin?: Prisma.StringFieldUpdateOperationsInput | string
+  passport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  examsType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApplicationUncheckedUpdateWithoutProgramInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNo?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faculty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  programDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  village?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ekpuk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nin?: Prisma.StringFieldUpdateOperationsInput | string
+  passport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  examsType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApplicationUncheckedUpdateManyWithoutProgramInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNo?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faculty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  programDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  village?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ekpuk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nin?: Prisma.StringFieldUpdateOperationsInput | string
+  passport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  examsType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSchoolFeeReciept?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  schoolIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certificateOfOrigin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ssceResult?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1169,7 +1552,7 @@ export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   lastSchoolFeeReciept?: boolean
   status?: boolean
   type?: boolean
-  applicationSessionId?: boolean
+  programId?: boolean
   schoolIdCard?: boolean
   certificateOfOrigin?: boolean
   ssceResult?: boolean
@@ -1177,6 +1560,7 @@ export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   comment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
 
 export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1212,7 +1596,7 @@ export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   lastSchoolFeeReciept?: boolean
   status?: boolean
   type?: boolean
-  applicationSessionId?: boolean
+  programId?: boolean
   schoolIdCard?: boolean
   certificateOfOrigin?: boolean
   ssceResult?: boolean
@@ -1220,6 +1604,7 @@ export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   comment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
 
 export type ApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1255,7 +1640,7 @@ export type ApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   lastSchoolFeeReciept?: boolean
   status?: boolean
   type?: boolean
-  applicationSessionId?: boolean
+  programId?: boolean
   schoolIdCard?: boolean
   certificateOfOrigin?: boolean
   ssceResult?: boolean
@@ -1263,6 +1648,7 @@ export type ApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   comment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
 
 export type ApplicationSelectScalar = {
@@ -1298,7 +1684,7 @@ export type ApplicationSelectScalar = {
   lastSchoolFeeReciept?: boolean
   status?: boolean
   type?: boolean
-  applicationSessionId?: boolean
+  programId?: boolean
   schoolIdCard?: boolean
   certificateOfOrigin?: boolean
   ssceResult?: boolean
@@ -1308,11 +1694,22 @@ export type ApplicationSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "applicationNo" | "middleName" | "lastName" | "dob" | "gender" | "school" | "faculty" | "department" | "regNo" | "level" | "programDuration" | "state" | "lga" | "village" | "address" | "ekpuk" | "phone" | "bankName" | "accountNo" | "nin" | "passport" | "examsType" | "nameOfSchool" | "subjectGrade" | "year" | "admissionLetter" | "lastSchoolFeeReciept" | "status" | "type" | "applicationSessionId" | "schoolIdCard" | "certificateOfOrigin" | "ssceResult" | "birthCertificate" | "comment" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "applicationNo" | "middleName" | "lastName" | "dob" | "gender" | "school" | "faculty" | "department" | "regNo" | "level" | "programDuration" | "state" | "lga" | "village" | "address" | "ekpuk" | "phone" | "bankName" | "accountNo" | "nin" | "passport" | "examsType" | "nameOfSchool" | "subjectGrade" | "year" | "admissionLetter" | "lastSchoolFeeReciept" | "status" | "type" | "programId" | "schoolIdCard" | "certificateOfOrigin" | "ssceResult" | "birthCertificate" | "comment" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+export type ApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
+}
+export type ApplicationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
+}
+export type ApplicationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
+}
 
 export type $ApplicationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Application"
-  objects: {}
+  objects: {
+    program: Prisma.$ProgramPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     email: string
@@ -1346,7 +1743,7 @@ export type $ApplicationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     lastSchoolFeeReciept: string | null
     status: string
     type: string | null
-    applicationSessionId: number
+    programId: number
     schoolIdCard: string | null
     certificateOfOrigin: string | null
     ssceResult: string | null
@@ -1748,6 +2145,7 @@ readonly fields: ApplicationFieldRefs;
  */
 export interface Prisma__ApplicationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  program<T extends Prisma.ProgramDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProgramDefaultArgs<ExtArgs>>): Prisma.Prisma__ProgramClient<runtime.Types.Result.GetResult<Prisma.$ProgramPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1809,7 +2207,7 @@ export interface ApplicationFieldRefs {
   readonly lastSchoolFeeReciept: Prisma.FieldRef<"Application", 'String'>
   readonly status: Prisma.FieldRef<"Application", 'String'>
   readonly type: Prisma.FieldRef<"Application", 'String'>
-  readonly applicationSessionId: Prisma.FieldRef<"Application", 'Int'>
+  readonly programId: Prisma.FieldRef<"Application", 'Int'>
   readonly schoolIdCard: Prisma.FieldRef<"Application", 'String'>
   readonly certificateOfOrigin: Prisma.FieldRef<"Application", 'String'>
   readonly ssceResult: Prisma.FieldRef<"Application", 'String'>
@@ -1834,6 +2232,10 @@ export type ApplicationFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  /**
    * Filter, which Application to fetch.
    */
   where: Prisma.ApplicationWhereUniqueInput
@@ -1852,6 +2254,10 @@ export type ApplicationFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  /**
    * Filter, which Application to fetch.
    */
   where: Prisma.ApplicationWhereUniqueInput
@@ -1869,6 +2275,10 @@ export type ApplicationFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the Application
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
   /**
    * Filter, which Application to fetch.
    */
@@ -1918,6 +2328,10 @@ export type ApplicationFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  /**
    * Filter, which Application to fetch.
    */
   where?: Prisma.ApplicationWhereInput
@@ -1966,6 +2380,10 @@ export type ApplicationFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  /**
    * Filter, which Applications to fetch.
    */
   where?: Prisma.ApplicationWhereInput
@@ -2009,6 +2427,10 @@ export type ApplicationCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  /**
    * The data needed to create a Application.
    */
   data: Prisma.XOR<Prisma.ApplicationCreateInput, Prisma.ApplicationUncheckedCreateInput>
@@ -2042,6 +2464,10 @@ export type ApplicationCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.ApplicationCreateManyInput | Prisma.ApplicationCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2056,6 +2482,10 @@ export type ApplicationUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Application
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
   /**
    * The data needed to update a Application.
    */
@@ -2108,6 +2538,10 @@ export type ApplicationUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many Applications to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2122,6 +2556,10 @@ export type ApplicationUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Application
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
   /**
    * The filter to search for the Application to update in case it exists.
    */
@@ -2148,6 +2586,10 @@ export type ApplicationDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Application
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
   /**
    * Filter which Application to delete.
    */
@@ -2180,4 +2622,8 @@ export type ApplicationDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Application
    */
   omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
 }

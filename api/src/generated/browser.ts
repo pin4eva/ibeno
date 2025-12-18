@@ -38,11 +38,6 @@ export type User = Prisma.UserModel
  */
 export type Program = Prisma.ProgramModel
 /**
- * Model ApplicationSession
- * 
- */
-export type ApplicationSession = Prisma.ApplicationSessionModel
-/**
  * Model Application
  * 
  */

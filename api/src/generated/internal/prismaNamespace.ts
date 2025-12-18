@@ -388,7 +388,6 @@ export const ModelName = {
   Invitation: 'Invitation',
   User: 'User',
   Program: 'Program',
-  ApplicationSession: 'ApplicationSession',
   Application: 'Application'
 } as const
 
@@ -405,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "auth" | "invitation" | "user" | "program" | "applicationSession" | "application"
+    modelProps: "auth" | "invitation" | "user" | "program" | "application"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -705,80 +704,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    ApplicationSession: {
-      payload: Prisma.$ApplicationSessionPayload<ExtArgs>
-      fields: Prisma.ApplicationSessionFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ApplicationSessionFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ApplicationSessionFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>
-        }
-        findFirst: {
-          args: Prisma.ApplicationSessionFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ApplicationSessionFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>
-        }
-        findMany: {
-          args: Prisma.ApplicationSessionFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>[]
-        }
-        create: {
-          args: Prisma.ApplicationSessionCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>
-        }
-        createMany: {
-          args: Prisma.ApplicationSessionCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ApplicationSessionCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>[]
-        }
-        delete: {
-          args: Prisma.ApplicationSessionDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>
-        }
-        update: {
-          args: Prisma.ApplicationSessionUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>
-        }
-        deleteMany: {
-          args: Prisma.ApplicationSessionDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ApplicationSessionUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ApplicationSessionUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>[]
-        }
-        upsert: {
-          args: Prisma.ApplicationSessionUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSessionPayload>
-        }
-        aggregate: {
-          args: Prisma.ApplicationSessionAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateApplicationSession>
-        }
-        groupBy: {
-          args: Prisma.ApplicationSessionGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ApplicationSessionGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ApplicationSessionCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ApplicationSessionCountAggregateOutputType> | number
-        }
-      }
-    }
     Application: {
       payload: Prisma.$ApplicationPayload<ExtArgs>
       fields: Prisma.ApplicationFieldRefs
@@ -956,22 +881,6 @@ export const ProgramScalarFieldEnum = {
 export type ProgramScalarFieldEnum = (typeof ProgramScalarFieldEnum)[keyof typeof ProgramScalarFieldEnum]
 
 
-export const ApplicationSessionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  year: 'year',
-  description: 'description',
-  isActive: 'isActive',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  type: 'type',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ApplicationSessionScalarFieldEnum = (typeof ApplicationSessionScalarFieldEnum)[keyof typeof ApplicationSessionScalarFieldEnum]
-
-
 export const ApplicationScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -1005,7 +914,7 @@ export const ApplicationScalarFieldEnum = {
   lastSchoolFeeReciept: 'lastSchoolFeeReciept',
   status: 'status',
   type: 'type',
-  applicationSessionId: 'applicationSessionId',
+  programId: 'programId',
   schoolIdCard: 'schoolIdCard',
   certificateOfOrigin: 'certificateOfOrigin',
   ssceResult: 'ssceResult',
@@ -1279,7 +1188,6 @@ export type GlobalOmitConfig = {
   invitation?: Prisma.InvitationOmit
   user?: Prisma.UserOmit
   program?: Prisma.ProgramOmit
-  applicationSession?: Prisma.ApplicationSessionOmit
   application?: Prisma.ApplicationOmit
 }
 

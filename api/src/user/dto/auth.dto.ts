@@ -88,5 +88,5 @@ export interface OldUserDto {
   image: string;
   otp?: number;
   authId: ObjectId;
-  departmentId?: any;
+  departmentId?: ObjectId | string;
 }

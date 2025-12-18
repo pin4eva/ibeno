@@ -71,10 +71,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth.store';
 
-definePageMeta({
-  layout: 'dashboard',
-});
-
 const authStore = useAuthStore();
 
 const stats = [

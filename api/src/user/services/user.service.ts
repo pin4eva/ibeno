@@ -1,15 +1,89 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
+import { Prisma } from '../../generated/client';
 import { OldAuthDto, OldUserDto } from '../dto/auth.dto';
-import { UserRoleEnum } from '../../generated/enums';
+import { UserRoleEnum, UserStatusEnum } from '../../generated/enums';
+import { UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // get users
-  async getUsers() {
-    return this.prisma.user.findMany();
+  // get users with pagination and filtering
+  async getUsers(filter: UserFilterDTO) {
+    const { page = 1, limit = 10, search, role, status, department } = filter;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.UserWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (role) where.role = role;
+    if (status) where.status = status;
+    if (department) where.department = department;
+
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return {
+      data: users,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  // find one user
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { auth: { select: { status: true, lastLogin: true } } },
+    });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user;
+  }
+
+  // update user
+  async update(id: number, data: UpdateUserDTO) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
+
+  // remove user (soft delete)
+  async remove(id: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data: { status: UserStatusEnum.Suspended },
+    });
   }
 
   // import old user data from MongoDB to PostgreSQL

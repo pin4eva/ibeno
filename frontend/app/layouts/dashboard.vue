@@ -19,12 +19,13 @@
         <div
           class="flex items-center justify-center h-16 px-6 border-b border-gray-200 dark:border-gray-700"
         >
+          <img src="/assets/images/logo.png" alt="logo" class="dashboard-logo" />
           <span class="text-xl font-bold text-primary-600 dark:text-primary-400">Ibeno</span>
         </div>
 
         <!-- Navigation -->
         <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-          <UVerticalNavigation :links="links" />
+          <UNavigationMenu :items="links" orientation="vertical" />
         </nav>
 
         <!-- User Profile (Bottom of sidebar) -->
@@ -107,3 +108,11 @@ function handleLogout() {
   router.push('/auth/login');
 }
 </script>
+
+<style>
+.dashboard-logo {
+  height: 32px;
+  width: 32px;
+  object-fit: contain;
+}
+</style>

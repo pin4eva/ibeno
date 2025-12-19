@@ -16,6 +16,7 @@
     "@nuxt/ui": "^4.2.1",
     "@pinia/nuxt": "^0.11.3",
     "@types/node": "^25.0.2",
+    "isomorphic-dompurify": "^2.29.0",
     "nuxt": "^4.2.2",
     "pinia": "^3.0.4"
   },

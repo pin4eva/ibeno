@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApplicationService } from '../services/application.service';
-import { ApplicationDTO, FilterApplicationsDTO } from '../dto/application.dto';
+import { ApplicantLoginDTO, ApplicationDTO, FilterApplicationsDTO } from '../dto/application.dto';
 
 @ApiTags('Applications')
 @ApiBearerAuth()
@@ -12,6 +12,11 @@ export class ApplicationController {
   @Post('migrate')
   async migrateOldApplications() {
     return this.applicationService.importApplications();
+  }
+
+  @Post('login')
+  login(@Body() input: ApplicantLoginDTO) {
+    return this.applicationService.login(input);
   }
 
   @Post()

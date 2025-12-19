@@ -13,6 +13,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 import { EmailModule } from './email/email.module';
 import { ProgramsModule } from './programs/programs.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ProgramsModule } from './programs/programs.module';
     PrismaModule,
     EmailModule,
     ProgramsModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],

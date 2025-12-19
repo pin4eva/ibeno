@@ -1,12 +1,26 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { ApplicationDTO, FilterApplicationsDTO, OldApplicationDTO } from '../dto/application.dto';
+import {
+  ApplicantLoginDTO,
+  ApplicationDTO,
+  FilterApplicationsDTO,
+  OldApplicationDTO,
+} from '../dto/application.dto';
 import { OldProgramDTO } from '../dto/programs.dto';
 import { Application, Prisma } from 'src/generated/client';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class ApplicationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
   async createApplication(input: ApplicationDTO) {
     const { id, programId, ...data } = input;
@@ -48,6 +62,14 @@ export class ApplicationService {
           applicationNo: applicationNo,
         },
       });
+
+      await this.emailService.sendApplicationStartedEmail(
+        email,
+        data.firstName,
+        applicationNo,
+        program.name,
+      );
+
       return application;
     } catch (error) {
       throw error;
@@ -171,5 +193,25 @@ export class ApplicationService {
     const serialNo = documentCount + 1;
     applicationNo += serialNo.toString().padStart(4, '0');
     return applicationNo;
+  }
+
+  async login(input: ApplicantLoginDTO) {
+    const { applicationNo, nin } = input;
+    const application = await this.prisma.application.findUnique({
+      where: { applicationNo },
+      include: { program: true },
+    });
+
+    if (!application) {
+      throw new UnauthorizedException('Invalid Application Number');
+    }
+
+    const cleanNin = nin.replaceAll('-', '').replaceAll(' ', '').trim();
+
+    if (application.nin !== cleanNin && application.nin !== nin) {
+      throw new UnauthorizedException('Invalid NIN');
+    }
+
+    return application;
   }
 }

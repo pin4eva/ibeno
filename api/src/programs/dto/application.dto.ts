@@ -44,6 +44,16 @@ export class FilterApplicationsDTO {
   category?: ProgramCategoryEnum;
 }
 
+export class ApplicantLoginDTO {
+  @ApiProperty({ description: 'Application Number' })
+  @IsString()
+  applicationNo: string;
+
+  @ApiProperty({ description: 'National Identification Number' })
+  @IsNumberString()
+  nin: string;
+}
+
 export class ApplicationDTO {
   @ApiPropertyOptional({ description: 'ID of the application', required: false })
   @IsOptional()

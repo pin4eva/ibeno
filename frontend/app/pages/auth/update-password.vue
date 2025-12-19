@@ -8,7 +8,7 @@
     <form class="grid gap-2" @submit.prevent="handleUpdatePassword">
       <UFormField label="OTP Code" name="otp">
         <UInput
-          :disabled="route.query?.otp"
+          :disabled="!!route.query?.otp"
           v-model="form.otp"
           type="number"
           placeholder="123456"
@@ -54,8 +54,11 @@ const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
+const otpQuery = route.query.otp;
+const initialOtp = Array.isArray(otpQuery) ? otpQuery[0] : otpQuery;
+
 const form = reactive({
-  otp: route.query?.otp || '',
+  otp: (initialOtp as string) || '',
   password: '',
   confirmPassword: '',
 });

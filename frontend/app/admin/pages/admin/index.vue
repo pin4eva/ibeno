@@ -103,7 +103,7 @@ const stats = computed(() => [
     change: 'All programs',
     trend: 'up',
     icon: 'i-lucide-file-text',
-    to: '/admin/applications',
+    to: '/admin/programs',
   },
   {
     label: 'Total Users',
@@ -127,11 +127,11 @@ const fetchDashboardData = async () => {
   try {
     // Fetch programs
     await programsStore.fetchPrograms();
-    
+
     // Fetch applications count
     const applications = await apiFetch<Application[]>('/applications');
     applicationsCount.value = applications.length;
-    
+
     // Fetch users count
     await userStore.fetchUsers({ page: 1, limit: 1 });
   } catch (error) {

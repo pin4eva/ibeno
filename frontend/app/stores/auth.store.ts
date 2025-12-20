@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
 import type { FetchError } from '~/interfaces/app.interface';
 import type { ChangePasswordDTO, LoginDTO, SignupDTO } from '~/interfaces/auth.interface';
+import { apiFetch } from '~/utils/api-fetch';
 
-export interface User {
+export interface AuthUser {
   id: number;
   email: string;
   firstName: string;
@@ -14,7 +15,7 @@ export interface User {
 }
 
 export interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   loading: boolean;
@@ -114,24 +115,23 @@ export interface AuthState {
 // });
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null);
+  const user = ref<AuthUser | null>(null);
   const accessToken = useCookie<string | null>('access_token');
   const refreshToken = useCookie<string | null>('refresh_token');
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
-  const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl + '/auth';
 
   const login = async ({ email, password }: LoginDTO) => {
     try {
       loading.value = true;
-      const response = await $fetch<{
+      const response = await apiFetch<{
         success: boolean;
         message: string;
         accessToken: string;
         refreshToken: string;
         passwordUpdateRequired?: boolean;
         otp?: number;
-      }>(apiBaseUrl + '/login', {
+      }>('/auth/login', {
         method: 'POST',
         body: { email, password },
       });
@@ -153,7 +153,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const signup = async (input: SignupDTO) => {
     try {
-      const response = await $fetch<{ success: boolean; message: string }>(apiBaseUrl + '/signup', {
+      const response = await apiFetch<{ success: boolean; message: string }>('/auth/signup', {
         method: 'POST',
         body: input,
       });
@@ -169,8 +169,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       error.value = null;
       loading.value = true;
-      const response = await $fetch<{ success: boolean; message: string }>(
-        apiBaseUrl + '/forgot-password',
+      const response = await apiFetch<{ success: boolean; message: string }>(
+        '/auth/forgot-password',
         {
           method: 'POST',
           body: { email },
@@ -190,8 +190,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       error.value = null;
       loading.value = true;
-      const response = await $fetch<{ success: boolean; message: string }>(
-        apiBaseUrl + '/reset-password',
+      const response = await apiFetch<{ success: boolean; message: string }>(
+        '/auth/reset-password',
         {
           method: 'POST',
           body: input,

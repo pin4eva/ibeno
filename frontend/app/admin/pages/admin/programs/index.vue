@@ -63,14 +63,14 @@
             :items="categoryOptions"
             placeholder="All Categories"
             class="w-48"
-            value-attribute="value"
+            value-key="value"
           />
           <USelectMenu
             v-model="selectedStatus"
             :items="statusOptions"
             placeholder="All Status"
             class="w-48"
-            value-attribute="value"
+            value-key="value"
           />
         </div>
       </template>
@@ -94,7 +94,7 @@ import { useDebounceFn } from '@vueuse/core';
 
 const programsStore = useProgramsStore();
 const search = ref('');
-const selectedCategory = ref<string | undefined>(undefined);
+const selectedCategory = ref<ProgramCategoryEnum | undefined>(undefined);
 const selectedStatus = ref<string | undefined>(undefined);
 
 const UBadge = resolveComponent('UBadge');
@@ -164,14 +164,9 @@ const columns: TableColumn<Program>[] = [
       const items = [
         [
           {
-            label: 'Edit',
+            label: 'View',
             icon: 'i-lucide-edit',
             click: () => navigateTo(`/admin/programs/${row.original.id}`),
-          },
-          {
-            label: 'View Applications',
-            icon: 'i-lucide-file-text',
-            click: () => navigateTo(`/admin/applications?programId=${row.original.id}`),
           },
         ],
         [
@@ -226,15 +221,20 @@ const columns: TableColumn<Program>[] = [
         ],
       ];
 
-      return h(UDropdown, {
-        items,
-        mode: 'hover',
-      }, () => h(UButton, {
-        icon: 'i-lucide-more-vertical',
-        size: 'xs',
-        color: 'gray',
-        variant: 'ghost',
-      }));
+      return h(
+        UDropdown,
+        {
+          items,
+          mode: 'hover',
+        },
+        () =>
+          h(UButton, {
+            icon: 'i-lucide-more-vertical',
+            size: 'xs',
+            color: 'gray',
+            variant: 'ghost',
+          }),
+      );
     },
   },
 ];

@@ -74,7 +74,7 @@ async function handleLogin() {
     if (response?.success) {
       router.push('/');
     }
-  } catch (error) {
+  } catch {
     // Error handled in store
   }
 }

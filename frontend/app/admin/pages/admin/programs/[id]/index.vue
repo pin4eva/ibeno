@@ -50,6 +50,52 @@ const { data, pending, error, refresh } = await useAsyncData(
 const program = computed(() => data.value?.program || null);
 const applications = computed(() => data.value?.applications || []);
 
+const applicationSearch = ref('');
+const applicationPage = ref(1);
+const applicationPageSize = 10;
+
+const filteredApplications = computed(() => {
+  const q = applicationSearch.value.trim().toLowerCase();
+  if (!q) return applications.value;
+
+  return applications.value.filter((a) => {
+    const fullName = `${a.firstName || ''} ${a.lastName || ''}`.trim().toLowerCase();
+    return (
+      String(a.applicationNo || '')
+        .toLowerCase()
+        .includes(q) ||
+      fullName.includes(q) ||
+      String(a.email || '')
+        .toLowerCase()
+        .includes(q) ||
+      String(a.status || '')
+        .toLowerCase()
+        .includes(q)
+    );
+  });
+});
+
+const applicationTotalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredApplications.value.length / applicationPageSize)),
+);
+
+const pagedApplications = computed(() => {
+  const start = (applicationPage.value - 1) * applicationPageSize;
+  return filteredApplications.value.slice(start, start + applicationPageSize);
+});
+
+watch(applicationSearch, () => {
+  applicationPage.value = 1;
+});
+
+watch(
+  applicationTotalPages,
+  (total) => {
+    if (applicationPage.value > total) applicationPage.value = total;
+  },
+  { immediate: true },
+);
+
 const isEditOpen = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
@@ -166,7 +212,7 @@ async function deleteProgram() {
 
 function viewApplication(id?: number) {
   if (!id) return;
-  navigateTo(`/admin/programs/${programId.value}/applications/${id}`);
+  navigateTo(`/admin/programs/${programId.value}/${id}`);
 }
 
 const applicationColumns: TableColumn<Application>[] = [
@@ -309,7 +355,7 @@ const applicationColumns: TableColumn<Application>[] = [
       </div>
 
       <div
-        class="grid grid-cols-1 gap-4 md:grid-cols-2 pt-4 border-t border-gray-200 dark:border-gray-700"
+        class="grid grid-cols-1 gap-4 border-t border-gray-200 pt-4 dark:border-gray-700 md:grid-cols-2"
       >
         <div>
           <p class="text-sm text-gray-500 dark:text-gray-400">Created</p>
@@ -330,20 +376,37 @@ const applicationColumns: TableColumn<Application>[] = [
       <template #header>
         <div class="flex items-center justify-between gap-4">
           <h3 class="text-base font-semibold text-gray-900 dark:text-white">Applications</h3>
-          <UBadge variant="subtle">{{ applications.length }}</UBadge>
+          <div class="flex items-center gap-2">
+            <UInput
+              v-model="applicationSearch"
+              size="sm"
+              placeholder="Search applications"
+              icon="i-lucide-search"
+              class="w-64"
+            />
+            <UBadge variant="subtle">{{ filteredApplications.length }}</UBadge>
+          </div>
         </div>
       </template>
 
-      <UTable :data="applications" :columns="applicationColumns" :loading="pending" />
+      <UTable :data="pagedApplications" :columns="applicationColumns" :loading="pending" />
 
       <template #footer>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Use “View” to open an application.</p>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Use “View” to open an application.</p>
+          <UPagination
+            v-model="applicationPage"
+            :page-count="applicationTotalPages"
+            :total="filteredApplications.length"
+            :items-per-page="applicationPageSize"
+          />
+        </div>
       </template>
     </UCard>
 
-    <UModal v-model:open="isEditOpen" scrollable fullscreen>
+    <UModal v-model:open="isEditOpen" :ui="{ content: 'w-full sm:max-w-4xl' }">
       <template #header>
-        <div class="flex items-start justify-between w-full gap-4">
+        <div class="flex w-full items-start justify-between gap-4">
           <div>
             <h3 class="text-lg font-semibold">Update program</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Edit fields and save.</p>
@@ -388,7 +451,7 @@ const applicationColumns: TableColumn<Application>[] = [
           </UFormField>
 
           <div
-            class="flex items-center justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700"
+            class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-gray-700"
           >
             <UButton
               type="button"

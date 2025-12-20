@@ -3,9 +3,7 @@
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Program</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Add a new program to the system
-        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Add a new program to the system</p>
       </div>
       <UButton
         icon="i-lucide-arrow-left"
@@ -36,7 +34,7 @@
               :items="categoryOptions"
               placeholder="Select category"
               :disabled="loading"
-              value-attribute="value"
+              value-key="value"
               required
             />
           </UFormGroup>
@@ -62,32 +60,18 @@
 
           <!-- Start Date -->
           <UFormGroup label="Start Date" hint="Optional">
-            <UInput
-              v-model="form.startDate"
-              type="date"
-              :disabled="loading"
-            />
+            <UInput v-model="form.startDate" type="date" :disabled="loading" />
           </UFormGroup>
 
           <!-- End Date -->
           <UFormGroup label="End Date" hint="Optional">
-            <UInput
-              v-model="form.endDate"
-              type="date"
-              :disabled="loading"
-            />
+            <UInput v-model="form.endDate" type="date" :disabled="loading" />
           </UFormGroup>
         </div>
 
         <!-- Description -->
         <UFormGroup label="Description" required>
-          <UTextarea
-            v-model="form.description"
-            placeholder="Enter program description"
-            :rows="5"
-            :disabled="loading"
-            required
-          />
+          <WysiwygEditor v-model="form.description" :disabled="loading" />
         </UFormGroup>
 
         <!-- Actions -->
@@ -115,7 +99,7 @@
 
 <script setup lang="ts">
 import { useProgramsStore } from '~/stores/programs.store';
-import { ProgramCategoryEnum } from '~/interfaces/programs.interface';
+import { ProgramCategoryEnum, type CreateProgramDTO } from '~/interfaces/programs.interface';
 
 const programsStore = useProgramsStore();
 const router = useRouter();
@@ -123,10 +107,18 @@ const toast = useToast();
 
 const loading = ref(false);
 
-const form = ref({
+const form = ref<{
+  name: string;
+  description: string;
+  category: ProgramCategoryEnum | undefined;
+  subCategory: string;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+}>({
   name: '',
   description: '',
-  category: '' as string,
+  category: undefined,
   subCategory: '',
   isActive: true,
   startDate: '',
@@ -142,10 +134,15 @@ const handleSubmit = async () => {
   try {
     loading.value = true;
 
+    if (!form.value.category) {
+      toast.add({ title: 'Error', description: 'Category is required', color: 'red' });
+      return;
+    }
+
     const data: CreateProgramDTO = {
       name: form.value.name.trim(),
       description: form.value.description.trim(),
-      category: form.value.category as ProgramCategoryEnum,
+      category: form.value.category,
       isActive: form.value.isActive,
     };
 
@@ -154,11 +151,11 @@ const handleSubmit = async () => {
     }
 
     if (form.value.startDate) {
-      data.startDate = new Date(form.value.startDate).toISOString();
+      data.startDate = new Date(`${form.value.startDate}T00:00:00.000Z`).toISOString();
     }
 
     if (form.value.endDate) {
-      data.endDate = new Date(form.value.endDate).toISOString();
+      data.endDate = new Date(`${form.value.endDate}T00:00:00.000Z`).toISOString();
     }
 
     await programsStore.createProgram(data);

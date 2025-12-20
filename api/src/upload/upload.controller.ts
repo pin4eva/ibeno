@@ -39,9 +39,7 @@ export class UploadController {
     )
     file: Express.Multer.File,
   ): Promise<{ url: string }> {
-    const result = (await this.cloudinaryService.uploadImage(file)) as {
-      secure_url: string;
-    };
+    const result = await this.cloudinaryService.uploadImage(file);
     return { url: result.secure_url };
   }
 }

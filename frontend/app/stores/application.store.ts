@@ -66,9 +66,14 @@ export const useApplicationStore = defineStore('application', () => {
     }
   };
 
-  const updateApplication = async (id: number, data: Partial<Application>) => {
+  const updateApplication = async (data: Partial<Application>) => {
+    if (!data.id) {
+      throw new Error('Application ID is required for update');
+    }
+    const id = data.id;
     loading.value = true;
     error.value = null;
+
     try {
       const response = await apiFetch<Application>('/applications', {
         method: 'POST',
@@ -81,6 +86,26 @@ export const useApplicationStore = defineStore('application', () => {
       throw err;
     } finally {
       loading.value = false;
+    }
+  };
+
+  const setApplication = async (data?: Application | null, id?: number) => {
+    if (data) {
+      application.value = data || null;
+      return data;
+    } else if (id) {
+      loading.value = true;
+      error.value = null;
+      try {
+        const response = await apiFetch<Application>(`/applications/single/${id}`);
+        application.value = response;
+        return response;
+      } catch (err: unknown) {
+        error.value = getErrorMessage(err, 'Failed to fetch application');
+        throw err;
+      } finally {
+        loading.value = false;
+      }
     }
   };
 
@@ -108,5 +133,6 @@ export const useApplicationStore = defineStore('application', () => {
     loginApplicant,
     updateApplication,
     uploadFile,
+    setApplication,
   };
 });

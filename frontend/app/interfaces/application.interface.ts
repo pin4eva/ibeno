@@ -6,6 +6,16 @@ export enum ApplicationStatusEnum {
   Rejected = 'Rejected',
 }
 
+export enum GenderEnum {
+  Male = 'Male',
+  Female = 'Female',
+}
+
+export const genderOptions = [
+  { label: 'Male', value: GenderEnum.Male },
+  { label: 'Female', value: GenderEnum.Female },
+];
+
 export interface Application {
   id?: number;
   programId: number;
@@ -17,7 +27,7 @@ export interface Application {
   phone: string;
   nin: string;
   dob: string;
-  gender: string;
+  gender: GenderEnum | string;
   village?: string;
   lga?: string;
   state?: string;
@@ -37,7 +47,7 @@ export interface Application {
   bankName?: string;
   accountNumber?: string;
   accountName?: string;
-  passportUrl?: string;
+  passport?: string;
   status?: ApplicationStatusEnum;
   createdAt?: string;
   updatedAt?: string;

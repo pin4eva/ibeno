@@ -15,14 +15,9 @@ const devOrigins = [
   'https://dev-helar-nuxt.vercel.app',
 ];
 
-const prodOrigins = [
-  'https://ihcdt.org',
-  'https://ihcdt.ububa.org',
-  'https://ihcdt.vercel.app',
-];
+const prodOrigins = ['https://ihcdt.org', 'https://ihcdt.ububa.org', 'https://ihcdt.vercel.app'];
 
-const normalizeOrigin = (origin: string) =>
-  origin.trim().replace(/\/$/, '').toLowerCase();
+const normalizeOrigin = (origin: string) => origin.trim().replace(/\/$/, '').toLowerCase();
 
 const parseEnvOrigins = () =>
   (process.env.CORS_ALLOWED_ORIGINS ?? '')
@@ -35,9 +30,7 @@ const wildcardDomains = ['ububa.org'];
 const matchesWildcardDomain = (origin: string) => {
   try {
     const hostname = new URL(origin).hostname.toLowerCase();
-    return wildcardDomains.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
-    );
+    return wildcardDomains.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`));
   } catch {
     return false;
   }
@@ -53,7 +46,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
       transform: true,
     }),
   );
@@ -79,10 +71,7 @@ async function bootstrap() {
       }
 
       const normalizedOrigin = normalizeOrigin(origin);
-      if (
-        normalizedAllowedOrigins.has(normalizedOrigin) ||
-        matchesWildcardDomain(origin)
-      ) {
+      if (normalizedAllowedOrigins.has(normalizedOrigin) || matchesWildcardDomain(origin)) {
         return callback(null, true);
       }
 
@@ -92,8 +81,7 @@ async function bootstrap() {
       return callback(new Error(`Origin ${origin} not allowed by CORS`));
     },
     credentials: true,
-    allowedHeaders:
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     optionsSuccessStatus: 204,
   });
@@ -121,8 +109,7 @@ async function bootstrap() {
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
     },
-    customCssUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
     customJs: [
       'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
       'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js',

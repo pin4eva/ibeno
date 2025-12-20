@@ -18,7 +18,7 @@ const items = [
   },
   {
     label: 'Procurement',
-    to: '/contracts',
+    to: '/procurement',
     icon: 'i-lucide-briefcase',
   },
   {
@@ -37,10 +37,7 @@ const items = [
       </NuxtLink>
     </template>
 
-    <UNavigationMenu
-      :items="items"
-      variant="link"
-    />
+    <UNavigationMenu :items="items" variant="link" />
 
     <template #right>
       <UColorModeButton />

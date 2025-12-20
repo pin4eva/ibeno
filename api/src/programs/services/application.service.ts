@@ -33,13 +33,20 @@ export class ApplicationService {
         throw new NotFoundException('Program not found');
       }
 
+      let dob: Date | undefined = data?.dob;
+      if (data?.dob) {
+        dob = new Date(data.dob);
+      }
+
       if (id) {
         // update existing application
+
         const updatedApplication = await this.prisma.application.update({
           where: { id },
           data: {
             ...data,
             email,
+            dob,
           },
         });
         return updatedApplication;
@@ -59,7 +66,8 @@ export class ApplicationService {
           ...data,
           programId,
           email,
-          applicationNo: applicationNo,
+          dob,
+          applicationNo,
         },
       });
 

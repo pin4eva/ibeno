@@ -131,9 +131,9 @@ async function updateStatus(newStatus: ApplicationStatusEnum) {
         <UCard>
           <template #header><h3 class="font-semibold">Documents</h3></template>
           <div class="space-y-4">
-            <div v-if="app.passportUrl">
+            <div v-if="app.passport">
               <p class="text-sm font-medium mb-1">Passport</p>
-              <img :src="app.passportUrl" class="w-full rounded-lg" />
+              <img :src="app.passport" class="w-full rounded-lg" />
             </div>
             <div v-if="app.admissionLeterUrl">
               <p class="text-sm font-medium mb-1">Admission Letter</p>

@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { ApplicationStatusEnum, type Application } from '~/interfaces/application.interface';
+import {
+  ApplicationStatusEnum,
+  GenderEnum,
+  type Application,
+} from '~/interfaces/application.interface';
+import { toDateInput, toIsoDateTime } from '~/utils/date';
 
 const route = useRoute();
 const router = useRouter();
@@ -40,7 +45,7 @@ const state = reactive<Partial<Application>>({
   phone: '',
   nin: '',
   dob: '',
-  gender: '',
+  gender: GenderEnum.Male,
   village: '',
   lga: '',
   state: '',
@@ -56,7 +61,7 @@ const state = reactive<Partial<Application>>({
   bankName: '',
   accountNumber: '',
   accountName: '',
-  passportUrl: '',
+  passport: '',
   admissionLeterUrl: '',
   lastSchoolFeeReceiptUrl: '',
   certificateOfOriginUrl: '',
@@ -68,6 +73,7 @@ watch(
   (newApp) => {
     if (newApp) {
       Object.assign(state, newApp);
+      state.dob = toDateInput(newApp.dob);
     }
   },
   { immediate: true },
@@ -75,7 +81,11 @@ watch(
 
 async function saveProgress() {
   try {
-    await applicationStore.updateApplication(applicationId, state);
+    await applicationStore.updateApplication({
+      id: applicationId,
+      ...state,
+      dob: state.dob ? toIsoDateTime(state.dob) : state.dob,
+    });
     toast.add({ title: 'Saved', description: 'Progress saved successfully' });
   } catch (error: any) {
     toast.add({ title: 'Error', description: error.message, color: 'red' });
@@ -85,8 +95,10 @@ async function saveProgress() {
 async function submitApplication() {
   if (!confirm('Are you sure you want to submit? You cannot edit after submission.')) return;
   try {
-    await applicationStore.updateApplication(applicationId, {
+    await applicationStore.updateApplication({
+      id: applicationId,
       ...state,
+      dob: state.dob ? toIsoDateTime(state.dob) : state.dob,
       status: ApplicationStatusEnum.Submitted,
     });
     toast.add({ title: 'Success', description: 'Application submitted successfully!' });
@@ -187,12 +199,10 @@ async function handleFileUpload(files: FileList, fieldName: keyof typeof state) 
             <UFormField label="Passport Photo">
               <input
                 type="file"
-                @change="
-                  (e) => handleFileUpload((e.target as HTMLInputElement).files!, 'passportUrl')
-                "
+                @change="(e) => handleFileUpload((e.target as HTMLInputElement).files!, 'passport')"
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
               />
-              <p v-if="state.passportUrl" class="text-sm text-green-500 mt-1">Uploaded</p>
+              <p v-if="state.passport" class="text-sm text-green-500 mt-1">Uploaded</p>
             </UFormField>
 
             <UFormField label="Admission Letter">

@@ -4,6 +4,7 @@ import { ApplicationStatusEnum, type Application } from '~/interfaces/applicatio
 import type { Program } from '~/interfaces/programs.interface';
 const config = useRuntimeConfig().public;
 const apiBaseUrl = config.apiBaseUrl;
+const route = useRoute();
 
 const columns: TableColumn<Application>[] = [
   { accessorKey: 'applicationNo', header: 'App No' },
@@ -17,6 +18,13 @@ const columns: TableColumn<Application>[] = [
 
 const status = ref<ApplicationStatusEnum | undefined>();
 const programId = ref<number | undefined>();
+
+// Initialize programId from query params if present
+onMounted(() => {
+  if (route.query.programId) {
+    programId.value = Number(route.query.programId);
+  }
+});
 
 const { data, pending } = useAsyncData(
   async () => {

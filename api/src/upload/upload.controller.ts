@@ -5,7 +5,6 @@ import {
   UseInterceptors,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -35,13 +34,14 @@ export class UploadController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 5 }), // 5MB
-          // new FileTypeValidator({ fileType: '.(png|jpeg|jpg|pdf)' }),
         ],
       }),
     )
     file: Express.Multer.File,
-  ) {
-    const result = await this.cloudinaryService.uploadImage(file);
+  ): Promise<{ url: string }> {
+    const result = (await this.cloudinaryService.uploadImage(file)) as {
+      secure_url: string;
+    };
     return { url: result.secure_url };
   }
 }

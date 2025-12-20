@@ -14,6 +14,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { EmailModule } from './email/email.module';
 import { ProgramsModule } from './programs/programs.module';
 import { UploadModule } from './upload/upload.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UploadModule } from './upload/upload.module';
     PrismaModule,
     EmailModule,
     ProgramsModule,
+    CloudinaryModule,
     UploadModule,
   ],
   controllers: [AppController],

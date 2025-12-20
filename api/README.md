@@ -25,6 +25,22 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Environment Setup
+
+1. Copy the `.env.example` file to `.env`:
+   ```bash
+   $ cp .env.example .env
+   ```
+
+2. Configure your environment variables in `.env`:
+   - **DATABASE_URL**: PostgreSQL connection string
+   - **MONGO_URL**: MongoDB connection string (for caching)
+   - **JWT_SECRET**: Secret key for JWT token generation
+   - **BREVO_API_KEY**: API key for Brevo email service
+   - **CLOUDINARY_CLOUD_NAME**: Your Cloudinary cloud name (for file uploads)
+   - **CLOUDINARY_API_KEY**: Your Cloudinary API key
+   - **CLOUDINARY_API_SECRET**: Your Cloudinary API secret
+
 ## Project setup
 
 ```bash

@@ -36,7 +36,7 @@
               :items="categoryOptions"
               placeholder="Select category"
               :disabled="loading"
-              value-attribute="value"
+              value-key="value"
               required
             />
           </UFormGroup>
@@ -115,7 +115,7 @@
 
 <script setup lang="ts">
 import { useProgramsStore } from '~/stores/programs.store';
-import { ProgramCategoryEnum } from '~/interfaces/programs.interface';
+import { ProgramCategoryEnum, type CreateProgramDTO } from '~/interfaces/programs.interface';
 
 const programsStore = useProgramsStore();
 const router = useRouter();

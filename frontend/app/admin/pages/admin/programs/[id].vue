@@ -49,7 +49,7 @@
               :items="categoryOptions"
               placeholder="Select category"
               :disabled="loading"
-              value-attribute="value"
+              value-key="value"
               required
             />
           </UFormGroup>
@@ -187,7 +187,7 @@
 
 <script setup lang="ts">
 import { useProgramsStore } from '~/stores/programs.store';
-import { ProgramCategoryEnum } from '~/interfaces/programs.interface';
+import { ProgramCategoryEnum, type UpdateProgramDTO } from '~/interfaces/programs.interface';
 
 const programsStore = useProgramsStore();
 const route = useRoute();
@@ -289,38 +289,48 @@ const handleSubmit = async () => {
   }
 };
 
-const handleDelete = async () => {
+const handleDelete = () => {
   if (!program.value) return;
 
-  if (
-    !confirm(
-      `Are you sure you want to delete "${program.value.name}"? This action cannot be undone.`,
-    )
-  ) {
-    return;
-  }
+  toast.add({
+    title: 'Delete Program',
+    description: `Are you sure you want to delete "${program.value.name}"? This action cannot be undone.`,
+    color: 'red',
+    actions: [
+      {
+        label: 'Delete',
+        color: 'red',
+        click: async () => {
+          try {
+            loading.value = true;
+            await programsStore.deleteProgram(Number(route.params.id));
 
-  try {
-    loading.value = true;
-    await programsStore.deleteProgram(Number(route.params.id));
+            toast.add({
+              title: 'Success',
+              description: 'Program deleted successfully',
+              color: 'green',
+            });
 
-    toast.add({
-      title: 'Success',
-      description: 'Program deleted successfully',
-      color: 'green',
-    });
-
-    router.push('/admin/programs');
-  } catch (error) {
-    console.error('Error deleting program:', error);
-    toast.add({
-      title: 'Error',
-      description: 'Failed to delete program',
-      color: 'red',
-    });
-  } finally {
-    loading.value = false;
-  }
+            router.push('/admin/programs');
+          } catch (error) {
+            console.error('Error deleting program:', error);
+            toast.add({
+              title: 'Error',
+              description: 'Failed to delete program',
+              color: 'red',
+            });
+          } finally {
+            loading.value = false;
+          }
+        },
+      },
+      {
+        label: 'Cancel',
+        color: 'gray',
+        variant: 'ghost',
+      },
+    ],
+  });
 };
 
 const handleCancel = () => {

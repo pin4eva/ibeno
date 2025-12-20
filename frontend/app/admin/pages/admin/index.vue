@@ -29,17 +29,7 @@
             <UIcon :name="stat.icon" class="w-8 h-8 text-primary-500 opacity-80" />
           </div>
           <div class="mt-4 flex items-center text-sm">
-            <span
-              :class="[
-                stat.trend === 'up' ? 'text-green-600' : 'text-gray-600',
-                'font-medium flex items-center',
-              ]"
-            >
-              <UIcon
-                v-if="stat.trend === 'up'"
-                name="i-lucide-arrow-up-right"
-                class="w-4 h-4 mr-1"
-              />
+            <span class="font-medium text-gray-600 dark:text-gray-400">
               {{ stat.change }}
             </span>
           </div>
@@ -79,45 +69,37 @@
 import { useAuthStore } from '~/stores/auth.store';
 import { useProgramsStore } from '~/stores/programs.store';
 import { useUserStore } from '~/stores/user.store';
-import type { Application } from '~/interfaces/application.interface';
-import { apiFetch } from '~/utils/api-fetch';
 
 const authStore = useAuthStore();
 const programsStore = useProgramsStore();
 const userStore = useUserStore();
 
-const applicationsCount = ref(0);
-
 const stats = computed(() => [
   {
     label: 'Total Programs',
-    value: programsStore.stats.total.toString(),
+    value: programsStore.stats.total > 0 ? programsStore.stats.total.toString() : '0',
     change: `${programsStore.stats.active} active`,
-    trend: 'up',
     icon: 'i-lucide-folder',
     to: '/admin/programs',
   },
   {
     label: 'Total Applications',
-    value: applicationsCount.value.toString(),
+    value: '0',
     change: 'All programs',
-    trend: 'up',
     icon: 'i-lucide-file-text',
     to: '/admin/applications',
   },
   {
     label: 'Total Users',
-    value: userStore.total.toString(),
+    value: userStore.total > 0 ? userStore.total.toString() : '0',
     change: 'System users',
-    trend: 'up',
     icon: 'i-lucide-users',
     to: '/admin/users',
   },
   {
     label: 'Active Programs',
-    value: programsStore.stats.active.toString(),
+    value: programsStore.stats.active > 0 ? programsStore.stats.active.toString() : '0',
     change: `${programsStore.stats.inactive} inactive`,
-    trend: programsStore.stats.active > programsStore.stats.inactive ? 'up' : 'down',
     icon: 'i-lucide-check-circle',
     to: '/admin/programs',
   },
@@ -127,10 +109,6 @@ const fetchDashboardData = async () => {
   try {
     // Fetch programs
     await programsStore.fetchPrograms();
-    
-    // Fetch applications count
-    const applications = await apiFetch<Application[]>('/applications');
-    applicationsCount.value = applications.length;
     
     // Fetch users count
     await userStore.fetchUsers({ page: 1, limit: 1 });

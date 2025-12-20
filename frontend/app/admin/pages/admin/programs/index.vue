@@ -109,7 +109,8 @@
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue';
 import type { TableColumn, TableRow } from '@nuxt/ui';
-import { useProgramsStore, type Program } from '~/stores/programs.store';
+import { useProgramsStore } from '~/stores/programs.store';
+import type { Program } from '~/interfaces/programs.interface';
 import { ProgramCategoryEnum } from '~/interfaces/programs.interface';
 
 const programsStore = useProgramsStore();
@@ -269,7 +270,7 @@ const filteredPrograms = computed(() => {
 const fetchPrograms = async () => {
   try {
     await programsStore.fetchPrograms();
-  } catch (error) {
+  } catch {
     toast.add({
       title: 'Error',
       description: 'Failed to load programs',
@@ -286,7 +287,7 @@ const handleToggleStatus = async (program: Program) => {
       description: `Program ${program.isActive ? 'deactivated' : 'activated'} successfully`,
       color: 'green',
     });
-  } catch (error) {
+  } catch {
     toast.add({
       title: 'Error',
       description: 'Failed to toggle program status',
@@ -312,7 +313,7 @@ const confirmDelete = async () => {
     });
     showDeleteModal.value = false;
     programToDelete.value = null;
-  } catch (error) {
+  } catch {
     toast.add({
       title: 'Error',
       description: 'Failed to delete program',

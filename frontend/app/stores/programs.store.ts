@@ -124,7 +124,7 @@ export const useProgramsStore = defineStore('programs', () => {
         programs.value[index] = response;
         
         // Update stats if isActive changed
-        if (oldProgram.isActive !== response.isActive) {
+        if (oldProgram && oldProgram.isActive !== response.isActive) {
           if (response.isActive) {
             stats.value.active++;
             stats.value.inactive--;
@@ -190,7 +190,7 @@ export const useProgramsStore = defineStore('programs', () => {
         programs.value[index] = response;
         
         // Update stats
-        if (response.isActive !== oldProgram.isActive) {
+        if (oldProgram && response.isActive !== oldProgram.isActive) {
           if (response.isActive) {
             stats.value.active++;
             stats.value.inactive--;

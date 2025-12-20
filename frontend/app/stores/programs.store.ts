@@ -3,6 +3,8 @@ import type { Program, CreateProgramDTO, UpdateProgramDTO } from '~/interfaces/p
 import type { FetchError } from '~/interfaces/app.interface';
 import { apiFetch } from '~/utils/api-fetch';
 
+export type { Program };
+
 export interface ProgramFilter {
   category?: string;
   isActive?: boolean;

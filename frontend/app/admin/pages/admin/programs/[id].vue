@@ -49,6 +49,7 @@
               :items="categoryOptions"
               placeholder="Select category"
               :disabled="loading"
+              value-attribute="value"
               required
             />
           </UFormGroup>
@@ -225,11 +226,11 @@ const loadProgram = async () => {
       name: prog.name,
       description: prog.description,
       category: prog.category,
-      subCategory: prog.subCategory || '',
+      subCategory: prog.subCategory ?? '',
       isActive: prog.isActive ?? true,
       startDate: prog.startDate ? new Date(prog.startDate).toISOString().split('T')[0] : '',
       endDate: prog.endDate ? new Date(prog.endDate).toISOString().split('T')[0] : '',
-      bannerImage: prog.bannerImage || '',
+      bannerImage: prog.bannerImage ?? '',
     };
   } catch (error) {
     console.error('Error loading program:', error);
@@ -247,11 +248,11 @@ const handleSubmit = async () => {
   try {
     loading.value = true;
 
-    const data: Record<string, string | boolean | number | null> = {
+    const data: UpdateProgramDTO = {
       id: Number(route.params.id),
       name: form.value.name.trim(),
       description: form.value.description.trim(),
-      category: form.value.category,
+      category: form.value.category as ProgramCategoryEnum,
       isActive: form.value.isActive,
     };
 
@@ -265,10 +266,6 @@ const handleSubmit = async () => {
 
     if (form.value.endDate) {
       data.endDate = new Date(form.value.endDate).toISOString();
-    }
-
-    if (form.value.bannerImage?.trim()) {
-      data.bannerImage = form.value.bannerImage.trim();
     }
 
     await programsStore.updateProgram(data);

@@ -36,6 +36,7 @@
               :items="categoryOptions"
               placeholder="Select category"
               :disabled="loading"
+              value-attribute="value"
               required
             />
           </UFormGroup>
@@ -141,10 +142,10 @@ const handleSubmit = async () => {
   try {
     loading.value = true;
 
-    const data: Record<string, string | boolean | null> = {
+    const data: CreateProgramDTO = {
       name: form.value.name.trim(),
       description: form.value.description.trim(),
-      category: form.value.category,
+      category: form.value.category as ProgramCategoryEnum,
       isActive: form.value.isActive,
     };
 

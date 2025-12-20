@@ -63,12 +63,14 @@
             :items="categoryOptions"
             placeholder="All Categories"
             class="w-48"
+            value-attribute="value"
           />
           <USelectMenu
             v-model="selectedStatus"
             :items="statusOptions"
             placeholder="All Status"
             class="w-48"
+            value-attribute="value"
           />
         </div>
       </template>
@@ -184,7 +186,7 @@ const columns: TableColumn<Program>[] = [
                   description: `Program ${row.original.isActive ? 'deactivated' : 'activated'} successfully`,
                   color: 'green',
                 });
-              } catch (error) {
+              } catch {
                 useToast().add({
                   title: 'Error',
                   description: 'Failed to toggle program status',
@@ -211,7 +213,7 @@ const columns: TableColumn<Program>[] = [
                     description: 'Program deleted successfully',
                     color: 'green',
                   });
-                } catch (error) {
+                } catch {
                   useToast().add({
                     title: 'Error',
                     description: 'Failed to delete program',

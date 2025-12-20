@@ -559,7 +559,6 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   applicationNo?: string
   regNo?: string
-  programId_email_nin?: Prisma.ApplicationProgramIdEmailNinCompoundUniqueInput
   AND?: Prisma.ApplicationWhereInput | Prisma.ApplicationWhereInput[]
   OR?: Prisma.ApplicationWhereInput[]
   NOT?: Prisma.ApplicationWhereInput | Prisma.ApplicationWhereInput[]
@@ -601,7 +600,7 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   program?: Prisma.XOR<Prisma.ProgramScalarRelationFilter, Prisma.ProgramWhereInput>
-}, "id" | "applicationNo" | "regNo" | "programId_email_nin">
+}, "id" | "applicationNo" | "regNo">
 
 export type ApplicationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -1002,12 +1001,6 @@ export type ApplicationListRelationFilter = {
 
 export type ApplicationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type ApplicationProgramIdEmailNinCompoundUniqueInput = {
-  programId: number
-  email: string
-  nin: string
 }
 
 export type ApplicationCountOrderByAggregateInput = {

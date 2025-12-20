@@ -90,7 +90,6 @@ import { h, resolveComponent } from 'vue';
 import type { TableColumn, TableRow } from '@nuxt/ui';
 import { useProgramsStore, type Program } from '~/stores/programs.store';
 import { ProgramCategoryEnum } from '~/interfaces/programs.interface';
-import { useDebounceFn } from '@vueuse/core';
 
 const programsStore = useProgramsStore();
 const search = ref('');
@@ -175,10 +174,11 @@ const columns: TableColumn<Program>[] = [
             icon: row.original.isActive ? 'i-lucide-x-circle' : 'i-lucide-check-circle',
             click: async () => {
               try {
+                const wasActive = row.original.isActive;
                 await programsStore.toggleProgramStatus(row.original.id);
                 useToast().add({
                   title: 'Success',
-                  description: `Program ${row.original.isActive ? 'deactivated' : 'activated'} successfully`,
+                  description: `Program ${wasActive ? 'deactivated' : 'activated'} successfully`,
                   color: 'green',
                 });
               } catch {
@@ -195,27 +195,41 @@ const columns: TableColumn<Program>[] = [
           {
             label: 'Delete',
             icon: 'i-lucide-trash-2',
-            click: async () => {
-              if (
-                confirm(
-                  `Are you sure you want to delete "${row.original.name}"? This action cannot be undone.`,
-                )
-              ) {
-                try {
-                  await programsStore.deleteProgram(row.original.id);
-                  useToast().add({
-                    title: 'Success',
-                    description: 'Program deleted successfully',
-                    color: 'green',
-                  });
-                } catch {
-                  useToast().add({
-                    title: 'Error',
-                    description: 'Failed to delete program',
+            click: () => {
+              const toast = useToast();
+              
+              toast.add({
+                title: 'Delete Program',
+                description: `Are you sure you want to delete "${row.original.name}"? This action cannot be undone.`,
+                color: 'red',
+                actions: [
+                  {
+                    label: 'Delete',
                     color: 'red',
-                  });
-                }
-              }
+                    click: async () => {
+                      try {
+                        await programsStore.deleteProgram(row.original.id);
+                        toast.add({
+                          title: 'Success',
+                          description: 'Program deleted successfully',
+                          color: 'green',
+                        });
+                      } catch {
+                        toast.add({
+                          title: 'Error',
+                          description: 'Failed to delete program',
+                          color: 'red',
+                        });
+                      }
+                    },
+                  },
+                  {
+                    label: 'Cancel',
+                    color: 'gray',
+                    variant: 'ghost',
+                  },
+                ],
+              });
             },
           },
         ],
@@ -283,12 +297,6 @@ const fetchPrograms = async () => {
   await programsStore.fetchPrograms(filter);
 };
 
-// Debounce search
-const debouncedSearch = useDebounceFn(() => {
-  // Search is done client-side on filtered results
-}, 300);
-
-watch(search, debouncedSearch);
 watch([selectedCategory, selectedStatus], fetchPrograms);
 
 onMounted(() => {

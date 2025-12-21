@@ -66,7 +66,7 @@ export const useAssetsStore = defineStore('assets', () => {
     try {
       loading.value = true;
       error.value = null;
-      const response = await apiFetch<Asset>('/assets', {
+      const response = await apiFetch<Asset>(`/assets/${data.id}`, {
         method: 'PUT',
         body: data,
       });

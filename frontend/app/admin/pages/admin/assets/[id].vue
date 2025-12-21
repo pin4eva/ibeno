@@ -226,7 +226,7 @@ const handleFileChange = async (event: Event) => {
 };
 
 const clearImage = () => {
-  form.value.imageUrl = '';
+  form.value.imageUrl = undefined;
   imagePreview.value = null;
   if (fileInput.value) {
     fileInput.value.value = '';

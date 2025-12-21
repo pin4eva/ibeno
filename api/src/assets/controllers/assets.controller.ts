@@ -23,9 +23,9 @@ export class AssetsController {
     return this.assetsService.createAsset(data);
   }
 
-  @Put()
-  async updateAsset(@Body() data: UpdateAssetDTO) {
-    return this.assetsService.updateAsset(data);
+  @Put(':id')
+  async updateAsset(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateAssetDTO) {
+    return this.assetsService.updateAsset({ ...data, id });
   }
 
   @Delete(':id')

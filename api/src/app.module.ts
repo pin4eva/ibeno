@@ -14,6 +14,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { EmailModule } from './email/email.module';
 import { ProgramsModule } from './programs/programs.module';
 import { UploadModule } from './upload/upload.module';
+import { AssetsModule } from './assets/assets.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UploadModule } from './upload/upload.module';
     EmailModule,
     ProgramsModule,
     UploadModule,
+    AssetsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],

@@ -204,3 +204,17 @@ enum DepartmentEnum {
   Legal
   Admin
 }
+
+model Asset {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  location    String
+  assetNumber String   @unique
+  imageUrl    String?
+  assetType   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("assets")
+}

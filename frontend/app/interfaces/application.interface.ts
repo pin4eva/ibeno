@@ -21,6 +21,7 @@ export interface BankDetail {
   accountNo: string;
   accountName: string;
   bankName: string;
+  complete: boolean;
 }
 
 export interface DocumentUpload {
@@ -31,6 +32,7 @@ export interface DocumentUpload {
   birthCertificate?: string;
   admissionLetter?: string;
   lastSchoolFeeReceipt?: string;
+  complete?: boolean;
 }
 
 export interface SchoolRecord {
@@ -44,6 +46,7 @@ export interface SchoolRecord {
   nameOfSchool?: string;
   subjectGrade?: string;
   year?: number;
+  complete: boolean;
 }
 
 export interface Application {
@@ -67,6 +70,7 @@ export interface Application {
   examsType?: string;
   type?: string;
   comment?: string;
+  complete?: boolean;
 
   // Related objects
   bankDetails?: BankDetail;

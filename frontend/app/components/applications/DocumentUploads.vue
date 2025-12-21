@@ -86,16 +86,6 @@ const fileInputs = reactive<Record<DocumentField, HTMLInputElement | null>>({
   ssceResult: null,
 });
 
-// Check if all required documents are uploaded
-const allDocumentsUploaded = computed(() => {
-  return documents.every((doc) => {
-    if (doc.required) {
-      return !!state[doc.key];
-    }
-    return true;
-  });
-});
-
 function openPicker(field: DocumentField) {
   if (props.disabled) return;
   fileInputs[field]?.click();
@@ -144,15 +134,7 @@ async function handleFileUpload(field: DocumentField, files: FileList | null) {
 }
 
 const handleContinue = () => {
-  if (allDocumentsUploaded.value) {
-    emit('stepComplete', 'documents');
-  } else {
-    toast.add({
-      title: 'Missing documents',
-      description: 'Please upload your passport photo before continuing.',
-      color: 'red',
-    });
-  }
+  emit('stepComplete', 'review');
 };
 </script>
 <template>
@@ -165,8 +147,7 @@ const handleContinue = () => {
 
     <UAlert v-else color="neutral" variant="soft">
       <template #description>
-        Click <strong>Upload file</strong> to choose a document. Only
-        <strong>Passport photo</strong> is required.
+        Upload any supporting documents you have. You can replace uploads at any time.
       </template>
     </UAlert>
 
@@ -212,9 +193,7 @@ const handleContinue = () => {
     </UCard>
 
     <div class="flex justify-end mt-4">
-      <UButton @click="handleContinue" :disabled="!allDocumentsUploaded || disabled">
-        Save and Continue
-      </UButton>
+      <UButton @click="handleContinue">Review Application</UButton>
     </div>
   </div>
 </template>

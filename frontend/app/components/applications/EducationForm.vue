@@ -43,11 +43,12 @@ const handleSubmit = async () => {
   isLoading.value = true;
   const result = await applicationStore.updateSchoolRecord({
     applicationId: props.applicationId,
+    complete: true,
     ...props.schoolRecord,
     ...state,
   });
   if (result) {
-    emit('stepComplete', 'education');
+    emit('stepComplete', 'documents');
   }
   isLoading.value = false;
 };

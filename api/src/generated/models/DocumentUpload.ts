@@ -42,6 +42,7 @@ export type DocumentUploadMinAggregateOutputType = {
   birthCertificate: string | null
   admissionLetter: string | null
   lastSchoolFeeReceipt: string | null
+  complete: boolean | null
 }
 
 export type DocumentUploadMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type DocumentUploadMaxAggregateOutputType = {
   birthCertificate: string | null
   admissionLetter: string | null
   lastSchoolFeeReceipt: string | null
+  complete: boolean | null
 }
 
 export type DocumentUploadCountAggregateOutputType = {
@@ -62,6 +64,7 @@ export type DocumentUploadCountAggregateOutputType = {
   birthCertificate: number
   admissionLetter: number
   lastSchoolFeeReceipt: number
+  complete: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type DocumentUploadMinAggregateInputType = {
   birthCertificate?: true
   admissionLetter?: true
   lastSchoolFeeReceipt?: true
+  complete?: true
 }
 
 export type DocumentUploadMaxAggregateInputType = {
@@ -92,6 +96,7 @@ export type DocumentUploadMaxAggregateInputType = {
   birthCertificate?: true
   admissionLetter?: true
   lastSchoolFeeReceipt?: true
+  complete?: true
 }
 
 export type DocumentUploadCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type DocumentUploadCountAggregateInputType = {
   birthCertificate?: true
   admissionLetter?: true
   lastSchoolFeeReceipt?: true
+  complete?: true
   _all?: true
 }
 
@@ -199,6 +205,7 @@ export type DocumentUploadGroupByOutputType = {
   birthCertificate: string | null
   admissionLetter: string | null
   lastSchoolFeeReceipt: string | null
+  complete: boolean
   _count: DocumentUploadCountAggregateOutputType | null
   _avg: DocumentUploadAvgAggregateOutputType | null
   _sum: DocumentUploadSumAggregateOutputType | null
@@ -232,6 +239,7 @@ export type DocumentUploadWhereInput = {
   birthCertificate?: Prisma.StringNullableFilter<"DocumentUpload"> | string | null
   admissionLetter?: Prisma.StringNullableFilter<"DocumentUpload"> | string | null
   lastSchoolFeeReceipt?: Prisma.StringNullableFilter<"DocumentUpload"> | string | null
+  complete?: Prisma.BoolFilter<"DocumentUpload"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
 }
 
@@ -243,6 +251,7 @@ export type DocumentUploadOrderByWithRelationInput = {
   birthCertificate?: Prisma.SortOrderInput | Prisma.SortOrder
   admissionLetter?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSchoolFeeReceipt?: Prisma.SortOrderInput | Prisma.SortOrder
+  complete?: Prisma.SortOrder
   application?: Prisma.ApplicationOrderByWithRelationInput
 }
 
@@ -257,6 +266,7 @@ export type DocumentUploadWhereUniqueInput = Prisma.AtLeast<{
   birthCertificate?: Prisma.StringNullableFilter<"DocumentUpload"> | string | null
   admissionLetter?: Prisma.StringNullableFilter<"DocumentUpload"> | string | null
   lastSchoolFeeReceipt?: Prisma.StringNullableFilter<"DocumentUpload"> | string | null
+  complete?: Prisma.BoolFilter<"DocumentUpload"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
 }, "applicationId">
 
@@ -268,6 +278,7 @@ export type DocumentUploadOrderByWithAggregationInput = {
   birthCertificate?: Prisma.SortOrderInput | Prisma.SortOrder
   admissionLetter?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSchoolFeeReceipt?: Prisma.SortOrderInput | Prisma.SortOrder
+  complete?: Prisma.SortOrder
   _count?: Prisma.DocumentUploadCountOrderByAggregateInput
   _avg?: Prisma.DocumentUploadAvgOrderByAggregateInput
   _max?: Prisma.DocumentUploadMaxOrderByAggregateInput
@@ -286,6 +297,7 @@ export type DocumentUploadScalarWhereWithAggregatesInput = {
   birthCertificate?: Prisma.StringNullableWithAggregatesFilter<"DocumentUpload"> | string | null
   admissionLetter?: Prisma.StringNullableWithAggregatesFilter<"DocumentUpload"> | string | null
   lastSchoolFeeReceipt?: Prisma.StringNullableWithAggregatesFilter<"DocumentUpload"> | string | null
+  complete?: Prisma.BoolWithAggregatesFilter<"DocumentUpload"> | boolean
 }
 
 export type DocumentUploadCreateInput = {
@@ -295,6 +307,7 @@ export type DocumentUploadCreateInput = {
   birthCertificate?: string | null
   admissionLetter?: string | null
   lastSchoolFeeReceipt?: string | null
+  complete?: boolean
   application: Prisma.ApplicationCreateNestedOneWithoutDocumentUploadInput
 }
 
@@ -306,6 +319,7 @@ export type DocumentUploadUncheckedCreateInput = {
   birthCertificate?: string | null
   admissionLetter?: string | null
   lastSchoolFeeReceipt?: string | null
+  complete?: boolean
 }
 
 export type DocumentUploadUpdateInput = {
@@ -315,6 +329,7 @@ export type DocumentUploadUpdateInput = {
   birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSchoolFeeReceipt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   application?: Prisma.ApplicationUpdateOneRequiredWithoutDocumentUploadNestedInput
 }
 
@@ -326,6 +341,7 @@ export type DocumentUploadUncheckedUpdateInput = {
   birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSchoolFeeReceipt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DocumentUploadCreateManyInput = {
@@ -336,6 +352,7 @@ export type DocumentUploadCreateManyInput = {
   birthCertificate?: string | null
   admissionLetter?: string | null
   lastSchoolFeeReceipt?: string | null
+  complete?: boolean
 }
 
 export type DocumentUploadUpdateManyMutationInput = {
@@ -345,6 +362,7 @@ export type DocumentUploadUpdateManyMutationInput = {
   birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSchoolFeeReceipt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DocumentUploadUncheckedUpdateManyInput = {
@@ -355,6 +373,7 @@ export type DocumentUploadUncheckedUpdateManyInput = {
   birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSchoolFeeReceipt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DocumentUploadNullableScalarRelationFilter = {
@@ -370,6 +389,7 @@ export type DocumentUploadCountOrderByAggregateInput = {
   birthCertificate?: Prisma.SortOrder
   admissionLetter?: Prisma.SortOrder
   lastSchoolFeeReceipt?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type DocumentUploadAvgOrderByAggregateInput = {
@@ -384,6 +404,7 @@ export type DocumentUploadMaxOrderByAggregateInput = {
   birthCertificate?: Prisma.SortOrder
   admissionLetter?: Prisma.SortOrder
   lastSchoolFeeReceipt?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type DocumentUploadMinOrderByAggregateInput = {
@@ -394,6 +415,7 @@ export type DocumentUploadMinOrderByAggregateInput = {
   birthCertificate?: Prisma.SortOrder
   admissionLetter?: Prisma.SortOrder
   lastSchoolFeeReceipt?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type DocumentUploadSumOrderByAggregateInput = {
@@ -439,6 +461,7 @@ export type DocumentUploadCreateWithoutApplicationInput = {
   birthCertificate?: string | null
   admissionLetter?: string | null
   lastSchoolFeeReceipt?: string | null
+  complete?: boolean
 }
 
 export type DocumentUploadUncheckedCreateWithoutApplicationInput = {
@@ -448,6 +471,7 @@ export type DocumentUploadUncheckedCreateWithoutApplicationInput = {
   birthCertificate?: string | null
   admissionLetter?: string | null
   lastSchoolFeeReceipt?: string | null
+  complete?: boolean
 }
 
 export type DocumentUploadCreateOrConnectWithoutApplicationInput = {
@@ -473,6 +497,7 @@ export type DocumentUploadUpdateWithoutApplicationInput = {
   birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSchoolFeeReceipt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DocumentUploadUncheckedUpdateWithoutApplicationInput = {
@@ -482,6 +507,7 @@ export type DocumentUploadUncheckedUpdateWithoutApplicationInput = {
   birthCertificate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admissionLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSchoolFeeReceipt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -494,6 +520,7 @@ export type DocumentUploadSelect<ExtArgs extends runtime.Types.Extensions.Intern
   birthCertificate?: boolean
   admissionLetter?: boolean
   lastSchoolFeeReceipt?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["documentUpload"]>
 
@@ -505,6 +532,7 @@ export type DocumentUploadSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   birthCertificate?: boolean
   admissionLetter?: boolean
   lastSchoolFeeReceipt?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["documentUpload"]>
 
@@ -516,6 +544,7 @@ export type DocumentUploadSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   birthCertificate?: boolean
   admissionLetter?: boolean
   lastSchoolFeeReceipt?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["documentUpload"]>
 
@@ -527,9 +556,10 @@ export type DocumentUploadSelectScalar = {
   birthCertificate?: boolean
   admissionLetter?: boolean
   lastSchoolFeeReceipt?: boolean
+  complete?: boolean
 }
 
-export type DocumentUploadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "schoolIdCard" | "certificateOfOrigin" | "ssceResult" | "birthCertificate" | "admissionLetter" | "lastSchoolFeeReceipt", ExtArgs["result"]["documentUpload"]>
+export type DocumentUploadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "schoolIdCard" | "certificateOfOrigin" | "ssceResult" | "birthCertificate" | "admissionLetter" | "lastSchoolFeeReceipt" | "complete", ExtArgs["result"]["documentUpload"]>
 export type DocumentUploadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }
@@ -553,6 +583,7 @@ export type $DocumentUploadPayload<ExtArgs extends runtime.Types.Extensions.Inte
     birthCertificate: string | null
     admissionLetter: string | null
     lastSchoolFeeReceipt: string | null
+    complete: boolean
   }, ExtArgs["result"]["documentUpload"]>
   composites: {}
 }
@@ -984,6 +1015,7 @@ export interface DocumentUploadFieldRefs {
   readonly birthCertificate: Prisma.FieldRef<"DocumentUpload", 'String'>
   readonly admissionLetter: Prisma.FieldRef<"DocumentUpload", 'String'>
   readonly lastSchoolFeeReceipt: Prisma.FieldRef<"DocumentUpload", 'String'>
+  readonly complete: Prisma.FieldRef<"DocumentUpload", 'Boolean'>
 }
     
 

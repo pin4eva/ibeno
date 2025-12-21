@@ -69,6 +69,19 @@ export class ApplicationService {
           where: { id },
           data: applicationData,
         });
+
+        if (
+          updatedApplication?.state &&
+          updatedApplication?.lga &&
+          updatedApplication?.address &&
+          updatedApplication?.ekpuk
+        ) {
+          await this.prisma.application.update({
+            where: { id },
+            data: { complete: true },
+          });
+        }
+
         return updatedApplication;
       }
 
@@ -103,6 +116,22 @@ export class ApplicationService {
     }
   }
 
+  async uploadPassport(applicationId: number, passportUrl: string) {
+    try {
+      const application = await this.prisma.application.update({
+        where: { id: applicationId },
+        data: { passport: passportUrl },
+      });
+
+      if (!application) {
+        throw new NotFoundException('Application not found for passport upload');
+      }
+      return application;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // update school record
   async updateSchoolRecord(input: CreateSchoolRecordDTO) {
     const { applicationId, ...data } = input;
@@ -112,9 +141,11 @@ export class ApplicationService {
         create: {
           applicationId,
           ...data,
+          complete: true,
         },
         update: {
           ...data,
+          complete: true,
         },
       });
 
@@ -138,6 +169,7 @@ export class ApplicationService {
           accountNo,
           accountName,
           bankName,
+          complete: true,
         },
         update: {
           accountNo,
@@ -338,7 +370,7 @@ export class ApplicationService {
     const { applicationNo, nin } = input;
     const application = await this.prisma.application.findUnique({
       where: { applicationNo },
-      include: { program: true },
+      include: { program: true, schoolRecord: true, bankDetails: true, documentUpload: true },
     });
 
     if (!application) {

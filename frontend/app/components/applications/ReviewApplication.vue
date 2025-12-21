@@ -2,6 +2,8 @@
 import { ApplicationStatusEnum, type Application } from '~/interfaces/application.interface';
 const applicationStore = useApplicationStore();
 
+const placeholderPassport = '/assets/images/placeholder.png';
+
 const props = defineProps<{
   applicationId: number;
   application?: Application | null;
@@ -12,6 +14,7 @@ const showAlert = ref(false);
 const schoolRecord = computed(() => props.application?.schoolRecord);
 const documentUpload = computed(() => props.application?.documentUpload);
 const bankDetails = computed(() => props.application?.bankDetails);
+const passportPreview = computed(() => props.application?.passport || placeholderPassport);
 
 const submitApplication = async () => {
   if (!props.applicationId) {
@@ -57,45 +60,57 @@ const submitApplication = async () => {
       <!-- Personal Information -->
       <div class="space-y-3">
         <h3 class="text-lg font-semibold">Personal Information</h3>
-        <div class="grid gap-4 sm:grid-cols-2 text-sm">
-          <div>
-            <p class="text-muted">Full Name</p>
-            <p class="font-medium">
-              {{ application?.firstName }} {{ application?.middleName }}
-              {{ application?.lastName }}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+          <div class="flex flex-col items-start gap-2">
+            <img
+              :src="passportPreview"
+              alt="Applicant passport photograph"
+              class="h-28 w-28 rounded-full border border-gray-200 object-cover shadow-sm"
+            />
+            <p v-if="!application?.passport" class="text-xs text-muted">
+              Passport not uploaded. Placeholder shown.
             </p>
           </div>
-          <div>
-            <p class="text-muted">Email</p>
-            <p class="font-medium">{{ application?.email }}</p>
-          </div>
-          <div>
-            <p class="text-muted">Phone</p>
-            <p class="font-medium">{{ application?.phone }}</p>
-          </div>
-          <div>
-            <p class="text-muted">NIN</p>
-            <p class="font-medium">{{ application?.nin }}</p>
-          </div>
-          <div>
-            <p class="text-muted">Date of Birth</p>
-            <p class="font-medium">{{ toDateInput(application?.dob) }}</p>
-          </div>
-          <div>
-            <p class="text-muted">Gender</p>
-            <p class="font-medium">{{ application?.gender }}</p>
-          </div>
-          <div>
-            <p class="text-muted">State</p>
-            <p class="font-medium">{{ application?.state }}</p>
-          </div>
-          <div>
-            <p class="text-muted">LGA</p>
-            <p class="font-medium">{{ application?.lga }}</p>
-          </div>
-          <div class="sm:col-span-2">
-            <p class="text-muted">Address</p>
-            <p class="font-medium">{{ application?.address }}</p>
+          <div class="grid gap-4 sm:grid-cols-2 text-sm flex-1">
+            <div>
+              <p class="text-muted">Full Name</p>
+              <p class="font-medium">
+                {{ application?.firstName }} {{ application?.middleName }}
+                {{ application?.lastName }}
+              </p>
+            </div>
+            <div>
+              <p class="text-muted">Email</p>
+              <p class="font-medium">{{ application?.email }}</p>
+            </div>
+            <div>
+              <p class="text-muted">Phone</p>
+              <p class="font-medium">{{ application?.phone }}</p>
+            </div>
+            <div>
+              <p class="text-muted">NIN</p>
+              <p class="font-medium">{{ application?.nin }}</p>
+            </div>
+            <div>
+              <p class="text-muted">Date of Birth</p>
+              <p class="font-medium">{{ toDateInput(application?.dob) }}</p>
+            </div>
+            <div>
+              <p class="text-muted">Gender</p>
+              <p class="font-medium">{{ application?.gender }}</p>
+            </div>
+            <div>
+              <p class="text-muted">State</p>
+              <p class="font-medium">{{ application?.state }}</p>
+            </div>
+            <div>
+              <p class="text-muted">LGA</p>
+              <p class="font-medium">{{ application?.lga }}</p>
+            </div>
+            <div class="sm:col-span-2">
+              <p class="text-muted">Address</p>
+              <p class="font-medium">{{ application?.address }}</p>
+            </div>
           </div>
         </div>
       </div>

@@ -39,6 +39,7 @@ export type BankDetailMinAggregateOutputType = {
   accountNo: string | null
   accountName: string | null
   bankName: string | null
+  complete: boolean | null
 }
 
 export type BankDetailMaxAggregateOutputType = {
@@ -46,6 +47,7 @@ export type BankDetailMaxAggregateOutputType = {
   accountNo: string | null
   accountName: string | null
   bankName: string | null
+  complete: boolean | null
 }
 
 export type BankDetailCountAggregateOutputType = {
@@ -53,6 +55,7 @@ export type BankDetailCountAggregateOutputType = {
   accountNo: number
   accountName: number
   bankName: number
+  complete: number
   _all: number
 }
 
@@ -70,6 +73,7 @@ export type BankDetailMinAggregateInputType = {
   accountNo?: true
   accountName?: true
   bankName?: true
+  complete?: true
 }
 
 export type BankDetailMaxAggregateInputType = {
@@ -77,6 +81,7 @@ export type BankDetailMaxAggregateInputType = {
   accountNo?: true
   accountName?: true
   bankName?: true
+  complete?: true
 }
 
 export type BankDetailCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type BankDetailCountAggregateInputType = {
   accountNo?: true
   accountName?: true
   bankName?: true
+  complete?: true
   _all?: true
 }
 
@@ -178,6 +184,7 @@ export type BankDetailGroupByOutputType = {
   accountNo: string
   accountName: string
   bankName: string
+  complete: boolean
   _count: BankDetailCountAggregateOutputType | null
   _avg: BankDetailAvgAggregateOutputType | null
   _sum: BankDetailSumAggregateOutputType | null
@@ -208,6 +215,7 @@ export type BankDetailWhereInput = {
   accountNo?: Prisma.StringFilter<"BankDetail"> | string
   accountName?: Prisma.StringFilter<"BankDetail"> | string
   bankName?: Prisma.StringFilter<"BankDetail"> | string
+  complete?: Prisma.BoolFilter<"BankDetail"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
 }
 
@@ -216,6 +224,7 @@ export type BankDetailOrderByWithRelationInput = {
   accountNo?: Prisma.SortOrder
   accountName?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
   application?: Prisma.ApplicationOrderByWithRelationInput
 }
 
@@ -227,6 +236,7 @@ export type BankDetailWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BankDetailWhereInput | Prisma.BankDetailWhereInput[]
   accountName?: Prisma.StringFilter<"BankDetail"> | string
   bankName?: Prisma.StringFilter<"BankDetail"> | string
+  complete?: Prisma.BoolFilter<"BankDetail"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
 }, "applicationId" | "accountNo">
 
@@ -235,6 +245,7 @@ export type BankDetailOrderByWithAggregationInput = {
   accountNo?: Prisma.SortOrder
   accountName?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
   _count?: Prisma.BankDetailCountOrderByAggregateInput
   _avg?: Prisma.BankDetailAvgOrderByAggregateInput
   _max?: Prisma.BankDetailMaxOrderByAggregateInput
@@ -250,12 +261,14 @@ export type BankDetailScalarWhereWithAggregatesInput = {
   accountNo?: Prisma.StringWithAggregatesFilter<"BankDetail"> | string
   accountName?: Prisma.StringWithAggregatesFilter<"BankDetail"> | string
   bankName?: Prisma.StringWithAggregatesFilter<"BankDetail"> | string
+  complete?: Prisma.BoolWithAggregatesFilter<"BankDetail"> | boolean
 }
 
 export type BankDetailCreateInput = {
   accountNo: string
   accountName: string
   bankName: string
+  complete?: boolean
   application: Prisma.ApplicationCreateNestedOneWithoutBankDetailsInput
 }
 
@@ -264,12 +277,14 @@ export type BankDetailUncheckedCreateInput = {
   accountNo: string
   accountName: string
   bankName: string
+  complete?: boolean
 }
 
 export type BankDetailUpdateInput = {
   accountNo?: Prisma.StringFieldUpdateOperationsInput | string
   accountName?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   application?: Prisma.ApplicationUpdateOneRequiredWithoutBankDetailsNestedInput
 }
 
@@ -278,6 +293,7 @@ export type BankDetailUncheckedUpdateInput = {
   accountNo?: Prisma.StringFieldUpdateOperationsInput | string
   accountName?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type BankDetailCreateManyInput = {
@@ -285,12 +301,14 @@ export type BankDetailCreateManyInput = {
   accountNo: string
   accountName: string
   bankName: string
+  complete?: boolean
 }
 
 export type BankDetailUpdateManyMutationInput = {
   accountNo?: Prisma.StringFieldUpdateOperationsInput | string
   accountName?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type BankDetailUncheckedUpdateManyInput = {
@@ -298,6 +316,7 @@ export type BankDetailUncheckedUpdateManyInput = {
   accountNo?: Prisma.StringFieldUpdateOperationsInput | string
   accountName?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type BankDetailNullableScalarRelationFilter = {
@@ -310,6 +329,7 @@ export type BankDetailCountOrderByAggregateInput = {
   accountNo?: Prisma.SortOrder
   accountName?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type BankDetailAvgOrderByAggregateInput = {
@@ -321,6 +341,7 @@ export type BankDetailMaxOrderByAggregateInput = {
   accountNo?: Prisma.SortOrder
   accountName?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type BankDetailMinOrderByAggregateInput = {
@@ -328,6 +349,7 @@ export type BankDetailMinOrderByAggregateInput = {
   accountNo?: Prisma.SortOrder
   accountName?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type BankDetailSumOrderByAggregateInput = {
@@ -370,12 +392,14 @@ export type BankDetailCreateWithoutApplicationInput = {
   accountNo: string
   accountName: string
   bankName: string
+  complete?: boolean
 }
 
 export type BankDetailUncheckedCreateWithoutApplicationInput = {
   accountNo: string
   accountName: string
   bankName: string
+  complete?: boolean
 }
 
 export type BankDetailCreateOrConnectWithoutApplicationInput = {
@@ -398,12 +422,14 @@ export type BankDetailUpdateWithoutApplicationInput = {
   accountNo?: Prisma.StringFieldUpdateOperationsInput | string
   accountName?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type BankDetailUncheckedUpdateWithoutApplicationInput = {
   accountNo?: Prisma.StringFieldUpdateOperationsInput | string
   accountName?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -413,6 +439,7 @@ export type BankDetailSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   accountNo?: boolean
   accountName?: boolean
   bankName?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankDetail"]>
 
@@ -421,6 +448,7 @@ export type BankDetailSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   accountNo?: boolean
   accountName?: boolean
   bankName?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankDetail"]>
 
@@ -429,6 +457,7 @@ export type BankDetailSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   accountNo?: boolean
   accountName?: boolean
   bankName?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankDetail"]>
 
@@ -437,9 +466,10 @@ export type BankDetailSelectScalar = {
   accountNo?: boolean
   accountName?: boolean
   bankName?: boolean
+  complete?: boolean
 }
 
-export type BankDetailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "accountNo" | "accountName" | "bankName", ExtArgs["result"]["bankDetail"]>
+export type BankDetailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "accountNo" | "accountName" | "bankName" | "complete", ExtArgs["result"]["bankDetail"]>
 export type BankDetailInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }
@@ -460,6 +490,7 @@ export type $BankDetailPayload<ExtArgs extends runtime.Types.Extensions.Internal
     accountNo: string
     accountName: string
     bankName: string
+    complete: boolean
   }, ExtArgs["result"]["bankDetail"]>
   composites: {}
 }
@@ -888,6 +919,7 @@ export interface BankDetailFieldRefs {
   readonly accountNo: Prisma.FieldRef<"BankDetail", 'String'>
   readonly accountName: Prisma.FieldRef<"BankDetail", 'String'>
   readonly bankName: Prisma.FieldRef<"BankDetail", 'String'>
+  readonly complete: Prisma.FieldRef<"BankDetail", 'Boolean'>
 }
     
 

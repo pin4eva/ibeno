@@ -217,6 +217,25 @@ export const useApplicationStore = defineStore('application', () => {
     }
   };
 
+  const uploadPassport = async (applicationId: number, passport: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await apiFetch<Application>(`/applications/passport`, {
+        method: 'POST',
+        body: { applicationId, passport: passport },
+      });
+      application.value = response;
+      application.value!.passport = passport;
+      return response;
+    } catch (err: unknown) {
+      error.value = getErrorMessage(err, 'Failed to upload passport');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     application,
     loading,
@@ -230,5 +249,6 @@ export const useApplicationStore = defineStore('application', () => {
     updateBankDetails,
     setDocumentUpload,
     submitApplication,
+    uploadPassport,
   };
 });

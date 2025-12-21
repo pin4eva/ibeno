@@ -105,7 +105,8 @@ model Application {
 
   comment String?
 
-  program Program @relation(fields: [programId], references: [id])
+  program  Program @relation(fields: [programId], references: [id])
+  complete Boolean @default(false)
 
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -122,6 +123,7 @@ model BankDetail {
   accountName   String
   bankName      String
   application   Application @relation(fields: [applicationId], references: [id])
+  complete      Boolean     @default(false)
 
   @@map("bank_details")
 }
@@ -135,6 +137,7 @@ model DocumentUpload {
   admissionLetter      String?
   lastSchoolFeeReceipt String?
   application          Application @relation(fields: [applicationId], references: [id])
+  complete             Boolean     @default(false)
 
   @@map("document_uploads")
 }
@@ -151,6 +154,7 @@ model SchoolRecord {
   subjectGrade    String?
   year            Int?
   application     Application @relation(fields: [applicationId], references: [id])
+  complete        Boolean     @default(false)
 
   @@map("school_records")
 }

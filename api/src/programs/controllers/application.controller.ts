@@ -26,6 +26,11 @@ export class ApplicationController {
     return this.applicationService.login(input);
   }
 
+  @Post('passport')
+  uploadPassport(@Body() input: { applicationId: number; passport: string }) {
+    return this.applicationService.uploadPassport(input.applicationId, input.passport);
+  }
+
   @Post()
   startApplication(@Body() input: ApplicationDTO) {
     return this.applicationService.createApplication(input);

@@ -163,6 +163,7 @@ export const ApplicationScalarFieldEnum = {
   type: 'type',
   programId: 'programId',
   comment: 'comment',
+  complete: 'complete',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -174,7 +175,8 @@ export const BankDetailScalarFieldEnum = {
   applicationId: 'applicationId',
   accountNo: 'accountNo',
   accountName: 'accountName',
-  bankName: 'bankName'
+  bankName: 'bankName',
+  complete: 'complete'
 } as const
 
 export type BankDetailScalarFieldEnum = (typeof BankDetailScalarFieldEnum)[keyof typeof BankDetailScalarFieldEnum]
@@ -187,7 +189,8 @@ export const DocumentUploadScalarFieldEnum = {
   ssceResult: 'ssceResult',
   birthCertificate: 'birthCertificate',
   admissionLetter: 'admissionLetter',
-  lastSchoolFeeReceipt: 'lastSchoolFeeReceipt'
+  lastSchoolFeeReceipt: 'lastSchoolFeeReceipt',
+  complete: 'complete'
 } as const
 
 export type DocumentUploadScalarFieldEnum = (typeof DocumentUploadScalarFieldEnum)[keyof typeof DocumentUploadScalarFieldEnum]
@@ -203,7 +206,8 @@ export const SchoolRecordScalarFieldEnum = {
   department: 'department',
   nameOfSchool: 'nameOfSchool',
   subjectGrade: 'subjectGrade',
-  year: 'year'
+  year: 'year',
+  complete: 'complete'
 } as const
 
 export type SchoolRecordScalarFieldEnum = (typeof SchoolRecordScalarFieldEnum)[keyof typeof SchoolRecordScalarFieldEnum]

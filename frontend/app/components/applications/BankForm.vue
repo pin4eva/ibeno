@@ -48,9 +48,10 @@ const handleSubmit = async () => {
       ...state,
       accountName: String(state.accountName),
       accountNo: String(state.accountNo),
+      complete: true,
     });
 
-    emit('stepComplete', 'bank');
+    emit('stepComplete', 'documents');
   } finally {
     isLoading.value = false;
   }
@@ -93,7 +94,7 @@ const handleSubmit = async () => {
 
     <div class="flex justify-end mt-4">
       <UButton type="submit" :loading="isLoading" :disabled="disabled || isLoading">
-        Submit Application
+        Save and Continue
       </UButton>
     </div>
   </UForm>

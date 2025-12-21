@@ -4,6 +4,8 @@ import { GenderEnum, genderOptions, type Application } from '~/interfaces/applic
 import { useApplicationStore } from '~/stores/application.store';
 import { toDateInput, toIsoDateTime } from '~/utils/date';
 
+const applicationStore = useApplicationStore();
+
 const props = defineProps<{ application?: Application | null }>();
 const emit = defineEmits<{
   stepComplete: [step: string];
@@ -20,6 +22,7 @@ const schema = z.object({
   state: z.enum(nigerianStates.map((state) => state.state)),
   lga: z.enum(nigerianStates.flatMap((state) => state.lgas)),
   village: z.string(),
+  ekpuk: z.string().min(5, 'Ekpuk is required'),
   address: z.string().min(5, 'Address is required'),
   gender: z.enum(['Male', 'Female']),
 });
@@ -37,6 +40,7 @@ const state = reactive<Schema>({
   lga: props?.application?.lga || '',
   village: props?.application?.village || '',
   address: props?.application?.address || '',
+  ekpuk: props?.application?.ekpuk || '',
   gender: (props?.application?.gender as GenderEnum) || GenderEnum.Male,
 });
 
@@ -69,17 +73,16 @@ const handleSubmit = async () => {
     throw new Error('Application ID is required');
   }
   isLoading.value = true;
-  const applicationStore = useApplicationStore();
+
   await applicationStore
     .updateApplication({
       id: props.application.id,
       ...props.application,
       ...state,
-      programId: props.application.programId,
       dob: toIsoDateTime(state.dob),
     })
     .then(() => {
-      emit('stepComplete', 'personal');
+      emit('stepComplete', 'education');
     })
     .finally(() => {
       isLoading.value = false;
@@ -126,11 +129,11 @@ const handleSubmit = async () => {
         />
       </UFormField>
 
-      <UFormField label="State" name="state">
+      <UFormField label="State" name="state" required>
         <USelect v-model="state.state" :items="stateOptions" value-key="value" class="w-full" />
       </UFormField>
 
-      <UFormField label="LGA" name="lga">
+      <UFormField label="LGA" name="lga" required>
         <USelect
           :disabled="!state.state"
           v-model="state.lga"
@@ -139,14 +142,17 @@ const handleSubmit = async () => {
           class="w-full"
         />
       </UFormField>
-      <UFormField label="Address" name="address">
-        <UInput v-model="state.address" class="w-full" />
-      </UFormField>
 
-      <UFormField label="Village" name="village">
+      <UFormField label="Village" name="village" required>
         <UInput v-model="state.village" class="w-full" />
       </UFormField>
+      <UFormField label="Ekpuk" name="ekpuk" required>
+        <UInput v-model="state.ekpuk" class="w-full" />
+      </UFormField>
     </div>
+    <UFormField label="Address" name="address" required>
+      <UTextarea v-model="state.address" class="w-full" />
+    </UFormField>
     <div class="flex justify-end">
       <UButton
         type="submit"

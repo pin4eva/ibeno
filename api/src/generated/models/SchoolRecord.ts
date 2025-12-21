@@ -51,6 +51,7 @@ export type SchoolRecordMinAggregateOutputType = {
   nameOfSchool: string | null
   subjectGrade: string | null
   year: number | null
+  complete: boolean | null
 }
 
 export type SchoolRecordMaxAggregateOutputType = {
@@ -64,6 +65,7 @@ export type SchoolRecordMaxAggregateOutputType = {
   nameOfSchool: string | null
   subjectGrade: string | null
   year: number | null
+  complete: boolean | null
 }
 
 export type SchoolRecordCountAggregateOutputType = {
@@ -77,6 +79,7 @@ export type SchoolRecordCountAggregateOutputType = {
   nameOfSchool: number
   subjectGrade: number
   year: number
+  complete: number
   _all: number
 }
 
@@ -106,6 +109,7 @@ export type SchoolRecordMinAggregateInputType = {
   nameOfSchool?: true
   subjectGrade?: true
   year?: true
+  complete?: true
 }
 
 export type SchoolRecordMaxAggregateInputType = {
@@ -119,6 +123,7 @@ export type SchoolRecordMaxAggregateInputType = {
   nameOfSchool?: true
   subjectGrade?: true
   year?: true
+  complete?: true
 }
 
 export type SchoolRecordCountAggregateInputType = {
@@ -132,6 +137,7 @@ export type SchoolRecordCountAggregateInputType = {
   nameOfSchool?: true
   subjectGrade?: true
   year?: true
+  complete?: true
   _all?: true
 }
 
@@ -232,6 +238,7 @@ export type SchoolRecordGroupByOutputType = {
   nameOfSchool: string | null
   subjectGrade: string | null
   year: number | null
+  complete: boolean
   _count: SchoolRecordCountAggregateOutputType | null
   _avg: SchoolRecordAvgAggregateOutputType | null
   _sum: SchoolRecordSumAggregateOutputType | null
@@ -268,6 +275,7 @@ export type SchoolRecordWhereInput = {
   nameOfSchool?: Prisma.StringNullableFilter<"SchoolRecord"> | string | null
   subjectGrade?: Prisma.StringNullableFilter<"SchoolRecord"> | string | null
   year?: Prisma.IntNullableFilter<"SchoolRecord"> | number | null
+  complete?: Prisma.BoolFilter<"SchoolRecord"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
 }
 
@@ -282,6 +290,7 @@ export type SchoolRecordOrderByWithRelationInput = {
   nameOfSchool?: Prisma.SortOrderInput | Prisma.SortOrder
   subjectGrade?: Prisma.SortOrderInput | Prisma.SortOrder
   year?: Prisma.SortOrderInput | Prisma.SortOrder
+  complete?: Prisma.SortOrder
   application?: Prisma.ApplicationOrderByWithRelationInput
 }
 
@@ -299,6 +308,7 @@ export type SchoolRecordWhereUniqueInput = Prisma.AtLeast<{
   nameOfSchool?: Prisma.StringNullableFilter<"SchoolRecord"> | string | null
   subjectGrade?: Prisma.StringNullableFilter<"SchoolRecord"> | string | null
   year?: Prisma.IntNullableFilter<"SchoolRecord"> | number | null
+  complete?: Prisma.BoolFilter<"SchoolRecord"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
 }, "applicationId" | "regNo">
 
@@ -313,6 +323,7 @@ export type SchoolRecordOrderByWithAggregationInput = {
   nameOfSchool?: Prisma.SortOrderInput | Prisma.SortOrder
   subjectGrade?: Prisma.SortOrderInput | Prisma.SortOrder
   year?: Prisma.SortOrderInput | Prisma.SortOrder
+  complete?: Prisma.SortOrder
   _count?: Prisma.SchoolRecordCountOrderByAggregateInput
   _avg?: Prisma.SchoolRecordAvgOrderByAggregateInput
   _max?: Prisma.SchoolRecordMaxOrderByAggregateInput
@@ -334,6 +345,7 @@ export type SchoolRecordScalarWhereWithAggregatesInput = {
   nameOfSchool?: Prisma.StringNullableWithAggregatesFilter<"SchoolRecord"> | string | null
   subjectGrade?: Prisma.StringNullableWithAggregatesFilter<"SchoolRecord"> | string | null
   year?: Prisma.IntNullableWithAggregatesFilter<"SchoolRecord"> | number | null
+  complete?: Prisma.BoolWithAggregatesFilter<"SchoolRecord"> | boolean
 }
 
 export type SchoolRecordCreateInput = {
@@ -346,6 +358,7 @@ export type SchoolRecordCreateInput = {
   nameOfSchool?: string | null
   subjectGrade?: string | null
   year?: number | null
+  complete?: boolean
   application: Prisma.ApplicationCreateNestedOneWithoutSchoolRecordInput
 }
 
@@ -360,6 +373,7 @@ export type SchoolRecordUncheckedCreateInput = {
   nameOfSchool?: string | null
   subjectGrade?: string | null
   year?: number | null
+  complete?: boolean
 }
 
 export type SchoolRecordUpdateInput = {
@@ -372,6 +386,7 @@ export type SchoolRecordUpdateInput = {
   nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   application?: Prisma.ApplicationUpdateOneRequiredWithoutSchoolRecordNestedInput
 }
 
@@ -386,6 +401,7 @@ export type SchoolRecordUncheckedUpdateInput = {
   nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SchoolRecordCreateManyInput = {
@@ -399,6 +415,7 @@ export type SchoolRecordCreateManyInput = {
   nameOfSchool?: string | null
   subjectGrade?: string | null
   year?: number | null
+  complete?: boolean
 }
 
 export type SchoolRecordUpdateManyMutationInput = {
@@ -411,6 +428,7 @@ export type SchoolRecordUpdateManyMutationInput = {
   nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SchoolRecordUncheckedUpdateManyInput = {
@@ -424,6 +442,7 @@ export type SchoolRecordUncheckedUpdateManyInput = {
   nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SchoolRecordNullableScalarRelationFilter = {
@@ -442,6 +461,7 @@ export type SchoolRecordCountOrderByAggregateInput = {
   nameOfSchool?: Prisma.SortOrder
   subjectGrade?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type SchoolRecordAvgOrderByAggregateInput = {
@@ -462,6 +482,7 @@ export type SchoolRecordMaxOrderByAggregateInput = {
   nameOfSchool?: Prisma.SortOrder
   subjectGrade?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type SchoolRecordMinOrderByAggregateInput = {
@@ -475,6 +496,7 @@ export type SchoolRecordMinOrderByAggregateInput = {
   nameOfSchool?: Prisma.SortOrder
   subjectGrade?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  complete?: Prisma.SortOrder
 }
 
 export type SchoolRecordSumOrderByAggregateInput = {
@@ -526,6 +548,7 @@ export type SchoolRecordCreateWithoutApplicationInput = {
   nameOfSchool?: string | null
   subjectGrade?: string | null
   year?: number | null
+  complete?: boolean
 }
 
 export type SchoolRecordUncheckedCreateWithoutApplicationInput = {
@@ -538,6 +561,7 @@ export type SchoolRecordUncheckedCreateWithoutApplicationInput = {
   nameOfSchool?: string | null
   subjectGrade?: string | null
   year?: number | null
+  complete?: boolean
 }
 
 export type SchoolRecordCreateOrConnectWithoutApplicationInput = {
@@ -566,6 +590,7 @@ export type SchoolRecordUpdateWithoutApplicationInput = {
   nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SchoolRecordUncheckedUpdateWithoutApplicationInput = {
@@ -578,6 +603,7 @@ export type SchoolRecordUncheckedUpdateWithoutApplicationInput = {
   nameOfSchool?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectGrade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -593,6 +619,7 @@ export type SchoolRecordSelect<ExtArgs extends runtime.Types.Extensions.Internal
   nameOfSchool?: boolean
   subjectGrade?: boolean
   year?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schoolRecord"]>
 
@@ -607,6 +634,7 @@ export type SchoolRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   nameOfSchool?: boolean
   subjectGrade?: boolean
   year?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schoolRecord"]>
 
@@ -621,6 +649,7 @@ export type SchoolRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   nameOfSchool?: boolean
   subjectGrade?: boolean
   year?: boolean
+  complete?: boolean
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schoolRecord"]>
 
@@ -635,9 +664,10 @@ export type SchoolRecordSelectScalar = {
   nameOfSchool?: boolean
   subjectGrade?: boolean
   year?: boolean
+  complete?: boolean
 }
 
-export type SchoolRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "regNo" | "level" | "programDuration" | "school" | "faculty" | "department" | "nameOfSchool" | "subjectGrade" | "year", ExtArgs["result"]["schoolRecord"]>
+export type SchoolRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "regNo" | "level" | "programDuration" | "school" | "faculty" | "department" | "nameOfSchool" | "subjectGrade" | "year" | "complete", ExtArgs["result"]["schoolRecord"]>
 export type SchoolRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
 }
@@ -664,6 +694,7 @@ export type $SchoolRecordPayload<ExtArgs extends runtime.Types.Extensions.Intern
     nameOfSchool: string | null
     subjectGrade: string | null
     year: number | null
+    complete: boolean
   }, ExtArgs["result"]["schoolRecord"]>
   composites: {}
 }
@@ -1098,6 +1129,7 @@ export interface SchoolRecordFieldRefs {
   readonly nameOfSchool: Prisma.FieldRef<"SchoolRecord", 'String'>
   readonly subjectGrade: Prisma.FieldRef<"SchoolRecord", 'String'>
   readonly year: Prisma.FieldRef<"SchoolRecord", 'Int'>
+  readonly complete: Prisma.FieldRef<"SchoolRecord", 'Boolean'>
 }
     
 

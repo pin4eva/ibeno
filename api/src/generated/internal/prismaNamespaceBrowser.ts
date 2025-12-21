@@ -58,7 +58,8 @@ export const ModelName = {
   Application: 'Application',
   BankDetail: 'BankDetail',
   DocumentUpload: 'DocumentUpload',
-  SchoolRecord: 'SchoolRecord'
+  SchoolRecord: 'SchoolRecord',
+  Asset: 'Asset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -211,6 +212,20 @@ export const SchoolRecordScalarFieldEnum = {
 } as const
 
 export type SchoolRecordScalarFieldEnum = (typeof SchoolRecordScalarFieldEnum)[keyof typeof SchoolRecordScalarFieldEnum]
+
+
+export const AssetScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  location: 'location',
+  assetNumber: 'assetNumber',
+  imageUrl: 'imageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
 
 
 export const SortOrder = {

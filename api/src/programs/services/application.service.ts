@@ -4,7 +4,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { EmailService } from '../../email/email.service';
+import { Application, Prisma } from '../../generated/client';
+import { PrismaService } from '../../prisma.service';
 import {
   ApplicantLoginDTO,
   ApplicationDTO,
@@ -15,9 +17,6 @@ import {
   FilterApplicationsDTO,
   OldApplicationDTO,
 } from '../dto/application.dto';
-import { OldProgramDTO } from '../dto/programs.dto';
-import { Application, Prisma } from 'src/generated/client';
-import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class ApplicationService {

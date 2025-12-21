@@ -3,9 +3,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { ChangePasswordDTO, InviteUserDTO, LoginDTO, SignupDTO } from '../dto/auth.dto';
 import { type Request } from 'express';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { type User } from 'src/generated/client';
+import { AuthGuard } from '../../guards/auth.guard';
+import { CurrentUser } from '../../decorators/current-user.decorator';
+import { type User } from '../../generated/client';
 
 @ApiTags('Auth')
 @ApiBearerAuth()

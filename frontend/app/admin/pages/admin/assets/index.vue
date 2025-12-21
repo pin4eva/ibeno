@@ -80,7 +80,6 @@
         :data="filteredAssets"
         :columns="columns"
         :loading="assetsStore.loading"
-        @select="onSelect"
       />
     </UCard>
   </div>
@@ -142,64 +141,49 @@ const clearFilters = () => {
 // Table columns
 const columns: TableColumn<Asset>[] = [
   {
-    key: 'imageUrl',
-    label: 'Image',
-    sortable: false,
-  },
-  {
-    key: 'assetNumber',
-    label: 'Asset Number',
-    sortable: true,
-  },
-  {
-    key: 'name',
-    label: 'Name',
-    sortable: true,
-  },
-  {
-    key: 'location',
-    label: 'Location',
-    sortable: true,
-  },
-  {
-    key: 'description',
-    label: 'Description',
-    sortable: false,
-  },
-  {
-    key: 'actions',
-    label: 'Actions',
-    sortable: false,
-  },
-];
-
-// Add custom rendering for columns
-columns.forEach((col) => {
-  if (col.key === 'imageUrl') {
-    col.render = (row: Asset) =>
+    accessorKey: 'imageUrl',
+    header: 'Image',
+    cell: ({ row }) =>
       h(UAvatar, {
-        src: row.imageUrl || undefined,
-        alt: row.name,
-        icon: row.imageUrl ? undefined : 'i-lucide-package',
+        src: row.original.imageUrl || undefined,
+        alt: row.original.name,
+        icon: row.original.imageUrl ? undefined : 'i-lucide-package',
         size: 'md',
-      });
-  } else if (col.key === 'assetNumber') {
-    col.render = (row: Asset) =>
+      }),
+  },
+  {
+    accessorKey: 'assetNumber',
+    header: 'Asset Number',
+    cell: ({ row }) =>
       h(
         UBadge,
         {
           color: 'primary',
           variant: 'subtle',
         },
-        () => row.assetNumber
-      );
-  } else if (col.key === 'description') {
-    col.render = (row: Asset) => {
-      const desc = row.description;
+        () => row.original.assetNumber
+      ),
+  },
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'location',
+    header: 'Location',
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+    cell: ({ row }) => {
+      const desc = row.original.description;
       return desc.length > 50 ? desc.substring(0, 50) + '...' : desc;
-    };
-  } else if (col.key === 'actions') {
-    col.render = (row: Asset) =>
+    },
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) =>
       h(
         'div',
         { class: 'flex gap-2' },
@@ -209,24 +193,19 @@ columns.forEach((col) => {
             size: 'xs',
             color: 'primary',
             variant: 'ghost',
-            to: `/admin/assets/${row.id}`,
+            to: `/admin/assets/${row.original.id}`,
           }),
           h(UButton, {
             icon: 'i-lucide-trash',
             size: 'xs',
             color: 'red',
             variant: 'ghost',
-            onClick: () => handleDelete(row),
+            onClick: () => handleDelete(row.original),
           }),
         ]
-      );
-  }
-});
-
-// Handle row selection
-const onSelect = (row: TableRow<Asset>) => {
-  navigateTo(`/admin/assets/${row.id}`);
-};
+      ),
+  },
+];
 
 // Handle delete
 const handleDelete = async (asset: Asset) => {

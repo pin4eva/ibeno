@@ -54,7 +54,7 @@
             v-model="form.description"
             placeholder="Enter asset description"
             :disabled="loading"
-            rows="4"
+            :rows="4"
             required
           />
         </UFormGroup>

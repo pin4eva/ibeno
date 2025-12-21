@@ -1,3 +1,11 @@
+export const UserRoleEnum = {
+  User: 'User',
+  Admin: 'Admin',
+  Editor: 'Editor',
+  Developer: 'Developer',
+  Student: 'Student',
+  Contractor: 'Contractor',
+} as const;
 export interface LoginDTO {
   email: string;
   password: string;
@@ -14,4 +22,19 @@ export interface SignupDTO {
 export interface ChangePasswordDTO {
   otp: number;
   password: string;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  accessToken: string;
+  refreshToken: string;
+  passwordUpdateRequired?: boolean;
+  otp?: number;
+  user: {
+    id: number;
+    role: string;
+    firstName: string;
+    lastName: string;
+  };
 }

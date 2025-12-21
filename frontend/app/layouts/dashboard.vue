@@ -91,6 +91,11 @@ const links = [
     to: '/admin',
   },
   {
+    label: 'Programs',
+    icon: 'i-lucide-folder',
+    to: '/admin/programs',
+  },
+  {
     label: 'Users',
     icon: 'i-lucide-users',
     to: '/admin/users',

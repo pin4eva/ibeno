@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { environments } from '../utils/environments';
 import * as Brevo from '@getbrevo/brevo';
-console.log('Brevo API Key: ', environments.BREVO_API_KEY);
 
 export class EmailPayload {
   to: string;
@@ -51,7 +50,23 @@ export class EmailService {
       <p>You requested a password reset. Click the link below to reset your password:</p>
       <a href="${resetLink}">Reset Password</a>
       <p>If you did not request this, please ignore this email.</p>
-      <p>Best regards,<br/>IHCDT Team</p>
+    `;
+    await this.sendEmail({ to, subject, htmlContent });
+  }
+
+  async sendApplicationStartedEmail(
+    to: string,
+    name: string,
+    applicationNo: string,
+    programName: string,
+  ) {
+    const subject = 'Application Started - IBENO';
+    const htmlContent = `
+      <p>Dear ${name},</p>
+      <p>You have successfully started your application for <strong>${programName}</strong>.</p>
+      <p>Your Application Number is: <strong>${applicationNo}</strong></p>
+      <p>Please use this number and your NIN to log in and complete your application.</p>
+      <p>Best regards,<br/>IBENO Team</p>
     `;
     await this.sendEmail({ to, subject, htmlContent });
   }

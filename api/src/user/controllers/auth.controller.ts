@@ -1,8 +1,11 @@
-import { Body, Controller, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { ChangePasswordDTO, InviteUserDTO, LoginDTO, SignupDTO } from '../dto/auth.dto';
 import { type Request } from 'express';
+import { AuthGuard } from '../../guards/auth.guard';
+import { CurrentUser } from '../../decorators/current-user.decorator';
+import { type User } from '../../generated/client';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -46,5 +49,11 @@ export class AuthController {
   sendInvitationEmail(@Body('email') email: string, @Req() req: Request) {
     const origin = req.headers.origin || '';
     return this.authService.sendInvitationEmail(email, origin);
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async getMe(@CurrentUser() user: User) {
+    return user;
   }
 }

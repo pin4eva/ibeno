@@ -12,6 +12,8 @@ import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 import { EmailModule } from './email/email.module';
+import { ProgramsModule } from './programs/programs.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { EmailModule } from './email/email.module';
     UserModule,
     PrismaModule,
     EmailModule,
+    ProgramsModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],

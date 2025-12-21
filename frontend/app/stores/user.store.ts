@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { FetchError } from '~/interfaces/app.interface';
+import { apiFetch } from '~/utils/api-fetch';
 
 export interface User {
   id: number;
@@ -27,16 +28,15 @@ export const useUserStore = defineStore('user', () => {
   const total = ref(0);
   const loading = ref(false);
   const error = ref<string | null>(null);
-  const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl + '/users';
 
   const fetchUsers = async (filter: UserFilter) => {
     try {
       loading.value = true;
-      const response = await $fetch<{
+      const response = await apiFetch<{
         data: User[];
         meta: { total: number; page: number; lastPage: number };
-      }>(apiBaseUrl, {
-        params: filter,
+      }>('/users', {
+        query: filter,
       });
 
       users.value = response.data;
@@ -52,7 +52,7 @@ export const useUserStore = defineStore('user', () => {
   const fetchUser = async (id: number) => {
     try {
       loading.value = true;
-      const response = await $fetch<User>(`${apiBaseUrl}/${id}`);
+      const response = await apiFetch<User>(`/users/${id}`);
       return response;
     } catch (er: unknown) {
       error.value = (er as FetchError).data?.message || 'Failed to fetch user';
@@ -65,7 +65,7 @@ export const useUserStore = defineStore('user', () => {
   const updateUser = async (id: number, data: Partial<User>) => {
     try {
       loading.value = true;
-      const response = await $fetch<User>(`${apiBaseUrl}/${id}`, {
+      const response = await apiFetch<User>(`/users/${id}`, {
         method: 'PATCH',
         body: data,
       });
@@ -81,7 +81,7 @@ export const useUserStore = defineStore('user', () => {
   const deleteUser = async (id: number) => {
     try {
       loading.value = true;
-      await $fetch(`${apiBaseUrl}/${id}`, {
+      await apiFetch(`/users/${id}`, {
         method: 'DELETE',
       });
       // Remove from local list
@@ -97,7 +97,7 @@ export const useUserStore = defineStore('user', () => {
   const inviteUser = async (data: { email: string; role: string; department: string }) => {
     try {
       loading.value = true;
-      const response = await $fetch(`${useRuntimeConfig().public.apiBaseUrl}/auth/invite`, {
+      const response = await apiFetch('/auth/invite', {
         method: 'POST',
         body: data,
       });

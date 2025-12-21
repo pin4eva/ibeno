@@ -61,6 +61,104 @@ model User {
   @@map("users")
 }
 
+model Program {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  bannerImage String?
+  category    String // Educational, Medical, Business etc.
+  subCategory String?
+  isActive    Boolean   @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
+
+  @@map("programs")
+}
+
+model Application {
+  id            Int       @id @default(autoincrement())
+  email         String
+  firstName     String
+  applicationNo String    @unique
+  middleName    String?
+  lastName      String
+  dob           DateTime?
+  gender        String?
+  state         String?
+  lga           String?
+  village       String?
+  address       String?
+  ekpuk         String?
+  phone         String
+
+  nin       String
+  passport  String?
+  examsType String?
+
+  status    String  @default("In Progress")
+  type      String?
+  programId Int
+
+  comment String?
+
+  program  Program @relation(fields: [programId], references: [id])
+  complete Boolean @default(false)
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  bankDetails    BankDetail?
+  documentUpload DocumentUpload?
+  schoolRecord   SchoolRecord?
+
+  @@map("applications")
+}
+
+model BankDetail {
+  applicationId Int         @unique
+  accountNo     String      @unique
+  accountName   String
+  bankName      String
+  application   Application @relation(fields: [applicationId], references: [id])
+  complete      Boolean     @default(false)
+
+  @@map("bank_details")
+}
+
+model DocumentUpload {
+  applicationId        Int         @unique
+  schoolIdCard         String?
+  certificateOfOrigin  String?
+  ssceResult           String?
+  birthCertificate     String?
+  admissionLetter      String?
+  lastSchoolFeeReceipt String?
+  application          Application @relation(fields: [applicationId], references: [id])
+  complete             Boolean     @default(false)
+
+  @@map("document_uploads")
+}
+
+model SchoolRecord {
+  applicationId   Int         @unique
+  regNo           String?     @unique // school registration number
+  level           Int?
+  programDuration Int?
+  school          String?
+  faculty         String?
+  department      String?
+  nameOfSchool    String?
+  subjectGrade    String?
+  year            Int?
+  application     Application @relation(fields: [applicationId], references: [id])
+  complete        Boolean     @default(false)
+
+  @@map("school_records")
+}
+
 enum UserRoleEnum {
   User
   Admin

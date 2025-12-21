@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { user } = useAuth();
+
 const items = [
   {
     label: 'About Us',
@@ -18,7 +20,7 @@ const items = [
   },
   {
     label: 'Procurement',
-    to: '/contracts',
+    to: '/procurement',
     icon: 'i-lucide-briefcase',
   },
   {
@@ -37,15 +39,13 @@ const items = [
       </NuxtLink>
     </template>
 
-    <UNavigationMenu
-      :items="items"
-      variant="link"
-    />
+    <UNavigationMenu :items="items" variant="link" />
 
     <template #right>
       <UColorModeButton />
-
+      <nuxt-link to="/admin" v-if="user">Dashboard</nuxt-link>
       <UButton
+        v-else
         to="/auth/login"
         label="Login"
         color="primary"

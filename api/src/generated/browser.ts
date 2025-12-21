@@ -32,3 +32,28 @@ export type Invitation = Prisma.InvitationModel
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Program
+ * 
+ */
+export type Program = Prisma.ProgramModel
+/**
+ * Model Application
+ * 
+ */
+export type Application = Prisma.ApplicationModel
+/**
+ * Model BankDetail
+ * 
+ */
+export type BankDetail = Prisma.BankDetailModel
+/**
+ * Model DocumentUpload
+ * 
+ */
+export type DocumentUpload = Prisma.DocumentUploadModel
+/**
+ * Model SchoolRecord
+ * 
+ */
+export type SchoolRecord = Prisma.SchoolRecordModel

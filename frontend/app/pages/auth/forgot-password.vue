@@ -48,7 +48,7 @@ async function handleForgotPassword() {
         message.value = 'If an account with that email exists, a reset link has been sent.';
       }
     });
-  } catch (error) {
+  } catch {
     // Error handled in store
   } finally {
     console.log({ error });

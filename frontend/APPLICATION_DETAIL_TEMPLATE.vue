@@ -278,7 +278,7 @@ const docs = computed(() => {
               <div>
                 <dt class="text-sm text-gray-500">Account number</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.accountNumber || '-' }}
+                  {{ app.accountNo || '-' }}
                 </dd>
               </div>
               <div>

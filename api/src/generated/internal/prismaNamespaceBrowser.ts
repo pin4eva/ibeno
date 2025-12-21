@@ -55,7 +55,10 @@ export const ModelName = {
   Invitation: 'Invitation',
   User: 'User',
   Program: 'Program',
-  Application: 'Application'
+  Application: 'Application',
+  BankDetail: 'BankDetail',
+  DocumentUpload: 'DocumentUpload',
+  SchoolRecord: 'SchoolRecord'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -147,41 +150,63 @@ export const ApplicationScalarFieldEnum = {
   lastName: 'lastName',
   dob: 'dob',
   gender: 'gender',
-  school: 'school',
-  faculty: 'faculty',
-  department: 'department',
-  regNo: 'regNo',
-  level: 'level',
-  programDuration: 'programDuration',
   state: 'state',
   lga: 'lga',
   village: 'village',
   address: 'address',
   ekpuk: 'ekpuk',
   phone: 'phone',
-  bankName: 'bankName',
-  accountNo: 'accountNo',
   nin: 'nin',
   passport: 'passport',
   examsType: 'examsType',
-  nameOfSchool: 'nameOfSchool',
-  subjectGrade: 'subjectGrade',
-  year: 'year',
-  admissionLetter: 'admissionLetter',
-  lastSchoolFeeReciept: 'lastSchoolFeeReciept',
   status: 'status',
   type: 'type',
   programId: 'programId',
-  schoolIdCard: 'schoolIdCard',
-  certificateOfOrigin: 'certificateOfOrigin',
-  ssceResult: 'ssceResult',
-  birthCertificate: 'birthCertificate',
   comment: 'comment',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+export const BankDetailScalarFieldEnum = {
+  applicationId: 'applicationId',
+  accountNo: 'accountNo',
+  accountName: 'accountName',
+  bankName: 'bankName'
+} as const
+
+export type BankDetailScalarFieldEnum = (typeof BankDetailScalarFieldEnum)[keyof typeof BankDetailScalarFieldEnum]
+
+
+export const DocumentUploadScalarFieldEnum = {
+  applicationId: 'applicationId',
+  schoolIdCard: 'schoolIdCard',
+  certificateOfOrigin: 'certificateOfOrigin',
+  ssceResult: 'ssceResult',
+  birthCertificate: 'birthCertificate',
+  admissionLetter: 'admissionLetter',
+  lastSchoolFeeReceipt: 'lastSchoolFeeReceipt'
+} as const
+
+export type DocumentUploadScalarFieldEnum = (typeof DocumentUploadScalarFieldEnum)[keyof typeof DocumentUploadScalarFieldEnum]
+
+
+export const SchoolRecordScalarFieldEnum = {
+  applicationId: 'applicationId',
+  regNo: 'regNo',
+  level: 'level',
+  programDuration: 'programDuration',
+  school: 'school',
+  faculty: 'faculty',
+  department: 'department',
+  nameOfSchool: 'nameOfSchool',
+  subjectGrade: 'subjectGrade',
+  year: 'year'
+} as const
+
+export type SchoolRecordScalarFieldEnum = (typeof SchoolRecordScalarFieldEnum)[keyof typeof SchoolRecordScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -67,25 +67,26 @@ const docs = computed(() => {
   if (!app.value) return [] as Array<{ label: string; url: string; kind: 'image' | 'link' }>;
 
   const items: Array<{ label: string; url: string; kind: 'image' | 'link' }> = [];
+  const documents = app.value.documentUpload;
 
   if (app.value.passport) items.push({ label: 'Passport', url: app.value.passport, kind: 'image' });
-  if (app.value.admissionLeterUrl)
-    items.push({ label: 'Admission Letter', url: app.value.admissionLeterUrl, kind: 'link' });
-  if (app.value.lastSchoolFeeReceiptUrl)
+  if (documents?.admissionLetter)
+    items.push({ label: 'Admission Letter', url: documents.admissionLetter, kind: 'link' });
+  if (documents?.lastSchoolFeeReceipt)
+    //lastSchoolFeeReceipt
     items.push({
       label: 'Last School Fee Receipt',
-      url: app.value.lastSchoolFeeReceiptUrl,
+      url: documents.lastSchoolFeeReceipt,
       kind: 'link',
     });
-  if (app.value.certificateOfOriginUrl)
+  if (documents?.certificateOfOrigin)
     items.push({
       label: 'Certificate of Origin',
-      url: app.value.certificateOfOriginUrl,
+      url: documents.certificateOfOrigin,
       kind: 'link',
     });
-  if (app.value.ssceResultUrl)
-    items.push({ label: 'SSCE Result', url: app.value.ssceResultUrl, kind: 'link' });
-
+  if (documents?.ssceResult)
+    items.push({ label: 'SSCE Result', url: documents.ssceResult, kind: 'link' });
   return items;
 });
 </script>
@@ -206,37 +207,37 @@ const docs = computed(() => {
               <div>
                 <dt class="text-sm text-gray-500">School</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.school || '-' }}
+                  {{ app.schoolRecord?.school || '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Faculty</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.faculty || '-' }}
+                  {{ app.schoolRecord?.faculty || '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Department</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.department || '-' }}
+                  {{ app.schoolRecord?.department || '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Reg No</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.regNo || '-' }}
+                  {{ app.schoolRecord?.regNo || '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Level</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.level ?? '-' }}
+                  {{ app.schoolRecord?.level ?? '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Program duration</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.programDuration ?? '-' }}
+                  {{ app.schoolRecord?.programDuration ?? '-' }}
                 </dd>
               </div>
             </dl>
@@ -272,19 +273,19 @@ const docs = computed(() => {
               <div>
                 <dt class="text-sm text-gray-500">Bank name</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.bankName || '-' }}
+                  {{ app.bankDetails?.bankName || '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Account number</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.accountNumber || '-' }}
+                  {{ app.bankDetails?.accountNo || '-' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-sm text-gray-500">Account name</dt>
                 <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ app.accountName || '-' }}
+                  {{ app.bankDetails?.accountName || '-' }}
                 </dd>
               </div>
             </dl>

@@ -8,6 +8,7 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  Length,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
 import { ProgramCategoryEnum } from './programs.dto';
@@ -86,6 +87,7 @@ export class ApplicationDTO {
   phone: string;
   @ApiProperty({ description: 'National Identification Number of the applicant', required: true })
   @IsNumberString()
+  @Length(11)
   nin: string;
   @ApiProperty({ description: 'Date of birth of the applicant', required: true })
   @IsString()
@@ -104,11 +106,79 @@ export class ApplicationDTO {
   address: string;
   @ApiPropertyOptional()
   ekpuk: string;
-  @ApiPropertyOptional()
-  country: string;
+
+  @ApiPropertyOptional({ description: 'Applicant passport URL', required: false })
+  @IsOptional()
+  @IsString()
+  passport?: string;
+
+  @ApiPropertyOptional({ description: 'Exams type', required: false })
+  @IsOptional()
+  @IsString()
+  examsType?: string;
+
+  @ApiPropertyOptional({ description: 'Application type', required: false })
+  @IsOptional()
+  @IsString()
+  type?: string;
+
+  @ApiPropertyOptional({ description: 'Reviewer comment', required: false })
+  @IsOptional()
+  @IsString()
+  comment?: string;
+
+  @ApiPropertyOptional({ enum: ApplicationStatusEnum })
+  @IsOptional()
+  @IsIn([
+    ApplicationStatusEnum.InProgress,
+    ApplicationStatusEnum.Submitted,
+    ApplicationStatusEnum.Reviewed,
+    ApplicationStatusEnum.Accepted,
+    ApplicationStatusEnum.Rejected,
+  ])
+  status?: ApplicationStatusEnum;
 
   // Educational Information
+
+  // Bank Information
+}
+
+export class CreateDocumentUploadDTO {
+  @ApiProperty()
+  @IsInt()
+  applicationId: number;
   @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  schoolIdCard?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  certificateOfOrigin?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  ssceResult?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  birthCertificate?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  admissionLetter?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  lastSchoolFeeReceipt?: string;
+}
+
+export class CreateSchoolRecordDTO {
+  @ApiProperty()
+  @IsInt()
+  applicationId: number;
+  @ApiProperty()
+  @IsString()
   school: string;
   @ApiPropertyOptional()
   faculty: string;
@@ -121,23 +191,27 @@ export class ApplicationDTO {
   @ApiPropertyOptional()
   programDuration: number;
   @ApiPropertyOptional()
-  admissionLeterUrl: string;
+  nameOfSchool?: string;
   @ApiPropertyOptional()
-  lastSchoolFeeReceiptUrl: string;
+  subjectGrade?: string;
   @ApiPropertyOptional()
-  certificateOfOriginUrl: string;
-  @ApiPropertyOptional()
-  ssceResultUrl: string;
+  year?: number;
+}
 
-  // Bank Information
-  @ApiPropertyOptional()
+export class CreateBankDetailDTO {
+  @ApiProperty()
+  @IsInt()
+  applicationId: number;
+  @ApiProperty()
+  @IsString()
   bankName: string;
-  @ApiPropertyOptional()
-  accountNumber: string;
-  @ApiPropertyOptional()
+  @ApiProperty()
+  @IsNumberString()
+  @Length(10, 10)
+  accountNo: string;
+  @ApiProperty()
+  @IsString()
   accountName: string;
-  @ApiPropertyOptional()
-  passportUrl: string;
 }
 
 export interface OldApplicationDTO {

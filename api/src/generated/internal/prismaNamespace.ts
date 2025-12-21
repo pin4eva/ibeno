@@ -388,7 +388,10 @@ export const ModelName = {
   Invitation: 'Invitation',
   User: 'User',
   Program: 'Program',
-  Application: 'Application'
+  Application: 'Application',
+  BankDetail: 'BankDetail',
+  DocumentUpload: 'DocumentUpload',
+  SchoolRecord: 'SchoolRecord'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "auth" | "invitation" | "user" | "program" | "application"
+    modelProps: "auth" | "invitation" | "user" | "program" | "application" | "bankDetail" | "documentUpload" | "schoolRecord"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +781,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BankDetail: {
+      payload: Prisma.$BankDetailPayload<ExtArgs>
+      fields: Prisma.BankDetailFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BankDetailFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BankDetailFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>
+        }
+        findFirst: {
+          args: Prisma.BankDetailFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BankDetailFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>
+        }
+        findMany: {
+          args: Prisma.BankDetailFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>[]
+        }
+        create: {
+          args: Prisma.BankDetailCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>
+        }
+        createMany: {
+          args: Prisma.BankDetailCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BankDetailCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>[]
+        }
+        delete: {
+          args: Prisma.BankDetailDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>
+        }
+        update: {
+          args: Prisma.BankDetailUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>
+        }
+        deleteMany: {
+          args: Prisma.BankDetailDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BankDetailUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BankDetailUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>[]
+        }
+        upsert: {
+          args: Prisma.BankDetailUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankDetailPayload>
+        }
+        aggregate: {
+          args: Prisma.BankDetailAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBankDetail>
+        }
+        groupBy: {
+          args: Prisma.BankDetailGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BankDetailGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BankDetailCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BankDetailCountAggregateOutputType> | number
+        }
+      }
+    }
+    DocumentUpload: {
+      payload: Prisma.$DocumentUploadPayload<ExtArgs>
+      fields: Prisma.DocumentUploadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentUploadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentUploadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentUploadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentUploadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentUploadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentUploadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentUploadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentUploadCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentUploadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>
+        }
+        update: {
+          args: Prisma.DocumentUploadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentUploadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentUploadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentUploadUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentUploadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentUploadPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentUploadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocumentUpload>
+        }
+        groupBy: {
+          args: Prisma.DocumentUploadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentUploadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentUploadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentUploadCountAggregateOutputType> | number
+        }
+      }
+    }
+    SchoolRecord: {
+      payload: Prisma.$SchoolRecordPayload<ExtArgs>
+      fields: Prisma.SchoolRecordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SchoolRecordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SchoolRecordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>
+        }
+        findFirst: {
+          args: Prisma.SchoolRecordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SchoolRecordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>
+        }
+        findMany: {
+          args: Prisma.SchoolRecordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>[]
+        }
+        create: {
+          args: Prisma.SchoolRecordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>
+        }
+        createMany: {
+          args: Prisma.SchoolRecordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SchoolRecordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>[]
+        }
+        delete: {
+          args: Prisma.SchoolRecordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>
+        }
+        update: {
+          args: Prisma.SchoolRecordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>
+        }
+        deleteMany: {
+          args: Prisma.SchoolRecordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SchoolRecordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SchoolRecordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>[]
+        }
+        upsert: {
+          args: Prisma.SchoolRecordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SchoolRecordPayload>
+        }
+        aggregate: {
+          args: Prisma.SchoolRecordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSchoolRecord>
+        }
+        groupBy: {
+          args: Prisma.SchoolRecordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SchoolRecordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SchoolRecordCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SchoolRecordCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -890,41 +1115,63 @@ export const ApplicationScalarFieldEnum = {
   lastName: 'lastName',
   dob: 'dob',
   gender: 'gender',
-  school: 'school',
-  faculty: 'faculty',
-  department: 'department',
-  regNo: 'regNo',
-  level: 'level',
-  programDuration: 'programDuration',
   state: 'state',
   lga: 'lga',
   village: 'village',
   address: 'address',
   ekpuk: 'ekpuk',
   phone: 'phone',
-  bankName: 'bankName',
-  accountNo: 'accountNo',
   nin: 'nin',
   passport: 'passport',
   examsType: 'examsType',
-  nameOfSchool: 'nameOfSchool',
-  subjectGrade: 'subjectGrade',
-  year: 'year',
-  admissionLetter: 'admissionLetter',
-  lastSchoolFeeReciept: 'lastSchoolFeeReciept',
   status: 'status',
   type: 'type',
   programId: 'programId',
-  schoolIdCard: 'schoolIdCard',
-  certificateOfOrigin: 'certificateOfOrigin',
-  ssceResult: 'ssceResult',
-  birthCertificate: 'birthCertificate',
   comment: 'comment',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+export const BankDetailScalarFieldEnum = {
+  applicationId: 'applicationId',
+  accountNo: 'accountNo',
+  accountName: 'accountName',
+  bankName: 'bankName'
+} as const
+
+export type BankDetailScalarFieldEnum = (typeof BankDetailScalarFieldEnum)[keyof typeof BankDetailScalarFieldEnum]
+
+
+export const DocumentUploadScalarFieldEnum = {
+  applicationId: 'applicationId',
+  schoolIdCard: 'schoolIdCard',
+  certificateOfOrigin: 'certificateOfOrigin',
+  ssceResult: 'ssceResult',
+  birthCertificate: 'birthCertificate',
+  admissionLetter: 'admissionLetter',
+  lastSchoolFeeReceipt: 'lastSchoolFeeReceipt'
+} as const
+
+export type DocumentUploadScalarFieldEnum = (typeof DocumentUploadScalarFieldEnum)[keyof typeof DocumentUploadScalarFieldEnum]
+
+
+export const SchoolRecordScalarFieldEnum = {
+  applicationId: 'applicationId',
+  regNo: 'regNo',
+  level: 'level',
+  programDuration: 'programDuration',
+  school: 'school',
+  faculty: 'faculty',
+  department: 'department',
+  nameOfSchool: 'nameOfSchool',
+  subjectGrade: 'subjectGrade',
+  year: 'year'
+} as const
+
+export type SchoolRecordScalarFieldEnum = (typeof SchoolRecordScalarFieldEnum)[keyof typeof SchoolRecordScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1189,6 +1436,9 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   program?: Prisma.ProgramOmit
   application?: Prisma.ApplicationOmit
+  bankDetail?: Prisma.BankDetailOmit
+  documentUpload?: Prisma.DocumentUploadOmit
+  schoolRecord?: Prisma.SchoolRecordOmit
 }
 
 /* Types for Logging */

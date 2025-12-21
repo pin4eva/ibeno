@@ -8,6 +8,10 @@ import { PrismaService } from 'src/prisma.service';
 import {
   ApplicantLoginDTO,
   ApplicationDTO,
+  ApplicationStatusEnum,
+  CreateBankDetailDTO,
+  CreateDocumentUploadDTO,
+  CreateSchoolRecordDTO,
   FilterApplicationsDTO,
   OldApplicationDTO,
 } from '../dto/application.dto';
@@ -23,7 +27,9 @@ export class ApplicationService {
   ) {}
 
   async createApplication(input: ApplicationDTO) {
-    const { id, programId, ...data } = input;
+    const { id, programId, status, type, comment, passport, examsType, ...data } = input;
+    const nin = data.nin?.replaceAll('-', '').replaceAll(' ', '').trim();
+    if (!nin) throw new BadRequestException('NIN is required');
     try {
       const email = input?.email?.toLowerCase()?.trim();
       const program = await this.prisma.program.findUnique({
@@ -33,27 +39,41 @@ export class ApplicationService {
         throw new NotFoundException('Program not found');
       }
 
-      let dob: Date | undefined = data?.dob;
-      if (data?.dob) {
-        dob = new Date(data.dob);
-      }
+      const dob = data?.dob ? new Date(data.dob) : undefined;
+
+      const applicationData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        middleName: data.middleName,
+        email,
+        phone: data.phone,
+        nin,
+        dob,
+        gender: data.gender,
+        village: data.village,
+        lga: data.lga,
+        state: data.state,
+        address: data.address,
+        ekpuk: data.ekpuk,
+        passport,
+        examsType,
+        type,
+        comment,
+        status,
+      } as Prisma.ApplicationUncheckedCreateInput;
 
       if (id) {
         // update existing application
 
         const updatedApplication = await this.prisma.application.update({
           where: { id },
-          data: {
-            ...data,
-            email,
-            dob,
-          },
+          data: applicationData,
         });
         return updatedApplication;
       }
 
       const existingApplication = await this.prisma.application.findFirst({
-        where: { OR: [{ email }, { nin: data.nin }], programId },
+        where: { OR: [{ email }, { nin }], programId },
       });
       if (existingApplication) {
         throw new BadRequestException('You already have an application for this program');
@@ -63,10 +83,9 @@ export class ApplicationService {
       const applicationNo = await this.generateApplicationNo(programId);
       const application = await this.prisma.application.create({
         data: {
-          ...data,
+          ...applicationData,
           programId,
           email,
-          dob,
           applicationNo,
         },
       });
@@ -84,9 +103,103 @@ export class ApplicationService {
     }
   }
 
+  // update school record
+  async updateSchoolRecord(input: CreateSchoolRecordDTO) {
+    const { applicationId, ...data } = input;
+    try {
+      const record = await this.prisma.schoolRecord.upsert({
+        where: { applicationId },
+        create: {
+          applicationId,
+          ...data,
+        },
+        update: {
+          ...data,
+        },
+      });
+
+      if (!record) {
+        throw new NotFoundException('Application not found for school record update');
+      }
+      return record;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // update bank details
+  async updateBankDetails(input: CreateBankDetailDTO) {
+    try {
+      const { applicationId, accountNo, accountName, bankName } = input;
+      const bankDetail = await this.prisma.bankDetail.upsert({
+        where: { applicationId },
+        create: {
+          applicationId,
+          accountNo,
+          accountName,
+          bankName,
+        },
+        update: {
+          accountNo,
+          accountName,
+          bankName,
+        },
+      });
+
+      if (!bankDetail) {
+        throw new NotFoundException('Application not found for bank detail update');
+      }
+      return bankDetail;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // upload files
+  async uploadDocuments(input: CreateDocumentUploadDTO) {
+    try {
+      const { applicationId, ...data } = input;
+      const documentUpload = await this.prisma.documentUpload.upsert({
+        where: { applicationId },
+        create: {
+          applicationId,
+          ...data,
+        },
+        update: {
+          applicationId,
+          ...data,
+        },
+      });
+
+      if (!documentUpload) {
+        throw new NotFoundException('Application not found for document upload');
+      }
+      return documentUpload;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async submitApplication(id: number) {
+    const application = await this.prisma.application.update({
+      where: { id },
+      data: { status: ApplicationStatusEnum.Submitted },
+    });
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+    return application;
+  }
+
   async getApplicationById(id: number) {
     const application = await this.prisma.application.findUnique({
       where: { id },
+      include: {
+        bankDetails: true,
+        schoolRecord: true,
+        documentUpload: true,
+        program: true,
+      },
     });
     if (!application) {
       throw new NotFoundException('Application not found');
@@ -109,12 +222,24 @@ export class ApplicationService {
     }
     const applications = await this.prisma.application.findMany({
       where,
+      include: {
+        bankDetails: true,
+        schoolRecord: true,
+        documentUpload: true,
+        program: true,
+      },
     });
     return applications;
   }
   async getApplicationsByProgram(programId: number) {
     const applications = await this.prisma.application.findMany({
       where: { programId },
+      include: {
+        bankDetails: true,
+        schoolRecord: true,
+        documentUpload: true,
+        program: true,
+      },
     });
     return applications;
   }
@@ -125,6 +250,12 @@ export class ApplicationService {
         program: {
           category,
         },
+      },
+      include: {
+        bankDetails: true,
+        schoolRecord: true,
+        documentUpload: true,
+        program: true,
       },
     });
     return applications;

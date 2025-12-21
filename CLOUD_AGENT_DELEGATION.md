@@ -29,6 +29,6 @@ Cloud agents could be useful for:
 
 ## Integration Points
 The project structure supports cloud agent delegation in these areas:
-- **API** (`/api`): NestJS backend with modular architecture
-- **Frontend** (`/frontend`): Nuxt 3 UI with component-based structure
+- **API** (`api/`): NestJS backend with modular architecture
+- **Frontend** (`frontend/`): Nuxt 3 UI with component-based structure
 - **Documentation**: Markdown files for various project aspects

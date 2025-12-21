@@ -197,7 +197,7 @@ const columns: TableColumn<Program>[] = [
             icon: 'i-lucide-trash-2',
             click: () => {
               const toast = useToast();
-              
+
               toast.add({
                 title: 'Delete Program',
                 description: `Are you sure you want to delete "${row.original.name}"? This action cannot be undone.`,
@@ -206,22 +206,22 @@ const columns: TableColumn<Program>[] = [
                   {
                     label: 'Delete',
                     color: 'red',
-                    click: async () => {
-                      try {
-                        await programsStore.deleteProgram(row.original.id);
-                        toast.add({
-                          title: 'Success',
-                          description: 'Program deleted successfully',
-                          color: 'green',
-                        });
-                      } catch {
-                        toast.add({
-                          title: 'Error',
-                          description: 'Failed to delete program',
-                          color: 'red',
-                        });
-                      }
-                    },
+                    // click: async () => {
+                    //   try {
+                    //     await programsStore.deleteProgram(row.original.id);
+                    //     toast.add({
+                    //       title: 'Success',
+                    //       description: 'Program deleted successfully',
+                    //       color: 'green',
+                    //     });
+                    //   } catch {
+                    //     toast.add({
+                    //       title: 'Error',
+                    //       description: 'Failed to delete program',
+                    //       color: 'red',
+                    //     });
+                    //   }
+                    // },
                   },
                   {
                     label: 'Cancel',

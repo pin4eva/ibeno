@@ -6,7 +6,7 @@
         Welcome back, {{ authStore.user?.firstName || 'User' }}
       </h1>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Here's what's happening with your projects today.
+        Here's an overview of your programs and applications.
       </p>
     </div>
 
@@ -36,32 +36,6 @@
         </UCard>
       </NuxtLink>
     </div>
-
-    <!-- Recent Activity Placeholder -->
-    <UCard>
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-            Recent Activity
-          </h3>
-          <UButton variant="ghost" color="gray" to="#">View all</UButton>
-        </div>
-      </template>
-
-      <div
-        class="h-64 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg"
-      >
-        <div class="text-center">
-          <UIcon name="i-lucide-activity" class="mx-auto h-12 w-12 text-gray-400" />
-          <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
-            No recent activity
-          </h3>
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Get started by creating a new project.
-          </p>
-        </div>
-      </div>
-    </UCard>
   </div>
 </template>
 

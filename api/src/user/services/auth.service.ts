@@ -1,17 +1,9 @@
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../../prisma.service';
-import bcrypt from 'bcryptjs';
-import {
-  ChangePasswordDTO,
-  InviteUserDTO,
-  LoginDTO,
-  SessionInfo,
-  SignupDTO,
-} from '../dto/auth.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { environments } from '../../utils/environments';
-import * as jwt from 'jsonwebtoken';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
+import * as jwt from 'jsonwebtoken';
+import { EmailService } from '../../email/email.service';
 import {
   DepartmentEnum,
   InvitationStatusEnum,
@@ -19,8 +11,15 @@ import {
   UserRoleEnum,
   UserStatusEnum,
 } from '../../generated/client';
-import { EmailService } from '../../email/email.service';
-import { log } from 'console';
+import { PrismaService } from '../../prisma.service';
+import { environments } from '../../utils/environments';
+import {
+  ChangePasswordDTO,
+  InviteUserDTO,
+  LoginDTO,
+  SessionInfo,
+  SignupDTO,
+} from '../dto/auth.dto';
 
 const tokenOptions: jwt.SignOptions = {
   expiresIn: environments.ACCESS_TOKEN_EXPIRY,
@@ -75,7 +74,7 @@ export class AuthService {
         passwordUpdateRequired: true,
       };
     }
-    console.log(password, authRecord.password);
+
     this.comparePassword(password, authRecord.password);
 
     const tokens = await this.generateJWTToken(authRecord.userId);
@@ -83,7 +82,18 @@ export class AuthService {
       where: { id: authRecord.id },
       data: { lastLogin: new Date() },
     });
-    return { message: 'Login successful', success: true, passwordUpdateRequired: false, ...tokens };
+    return {
+      message: 'Login successful',
+      success: true,
+      passwordUpdateRequired: false,
+      ...tokens,
+      user: {
+        id: user.id,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    };
   }
 
   // signup
@@ -240,6 +250,38 @@ export class AuthService {
         },
       });
       return { message: 'Password changed successfully', success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // refresh access token
+  async refreshAccessToken(refreshToken: string) {
+    // const refreshTokenTrimmed = refreshToken.trim();
+    try {
+      const decoded = jwt.verify(refreshToken, environments.JWT_SECRET) as {
+        id: number;
+        tokenType: string;
+      };
+
+      if (decoded.tokenType !== 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: { id: true },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      const { accessToken } = await this.generateJWTToken(user.id);
+      return {
+        accessToken,
+        refreshToken,
+      };
     } catch (error) {
       throw error;
     }

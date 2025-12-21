@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ApplicationStatusEnum, type Application } from '~/interfaces/application.interface';
+import { type Application } from '~/interfaces/application.interface';
 import { apiFetch } from '~/utils/api-fetch';
 
 useSeoMeta({
@@ -7,7 +7,6 @@ useSeoMeta({
 });
 
 const route = useRoute();
-const toast = useToast();
 
 const programId = Number(route.params.id);
 const applicationId = Number(route.params.applicationId);
@@ -20,7 +19,6 @@ const {
   data: app,
   pending,
   error,
-  refresh,
 } = await useAsyncData(`admin-program-${programId}-application-${applicationId}`, () =>
   apiFetch<Application>(`/applications/single/${applicationId}`),
 );
@@ -32,27 +30,6 @@ function getErrorMessage(error: unknown, fallback: string): string {
     if (typeof maybe.message === 'string' && maybe.message.length) return maybe.message;
   }
   return fallback;
-}
-
-async function updateStatus(newStatus: ApplicationStatusEnum) {
-  if (!app.value) return;
-  try {
-    await apiFetch('/applications', {
-      method: 'POST',
-      body: {
-        ...app.value,
-        status: newStatus,
-      },
-    });
-    toast.add({ title: 'Updated', description: `Status updated to ${newStatus}` });
-    refresh();
-  } catch (e: unknown) {
-    toast.add({
-      title: 'Error',
-      description: getErrorMessage(e, 'Failed to update status'),
-      color: 'red',
-    });
-  }
 }
 
 const tabs = [
@@ -99,7 +76,6 @@ const docs = computed(() => {
           Application<span v-if="app?.applicationNo">: {{ app.applicationNo }}</span>
         </h1>
         <div class="mt-2 flex items-center gap-2">
-          <UBadge size="lg">{{ app?.status || '-' }}</UBadge>
           <UButton
             icon="i-lucide-arrow-left"
             color="gray"
@@ -107,33 +83,7 @@ const docs = computed(() => {
             label="Back to Program"
             :to="`/admin/programs/${programId}`"
           />
-          <UButton
-            icon="i-lucide-refresh-cw"
-            color="gray"
-            variant="outline"
-            label="Refresh"
-            :loading="pending"
-            @click="refresh()"
-          />
         </div>
-      </div>
-
-      <div v-if="app" class="flex gap-2">
-        <UButton
-          v-if="app.status !== 'Accepted'"
-          color="green"
-          @click="updateStatus(ApplicationStatusEnum.Accepted)"
-        >
-          Approve
-        </UButton>
-        <UButton
-          v-if="app.status !== 'Rejected'"
-          color="red"
-          variant="soft"
-          @click="updateStatus(ApplicationStatusEnum.Rejected)"
-        >
-          Reject
-        </UButton>
       </div>
     </div>
 

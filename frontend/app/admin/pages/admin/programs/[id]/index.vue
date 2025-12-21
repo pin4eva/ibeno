@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue';
-import type { TableColumn } from '@nuxt/ui';
-import type { Application } from '~/interfaces/application.interface';
+import { computed, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import ApplicationsTable from '~/admin/components/applications/ApplicationsTable.vue';
 import {
   ProgramCategoryEnum,
   type Program,
   type UpdateProgramDTO,
 } from '~/interfaces/programs.interface';
-import { useProgramsStore } from '~/stores/programs.store';
 import { apiFetch } from '~/utils/api-fetch';
 import { toDateInput } from '~/utils/date';
 import { sanitizeHtml } from '~/utils/html';
@@ -30,141 +29,93 @@ const router = useRouter();
 const toast = useToast();
 
 const programId = computed(() => Number(route.params.id));
-if (!Number.isFinite(programId.value)) {
-  throw createError({ statusCode: 404, statusMessage: 'Program not found' });
-}
 
-const programsStore = useProgramsStore();
-
-const { data, pending, error, refresh } = await useAsyncData(
-  `admin-program-${programId.value}`,
+const {
+  data,
+  pending: programPending,
+  error,
+  refresh,
+} = useAsyncData(
+  `program-${programId.value}`,
   async () => {
-    const [program, applications] = await Promise.all([
-      apiFetch<Program>(`/programs/single/${programId.value}`),
-      apiFetch<Application[]>('/applications', { query: { programId: programId.value } }),
-    ]);
-    return { program, applications };
+    const response = apiFetch<Program>(`/programs/single/${programId.value}`);
+    return response;
+  },
+  {
+    watch: [programId],
   },
 );
 
-const program = computed(() => data.value?.program || null);
-const applications = computed(() => data.value?.applications || []);
-
-const applicationSearch = ref('');
-const applicationPage = ref(1);
-const applicationPageSize = 10;
-
-const filteredApplications = computed(() => {
-  const q = applicationSearch.value.trim().toLowerCase();
-  if (!q) return applications.value;
-
-  return applications.value.filter((a) => {
-    const fullName = `${a.firstName || ''} ${a.lastName || ''}`.trim().toLowerCase();
-    return (
-      String(a.applicationNo || '')
-        .toLowerCase()
-        .includes(q) ||
-      fullName.includes(q) ||
-      String(a.email || '')
-        .toLowerCase()
-        .includes(q) ||
-      String(a.status || '')
-        .toLowerCase()
-        .includes(q)
-    );
-  });
-});
-
-const applicationTotalPages = computed(() =>
-  Math.max(1, Math.ceil(filteredApplications.value.length / applicationPageSize)),
-);
-
-const pagedApplications = computed(() => {
-  const start = (applicationPage.value - 1) * applicationPageSize;
-  return filteredApplications.value.slice(start, start + applicationPageSize);
-});
-
-watch(applicationSearch, () => {
-  applicationPage.value = 1;
-});
-
-watch(
-  applicationTotalPages,
-  (total) => {
-    if (applicationPage.value > total) applicationPage.value = total;
-  },
-  { immediate: true },
-);
+const program = computed(() => data.value ?? null);
+const applications = computed(() => program.value?.applications ?? []);
+const pending = computed(() => programPending.value);
 
 const isEditOpen = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
 const isToggling = ref(false);
 
-const categoryOptions = Object.values(ProgramCategoryEnum).map((cat) => ({
-  label: cat,
-  value: cat,
-}));
-
-const editForm = reactive({
+const editForm = ref({
   name: '',
   description: '',
   category: undefined as ProgramCategoryEnum | undefined,
   subCategory: '',
-  isActive: true,
   startDate: '',
   endDate: '',
 });
 
-function hydrateEditForm() {
-  if (!program.value) return;
-  editForm.name = program.value.name;
-  editForm.description = program.value.description;
-  editForm.category = program.value.category;
-  editForm.subCategory = program.value.subCategory || '';
-  editForm.isActive = !!program.value.isActive;
-  editForm.startDate = toDateInput(program.value.startDate || '');
-  editForm.endDate = toDateInput(program.value.endDate || '');
-}
+const categoryOptions = Object.values(ProgramCategoryEnum).map((value) => ({
+  label: value,
+  value,
+}));
 
-watch(program, hydrateEditForm, { immediate: true });
+watch(
+  () => program.value,
+  (value) => {
+    if (!value) return;
+    editForm.value = {
+      name: value.name,
+      description: value.description,
+      category: value.category,
+      subCategory: value.subCategory || '',
+      startDate: value.startDate ? toDateInput(value.startDate) : '',
+      endDate: value.endDate ? toDateInput(value.endDate) : '',
+    };
+  },
+  { immediate: true },
+);
 
 function openEdit() {
-  hydrateEditForm();
+  if (!program.value) return;
   isEditOpen.value = true;
 }
 
 async function saveProgram() {
   if (!program.value) return;
-
-  if (!editForm.category) {
-    toast.add({ title: 'Error', description: 'Category is required.', color: 'red' });
-    return;
-  }
-
-  const payload: UpdateProgramDTO = {
-    id: program.value.id,
-    name: editForm.name.trim(),
-    description: editForm.description.trim(),
-    category: editForm.category,
-    isActive: editForm.isActive,
-    subCategory: editForm.subCategory.trim() ? editForm.subCategory.trim() : undefined,
-    startDate: editForm.startDate
-      ? new Date(`${editForm.startDate}T00:00:00.000Z`).toISOString()
-      : null,
-    endDate: editForm.endDate ? new Date(`${editForm.endDate}T00:00:00.000Z`).toISOString() : null,
-  };
-
   try {
     isSaving.value = true;
-    await programsStore.updateProgram(payload);
-    toast.add({ title: 'Updated', description: 'Program updated successfully.' });
-    isEditOpen.value = false;
+    const payload: UpdateProgramDTO = {
+      id: programId.value,
+      name: editForm.value.name.trim(),
+      description: editForm.value.description.trim(),
+      category: editForm.value.category!,
+      subCategory: editForm.value.subCategory?.trim() || undefined,
+      startDate: editForm.value.startDate
+        ? new Date(`${editForm.value.startDate}T00:00:00.000Z`).toISOString()
+        : undefined,
+      endDate: editForm.value.endDate
+        ? new Date(`${editForm.value.endDate}T00:00:00.000Z`).toISOString()
+        : undefined,
+    };
+
+    await apiFetch(`/api/programs/${programId.value}`, { method: 'PATCH', body: payload });
     await refresh();
-  } catch (e: unknown) {
+    toast.add({ title: 'Updated', description: 'Program updated successfully', color: 'green' });
+    isEditOpen.value = false;
+  } catch (err) {
     toast.add({
-      title: 'Error',
-      description: getErrorMessage(e, 'Failed to update program.'),
+      title: 'Update failed',
+      description: getErrorMessage(err, 'Unable to update program'),
       color: 'red',
     });
   } finally {
@@ -176,13 +127,20 @@ async function toggleActive() {
   if (!program.value) return;
   try {
     isToggling.value = true;
-    await programsStore.toggleProgramStatus(program.value.id);
-    toast.add({ title: 'Updated', description: 'Program status updated.' });
+    await apiFetch(`/api/programs/${programId.value}/status`, {
+      method: 'PATCH',
+      body: { isActive: !program.value.isActive },
+    });
     await refresh();
-  } catch (e: unknown) {
+    toast.add({
+      title: 'Status updated',
+      description: `Program ${program.value.isActive ? 'deactivated' : 'activated'} successfully`,
+      color: 'green',
+    });
+  } catch (err) {
     toast.add({
       title: 'Error',
-      description: getErrorMessage(e, 'Failed to toggle status.'),
+      description: getErrorMessage(err, 'Could not update status'),
       color: 'red',
     });
   } finally {
@@ -192,58 +150,21 @@ async function toggleActive() {
 
 async function deleteProgram() {
   if (!program.value) return;
-  if (!confirm(`Delete "${program.value.name}"? This cannot be undone.`)) return;
-
   try {
     isDeleting.value = true;
-    await programsStore.deleteProgram(program.value.id);
-    toast.add({ title: 'Deleted', description: 'Program deleted.' });
+    await apiFetch(`/api/programs/${programId.value}`, { method: 'DELETE' });
+    toast.add({ title: 'Deleted', description: 'Program removed', color: 'green' });
     router.push('/admin/programs');
-  } catch (e: unknown) {
+  } catch (err) {
     toast.add({
-      title: 'Error',
-      description: getErrorMessage(e, 'Failed to delete program.'),
+      title: 'Delete failed',
+      description: getErrorMessage(err, 'Could not delete program'),
       color: 'red',
     });
   } finally {
     isDeleting.value = false;
   }
 }
-
-function viewApplication(id?: number) {
-  if (!id) return;
-  navigateTo(`/admin/programs/${programId.value}/${id}`);
-}
-
-const applicationColumns: TableColumn<Application>[] = [
-  { accessorKey: 'applicationNo', header: 'App No' },
-  {
-    accessorKey: 'name',
-    header: 'Applicant',
-    cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`,
-  },
-  { accessorKey: 'email', header: 'Email' },
-  { accessorKey: 'status', header: 'Status' },
-  {
-    accessorKey: 'createdAt',
-    header: 'Submitted',
-    cell: ({ row }) =>
-      row.original.createdAt ? new Date(row.original.createdAt).toLocaleString() : '-',
-  },
-  {
-    id: 'actions',
-    header: '',
-    cell: ({ row }) => {
-      return h(resolveComponent('UButton') as any, {
-        color: 'gray',
-        variant: 'ghost',
-        size: 'xs',
-        label: 'View',
-        onClick: () => viewApplication(row.original.id),
-      });
-    },
-  },
-];
 </script>
 
 <template>
@@ -262,14 +183,7 @@ const applicationColumns: TableColumn<Application>[] = [
           label="Back"
           to="/admin/programs"
         />
-        <UButton
-          icon="i-lucide-refresh-cw"
-          color="gray"
-          variant="outline"
-          label="Refresh"
-          :loading="pending"
-          @click="refresh()"
-        />
+
         <UButton
           icon="i-lucide-pencil"
           color="primary"
@@ -372,41 +286,16 @@ const applicationColumns: TableColumn<Application>[] = [
       </div>
     </UCard>
 
-    <UCard v-if="program">
-      <template #header>
-        <div class="flex items-center justify-between gap-4">
-          <h3 class="text-base font-semibold text-gray-900 dark:text-white">Applications</h3>
-          <div class="flex items-center gap-2">
-            <UInput
-              v-model="applicationSearch"
-              size="sm"
-              placeholder="Search applications"
-              icon="i-lucide-search"
-              class="w-64"
-            />
-            <UBadge variant="subtle">{{ filteredApplications.length }}</UBadge>
-          </div>
-        </div>
-      </template>
-
-      <UTable :data="pagedApplications" :columns="applicationColumns" :loading="pending" />
-
-      <template #footer>
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <p class="text-sm text-gray-500 dark:text-gray-400">Use “View” to open an application.</p>
-          <UPagination
-            v-model="applicationPage"
-            :page-count="applicationTotalPages"
-            :total="filteredApplications.length"
-            :items-per-page="applicationPageSize"
-          />
-        </div>
-      </template>
-    </UCard>
+    <ApplicationsTable
+      v-if="program"
+      :applications="applications"
+      :pending="pending"
+      :program-id="programId"
+    />
 
     <UModal v-model:open="isEditOpen" :ui="{ content: 'w-full sm:max-w-4xl' }">
       <template #header>
-        <div class="flex w-full items-start justify-between gap-4">
+        <div class="flex items-start justify-between">
           <div>
             <h3 class="text-lg font-semibold">Update program</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Edit fields and save.</p>

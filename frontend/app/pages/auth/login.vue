@@ -72,7 +72,7 @@ async function handleLogin() {
     }
 
     if (response?.success) {
-      router.push('/');
+      router.push('/admin');
     }
   } catch {
     // Error handled in store

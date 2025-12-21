@@ -89,6 +89,41 @@ export class AssetsService {
   }
 
   /**
+   * Extract Cloudinary public_id from URL
+   */
+  private extractPublicId(url: string): string | null {
+    try {
+      // Cloudinary URL format: https://res.cloudinary.com/{cloud_name}/{resource_type}/upload/{transformations}/{public_id}.{format}
+      const urlParts = url.split('/');
+      const uploadIndex = urlParts.indexOf('upload');
+      
+      if (uploadIndex === -1) {
+        return null;
+      }
+
+      // Get everything after 'upload', excluding the last segment (filename with extension)
+      const pathAfterUpload = urlParts.slice(uploadIndex + 1);
+      
+      // Remove the last segment (filename)
+      const publicIdWithExt = pathAfterUpload[pathAfterUpload.length - 1];
+      
+      // Remove file extension
+      const publicId = publicIdWithExt.split('.')[0];
+      
+      // If there are folder paths, include them
+      if (pathAfterUpload.length > 1) {
+        const folders = pathAfterUpload.slice(0, -1).filter(p => !p.match(/^[a-z]_/)); // Exclude transformations
+        return folders.length > 0 ? `${folders.join('/')}/${publicId}` : publicId;
+      }
+      
+      return publicId;
+    } catch (error) {
+      console.error('Failed to extract public_id from URL:', url, error);
+      return null;
+    }
+  }
+
+  /**
    * Update an asset
    */
   async update(id: number, data: Partial<UpdateAssetDTO>) {
@@ -100,8 +135,7 @@ export class AssetsService {
       const oldAsset = await this.prisma.asset.findUnique({ where: { id } });
       if (oldAsset?.imageUrl) {
         try {
-          // Extract public_id from the cloudinary URL and delete
-          const publicId = oldAsset.imageUrl.split('/').pop()?.split('.')[0];
+          const publicId = this.extractPublicId(oldAsset.imageUrl);
           if (publicId) {
             await this.cloudinaryService.deleteImage(publicId);
           }
@@ -126,7 +160,7 @@ export class AssetsService {
     // Delete image from cloudinary if exists
     if (asset.imageUrl) {
       try {
-        const publicId = asset.imageUrl.split('/').pop()?.split('.')[0];
+        const publicId = this.extractPublicId(asset.imageUrl);
         if (publicId) {
           await this.cloudinaryService.deleteImage(publicId);
         }

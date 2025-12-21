@@ -1,5 +1,12 @@
 import { defineStore } from 'pinia';
-import type { Application, ApplicantLogin } from '~/interfaces/application.interface';
+import {
+  ApplicationStatusEnum,
+  type ApplicantLogin,
+  type Application,
+  type BankDetail,
+  type DocumentUpload,
+  type SchoolRecord,
+} from '~/interfaces/application.interface';
 import { apiFetch } from '~/utils/api-fetch';
 
 type ApiErrorData = {
@@ -89,6 +96,49 @@ export const useApplicationStore = defineStore('application', () => {
     }
   };
 
+  // update school record
+  const updateSchoolRecord = async (input: SchoolRecord) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await apiFetch<SchoolRecord>(`/applications/school-record`, {
+        method: 'POST',
+        body: input,
+      });
+
+      if (application.value) {
+        application.value.schoolRecord = response;
+      }
+      return response;
+    } catch (err: unknown) {
+      error.value = getErrorMessage(err, 'Failed to update application');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // update bank record
+  const updateBankDetails = async (input: BankDetail) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await apiFetch<BankDetail>(`/applications/bank-detail`, {
+        method: 'POST',
+        body: input,
+      });
+      if (application.value && response) {
+        application.value.bankDetails = response;
+      }
+      return response;
+    } catch (err: unknown) {
+      error.value = getErrorMessage(err, 'Failed to update application');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const setApplication = async (data?: Application | null, id?: number) => {
     if (data) {
       application.value = data || null;
@@ -125,6 +175,67 @@ export const useApplicationStore = defineStore('application', () => {
     }
   };
 
+  const setDocumentUpload = async (input: DocumentUpload) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await apiFetch<DocumentUpload>(`/applications/documents`, {
+        method: 'POST',
+        body: input,
+      });
+
+      if (application.value) {
+        application.value.documentUpload = response;
+      }
+      return response;
+    } catch (err) {
+      error.value = getErrorMessage(err, 'Failed to update application');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const submitApplication = async (id: number) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await apiFetch<Application>(`/applications/submit-application`, {
+        method: 'PATCH',
+        body: { id },
+      });
+      application.value = response;
+      if (application.value) {
+        application.value.status = ApplicationStatusEnum.Submitted;
+      }
+      return response;
+    } catch (err: unknown) {
+      error.value = getErrorMessage(err, 'Failed to submit application');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const uploadPassport = async (applicationId: number, passport: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await apiFetch<Application>(`/applications/passport`, {
+        method: 'POST',
+        body: { applicationId, passport: passport },
+      });
+      application.value = response;
+      application.value!.passport = passport;
+      return response;
+    } catch (err: unknown) {
+      error.value = getErrorMessage(err, 'Failed to upload passport');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     application,
     loading,
@@ -134,5 +245,10 @@ export const useApplicationStore = defineStore('application', () => {
     updateApplication,
     uploadFile,
     setApplication,
+    updateSchoolRecord,
+    updateBankDetails,
+    setDocumentUpload,
+    submitApplication,
+    uploadPassport,
   };
 });

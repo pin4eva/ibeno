@@ -80,51 +80,83 @@ model Program {
 }
 
 model Application {
-  id                   Int       @id @default(autoincrement())
-  email                String
-  firstName            String
-  applicationNo        String    @unique
-  middleName           String?
-  lastName             String
-  dob                  DateTime?
-  gender               String?
-  school               String?
-  faculty              String?
-  department           String?
-  regNo                String?   @unique // school registration number
-  level                Int?
-  programDuration      Int?
-  state                String?
-  lga                  String?
-  village              String?
-  address              String?
-  ekpuk                String?
-  phone                String
-  bankName             String?
-  accountNo            String?
-  nin                  String
-  passport             String?
-  examsType            String?
-  nameOfSchool         String?
-  subjectGrade         String?
-  year                 String?
-  admissionLetter      String?
-  lastSchoolFeeReciept String?
-  status               String    @default("In Progress")
-  type                 String?
-  programId            Int
+  id            Int       @id @default(autoincrement())
+  email         String
+  firstName     String
+  applicationNo String    @unique
+  middleName    String?
+  lastName      String
+  dob           DateTime?
+  gender        String?
+  state         String?
+  lga           String?
+  village       String?
+  address       String?
+  ekpuk         String?
+  phone         String
+
+  nin       String
+  passport  String?
+  examsType String?
+
+  status    String  @default("In Progress")
+  type      String?
+  programId Int
+
+  comment String?
+
+  program  Program @relation(fields: [programId], references: [id])
+  complete Boolean @default(false)
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  bankDetails    BankDetail?
+  documentUpload DocumentUpload?
+  schoolRecord   SchoolRecord?
+
+  @@map("applications")
+}
+
+model BankDetail {
+  applicationId Int         @unique
+  accountNo     String      @unique
+  accountName   String
+  bankName      String
+  application   Application @relation(fields: [applicationId], references: [id])
+  complete      Boolean     @default(false)
+
+  @@map("bank_details")
+}
+
+model DocumentUpload {
+  applicationId        Int         @unique
   schoolIdCard         String?
   certificateOfOrigin  String?
   ssceResult           String?
   birthCertificate     String?
-  comment              String?
+  admissionLetter      String?
+  lastSchoolFeeReceipt String?
+  application          Application @relation(fields: [applicationId], references: [id])
+  complete             Boolean     @default(false)
 
-  program Program @relation(fields: [programId], references: [id])
+  @@map("document_uploads")
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model SchoolRecord {
+  applicationId   Int         @unique
+  regNo           String?     @unique // school registration number
+  level           Int?
+  programDuration Int?
+  school          String?
+  faculty         String?
+  department      String?
+  nameOfSchool    String?
+  subjectGrade    String?
+  year            Int?
+  application     Application @relation(fields: [applicationId], references: [id])
+  complete        Boolean     @default(false)
 
-  @@map("applications")
+  @@map("school_records")
 }
 
 enum UserRoleEnum {

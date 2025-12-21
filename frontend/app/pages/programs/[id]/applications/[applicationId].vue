@@ -60,44 +60,15 @@ const {
 
 const program = computed(() => data.value?.program || null);
 const application = computed(() => data.value?.application || null);
-
-const state = reactive<Application>({
-  programId: programId.value,
-  firstName: '',
-  lastName: '',
-  middleName: '',
-  email: '',
-  phone: '',
-  nin: '',
-  dob: '',
-  gender: '',
-  village: '',
-  lga: '',
-  state: '',
-  address: '',
-  ekpuk: '',
-  country: '',
-  school: '',
-  faculty: '',
-  department: '',
-  regNo: '',
-  level: undefined,
-  programDuration: undefined,
-  admissionLeterUrl: '',
-  lastSchoolFeeReceiptUrl: '',
-  certificateOfOriginUrl: '',
-  ssceResultUrl: '',
-  bankName: '',
-  accountNumber: '',
-  accountName: '',
-  passport: '',
-});
-
-watchEffect(() => {
-  if (!application.value) return;
-  Object.assign(state, application.value);
-  state.programId = programId.value;
-});
+const schoolRecord = computed(() => application.value?.schoolRecord || null);
+const bankDetails = computed(() => application.value?.bankDetails || undefined);
+const documentUpload = computed(
+  () =>
+    application.value?.documentUpload || {
+      applicationId: applicationId.value,
+      admissionLetter: '',
+    },
+);
 
 // Track completed steps
 const completedSteps = ref<Set<string>>(new Set());
@@ -109,6 +80,8 @@ const showReview = ref(false);
 // Validate step completion
 const isStepComplete = (step: string): boolean => {
   if (!application.value) return false;
+  const schoolRecord = application.value?.schoolRecord;
+  const bankDetails = application.value?.bankDetails;
 
   switch (step) {
     case 'personal':
@@ -126,22 +99,18 @@ const isStepComplete = (step: string): boolean => {
       );
     case 'education':
       return !!(
-        application.value.school &&
-        application.value.faculty &&
-        application.value.department &&
-        application.value.regNo &&
-        application.value.level &&
-        application.value.programDuration
+        schoolRecord?.school &&
+        schoolRecord?.faculty &&
+        schoolRecord?.department &&
+        schoolRecord?.regNo &&
+        schoolRecord?.level &&
+        schoolRecord?.programDuration
       );
-    case 'documents':
-      // Only passport is required in documents step
-      return !!application.value.passport;
+    // case 'documents':
+    //   // Only passport is required in documents step
+    //   return !!application.value.passport;
     case 'bank':
-      return !!(
-        application.value.bankName &&
-        application.value.accountNumber &&
-        application.value.accountName
-      );
+      return !!(bankDetails?.bankName && bankDetails?.accountNo && bankDetails?.accountName);
     default:
       return false;
   }
@@ -244,173 +213,11 @@ const handleFinalSubmit = async () => {
 
     <div v-else class="space-y-6">
       <!-- Review Page -->
-      <UCard v-if="showReview || isSubmitted">
-        <template #header>
-          <div class="space-y-1">
-            <h1 class="text-2xl font-semibold">Application Review</h1>
-            <p class="text-sm text-muted">
-              Application ID: {{ applicationId }}
-              <span v-if="application?.applicationNo"> • {{ application.applicationNo }}</span>
-            </p>
-          </div>
-        </template>
-
-        <div class="space-y-6">
-          <UAlert
-            color="success"
-            variant="soft"
-            title="Application Submitted Successfully!"
-            icon="i-lucide-check-circle"
-          >
-            <template #description>
-              <p>
-                Thank you for submitting your application. We have received your information and
-                will contact you via email at <strong>{{ application?.email }}</strong> after a
-                thorough review of your application.
-              </p>
-            </template>
-          </UAlert>
-
-          <!-- Personal Information -->
-          <div class="space-y-3">
-            <h3 class="text-lg font-semibold">Personal Information</h3>
-            <div class="grid gap-4 sm:grid-cols-2 text-sm">
-              <div>
-                <p class="text-muted">Full Name</p>
-                <p class="font-medium">
-                  {{ application?.firstName }} {{ application?.middleName }}
-                  {{ application?.lastName }}
-                </p>
-              </div>
-              <div>
-                <p class="text-muted">Email</p>
-                <p class="font-medium">{{ application?.email }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Phone</p>
-                <p class="font-medium">{{ application?.phone }}</p>
-              </div>
-              <div>
-                <p class="text-muted">NIN</p>
-                <p class="font-medium">{{ application?.nin }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Date of Birth</p>
-                <p class="font-medium">{{ application?.dob }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Gender</p>
-                <p class="font-medium">{{ application?.gender }}</p>
-              </div>
-              <div>
-                <p class="text-muted">State</p>
-                <p class="font-medium">{{ application?.state }}</p>
-              </div>
-              <div>
-                <p class="text-muted">LGA</p>
-                <p class="font-medium">{{ application?.lga }}</p>
-              </div>
-              <div class="sm:col-span-2">
-                <p class="text-muted">Address</p>
-                <p class="font-medium">{{ application?.address }}</p>
-              </div>
-            </div>
-          </div>
-
-          <UDivider />
-
-          <!-- Education Information -->
-          <div class="space-y-3">
-            <h3 class="text-lg font-semibold">Education Information</h3>
-            <div class="grid gap-4 sm:grid-cols-2 text-sm">
-              <div>
-                <p class="text-muted">School</p>
-                <p class="font-medium">{{ application?.school }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Faculty</p>
-                <p class="font-medium">{{ application?.faculty }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Department</p>
-                <p class="font-medium">{{ application?.department }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Registration Number</p>
-                <p class="font-medium">{{ application?.regNo }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Level</p>
-                <p class="font-medium">{{ application?.level }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Program Duration</p>
-                <p class="font-medium">{{ application?.programDuration }} years</p>
-              </div>
-            </div>
-          </div>
-
-          <UDivider />
-
-          <!-- Document Information -->
-          <div class="space-y-3">
-            <h3 class="text-lg font-semibold">Documents</h3>
-            <div class="grid gap-4 sm:grid-cols-2 text-sm">
-              <div>
-                <p class="text-muted">Admission Letter</p>
-                <p class="font-medium">
-                  {{ application?.admissionLeterUrl ? 'Uploaded ✓' : 'Not Uploaded' }}
-                </p>
-              </div>
-              <div>
-                <p class="text-muted">School Fee Receipt</p>
-                <p class="font-medium">
-                  {{ application?.lastSchoolFeeReceiptUrl ? 'Uploaded ✓' : 'Not Uploaded' }}
-                </p>
-              </div>
-              <div>
-                <p class="text-muted">Certificate of Origin</p>
-                <p class="font-medium">
-                  {{ application?.certificateOfOriginUrl ? 'Uploaded ✓' : 'Not Uploaded' }}
-                </p>
-              </div>
-              <div>
-                <p class="text-muted">SSCE Result</p>
-                <p class="font-medium">
-                  {{ application?.ssceResultUrl ? 'Uploaded ✓' : 'Not Uploaded' }}
-                </p>
-              </div>
-              <div>
-                <p class="text-muted">Passport Photo</p>
-                <p class="font-medium">
-                  {{ application?.passport ? 'Uploaded ✓' : 'Not Uploaded' }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <UDivider />
-
-          <!-- Bank Information -->
-          <div class="space-y-3">
-            <h3 class="text-lg font-semibold">Bank Information</h3>
-            <div class="grid gap-4 sm:grid-cols-2 text-sm">
-              <div>
-                <p class="text-muted">Bank Name</p>
-                <p class="font-medium">{{ application?.bankName }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Account Number</p>
-                <p class="font-medium">{{ application?.accountNumber }}</p>
-              </div>
-              <div>
-                <p class="text-muted">Account Name</p>
-                <p class="font-medium">{{ application?.accountName }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </UCard>
+      <ApplicationsReviewApplication
+        v-if="application?.status === ApplicationStatusEnum.Submitted || showReview"
+        :application-id="applicationId"
+        :application="application"
+      />
 
       <!-- Application Form Tabs -->
       <UCard v-else>
@@ -435,7 +242,8 @@ const handleFinalSubmit = async () => {
 
             <template #education>
               <ApplicationsEducationForm
-                :application="application"
+                :application-id="applicationId"
+                :school-record="schoolRecord"
                 :disabled="!completedSteps.has('personal')"
                 @step-complete="handleStepComplete('education')"
               />
@@ -443,15 +251,17 @@ const handleFinalSubmit = async () => {
 
             <template #documents>
               <ApplicationsDocumentUploads
+                :application-id="applicationId"
                 :application="application"
                 :disabled="!completedSteps.has('education')"
-                @updated="(patch) => Object.assign(state, patch)"
+                @updated="(patch) => Object.assign(documentUpload!, patch)"
                 @step-complete="handleStepComplete('documents')"
               />
             </template>
             <template #bank>
               <ApplicationsBankForm
-                :application="application"
+                :application-id="applicationId"
+                :bank-details="bankDetails"
                 :disabled="!completedSteps.has('documents')"
                 @step-complete="handleFinalSubmit"
               />

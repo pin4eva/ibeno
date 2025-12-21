@@ -43,7 +43,7 @@
               {{ programsStore.stats.inactive }}
             </p>
           </div>
-          <UIcon name="i-lucide-x-circle" class="w-8 h-8 text-gray-500 opacity-80" />
+          <UIcon name="i-lucide-x-circle" class="w-8 h-8 text-red-500 opacity-80" />
         </div>
       </UCard>
     </div>
@@ -51,24 +51,26 @@
     <!-- Filters -->
     <UCard>
       <template #header>
-        <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+        <div class="flex flex-wrap gap-2">
           <UInput
             v-model="search"
             icon="i-lucide-search"
             placeholder="Search programs..."
-            class="w-full sm:w-64"
+            class="w-64"
           />
           <USelectMenu
             v-model="selectedCategory"
-            :options="categoryOptions"
+            :items="categoryOptions"
             placeholder="All Categories"
-            class="w-full sm:w-48"
+            class="w-48"
+            value-key="value"
           />
           <USelectMenu
             v-model="selectedStatus"
-            :options="statusOptions"
+            :items="statusOptions"
             placeholder="All Status"
-            class="w-full sm:w-48"
+            class="w-48"
+            value-key="value"
           />
         </div>
       </template>
@@ -80,74 +82,34 @@
         @select="onSelect"
       />
     </UCard>
-
-    <!-- Delete Confirmation Modal -->
-    <UModal v-model="showDeleteModal">
-      <UCard>
-        <template #header>
-          <h3 class="text-lg font-semibold">Confirm Delete</h3>
-        </template>
-        <p class="text-gray-600 dark:text-gray-400">
-          Are you sure you want to delete "{{ programToDelete?.name }}"? This action cannot be
-          undone.
-        </p>
-        <template #footer>
-          <div class="flex justify-end gap-2">
-            <UButton variant="ghost" color="gray" @click="showDeleteModal = false">
-              Cancel
-            </UButton>
-            <UButton color="red" :loading="programsStore.loading" @click="confirmDelete">
-              Delete
-            </UButton>
-          </div>
-        </template>
-      </UCard>
-    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue';
 import type { TableColumn, TableRow } from '@nuxt/ui';
-import { useProgramsStore } from '~/stores/programs.store';
-import type { Program } from '~/interfaces/programs.interface';
+import { useProgramsStore, type Program } from '~/stores/programs.store';
 import { ProgramCategoryEnum } from '~/interfaces/programs.interface';
 
 const programsStore = useProgramsStore();
 const search = ref('');
-const selectedCategory = ref<string | null>(null);
-const selectedStatus = ref<boolean | null>(null);
-const showDeleteModal = ref(false);
-const programToDelete = ref<Program | null>(null);
-const toast = useToast();
+const selectedCategory = ref<ProgramCategoryEnum | undefined>(undefined);
+const selectedStatus = ref<string | undefined>(undefined);
 
 const UBadge = resolveComponent('UBadge');
 const UButton = resolveComponent('UButton');
-const NuxtLink = resolveComponent('NuxtLink');
 const UDropdown = resolveComponent('UDropdown');
-
-const categoryOptions = [
-  { label: 'All Categories', value: null },
-  { label: 'Education', value: ProgramCategoryEnum.Education },
-  { label: 'Medical Mission', value: ProgramCategoryEnum.Medical },
-  { label: 'Community Service', value: ProgramCategoryEnum.Community },
-];
-
-const statusOptions = [
-  { label: 'All Status', value: null },
-  { label: 'Active', value: true },
-  { label: 'Inactive', value: false },
-];
+const NuxtLink = resolveComponent('NuxtLink');
 
 const columns: TableColumn<Program>[] = [
   {
     accessorKey: 'name',
-    header: 'Name',
+    header: 'Program Name',
     cell: ({ row }) => {
       return h(
         NuxtLink,
         {
-          class: 'font-medium text-gray-900 dark:text-white hover:text-primary-600',
+          class: 'font-medium text-primary-600 dark:text-primary-400 hover:underline',
           href: `/admin/programs/${row.original.id}`,
         },
         row.original.name,
@@ -160,7 +122,7 @@ const columns: TableColumn<Program>[] = [
   },
   {
     accessorKey: 'subCategory',
-    header: 'Sub Category',
+    header: 'Sub-Category',
     cell: ({ row }) => row.original.subCategory || '-',
   },
   {
@@ -170,7 +132,7 @@ const columns: TableColumn<Program>[] = [
       return h(
         UBadge,
         {
-          color: row.original.isActive ? 'green' : 'gray',
+          color: row.original.isActive ? 'green' : 'red',
           variant: 'subtle',
           size: 'xs',
         },
@@ -179,12 +141,19 @@ const columns: TableColumn<Program>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Created',
+    accessorKey: 'startDate',
+    header: 'Start Date',
     cell: ({ row }) => {
-      return row.original.createdAt
-        ? new Date(row.original.createdAt).toLocaleDateString()
-        : '-';
+      if (!row.original.startDate) return '-';
+      return new Date(row.original.startDate).toLocaleDateString();
+    },
+  },
+  {
+    accessorKey: 'endDate',
+    header: 'End Date',
+    cell: ({ row }) => {
+      if (!row.original.endDate) return '-';
+      return new Date(row.original.endDate).toLocaleDateString();
     },
   },
   {
@@ -194,29 +163,74 @@ const columns: TableColumn<Program>[] = [
       const items = [
         [
           {
-            label: 'Edit',
+            label: 'View',
             icon: 'i-lucide-edit',
             click: () => navigateTo(`/admin/programs/${row.original.id}`),
-          },
-          {
-            label: row.original.isActive ? 'Deactivate' : 'Activate',
-            icon: row.original.isActive ? 'i-lucide-x-circle' : 'i-lucide-check-circle',
-            click: () => handleToggleStatus(row.original),
           },
         ],
         [
           {
-            label: 'View Applications',
-            icon: 'i-lucide-file-text',
-            click: () => navigateTo(`/admin/applications?programId=${row.original.id}`),
+            label: row.original.isActive ? 'Deactivate' : 'Activate',
+            icon: row.original.isActive ? 'i-lucide-x-circle' : 'i-lucide-check-circle',
+            click: async () => {
+              try {
+                const wasActive = row.original.isActive;
+                await programsStore.toggleProgramStatus(row.original.id);
+                useToast().add({
+                  title: 'Success',
+                  description: `Program ${wasActive ? 'deactivated' : 'activated'} successfully`,
+                  color: 'green',
+                });
+              } catch {
+                useToast().add({
+                  title: 'Error',
+                  description: 'Failed to toggle program status',
+                  color: 'red',
+                });
+              }
+            },
           },
         ],
         [
           {
             label: 'Delete',
             icon: 'i-lucide-trash-2',
-            click: () => handleDelete(row.original),
-            class: 'text-red-600 dark:text-red-400',
+            click: () => {
+              const toast = useToast();
+
+              toast.add({
+                title: 'Delete Program',
+                description: `Are you sure you want to delete "${row.original.name}"? This action cannot be undone.`,
+                color: 'red',
+                actions: [
+                  {
+                    label: 'Delete',
+                    color: 'red',
+                    // click: async () => {
+                    //   try {
+                    //     await programsStore.deleteProgram(row.original.id);
+                    //     toast.add({
+                    //       title: 'Success',
+                    //       description: 'Program deleted successfully',
+                    //       color: 'green',
+                    //     });
+                    //   } catch {
+                    //     toast.add({
+                    //       title: 'Error',
+                    //       description: 'Failed to delete program',
+                    //       color: 'red',
+                    //     });
+                    //   }
+                    // },
+                  },
+                  {
+                    label: 'Cancel',
+                    color: 'gray',
+                    variant: 'ghost',
+                  },
+                ],
+              });
+            },
           },
         ],
       ];
@@ -225,7 +239,7 @@ const columns: TableColumn<Program>[] = [
         UDropdown,
         {
           items,
-          popper: { placement: 'bottom-end' },
+          mode: 'hover',
         },
         () =>
           h(UButton, {
@@ -233,101 +247,64 @@ const columns: TableColumn<Program>[] = [
             size: 'xs',
             color: 'gray',
             variant: 'ghost',
-            onClick: (e: Event) => e.stopPropagation(),
           }),
       );
     },
   },
 ];
 
+const categoryOptions = [
+  { label: 'All Categories', value: undefined },
+  ...Object.values(ProgramCategoryEnum).map((cat) => ({
+    label: cat,
+    value: cat,
+  })),
+];
+
+const statusOptions = [
+  { label: 'All Status', value: undefined },
+  { label: 'Active', value: 'true' },
+  { label: 'Inactive', value: 'false' },
+];
+
 const filteredPrograms = computed(() => {
   let result = programsStore.programs;
 
-  // Search filter
   if (search.value) {
     const searchLower = search.value.toLowerCase();
     result = result.filter(
       (p) =>
         p.name.toLowerCase().includes(searchLower) ||
-        p.description.toLowerCase().includes(searchLower) ||
-        p.category.toLowerCase().includes(searchLower),
+        p.description?.toLowerCase().includes(searchLower) ||
+        p.subCategory?.toLowerCase().includes(searchLower),
     );
-  }
-
-  // Category filter
-  if (selectedCategory.value) {
-    result = result.filter((p) => p.category === selectedCategory.value);
-  }
-
-  // Status filter
-  if (selectedStatus.value !== null) {
-    result = result.filter((p) => p.isActive === selectedStatus.value);
   }
 
   return result;
 });
 
 const fetchPrograms = async () => {
-  try {
-    await programsStore.fetchPrograms();
-  } catch {
-    toast.add({
-      title: 'Error',
-      description: 'Failed to load programs',
-      color: 'red',
-    });
+  const filter: Record<string, string | boolean> = {};
+
+  if (selectedCategory.value) {
+    filter.category = selectedCategory.value;
   }
-};
 
-const handleToggleStatus = async (program: Program) => {
-  try {
-    await programsStore.toggleProgramStatus(program.id);
-    toast.add({
-      title: 'Success',
-      description: `Program ${program.isActive ? 'deactivated' : 'activated'} successfully`,
-      color: 'green',
-    });
-  } catch {
-    toast.add({
-      title: 'Error',
-      description: 'Failed to toggle program status',
-      color: 'red',
-    });
+  if (selectedStatus.value !== undefined) {
+    filter.isActive = selectedStatus.value === 'true';
   }
+
+  await programsStore.fetchPrograms(filter);
 };
 
-const handleDelete = (program: Program) => {
-  programToDelete.value = program;
-  showDeleteModal.value = true;
-};
-
-const confirmDelete = async () => {
-  if (!programToDelete.value) return;
-
-  try {
-    await programsStore.deleteProgram(programToDelete.value.id);
-    toast.add({
-      title: 'Success',
-      description: 'Program deleted successfully',
-      color: 'green',
-    });
-    showDeleteModal.value = false;
-    programToDelete.value = null;
-  } catch {
-    toast.add({
-      title: 'Error',
-      description: 'Failed to delete program',
-      color: 'red',
-    });
-  }
-};
-
-function onSelect(event: Event, row: TableRow<Program>) {
-  const program = row.original;
-  navigateTo(`/admin/programs/${program.id}`);
-}
+watch([selectedCategory, selectedStatus], fetchPrograms);
 
 onMounted(() => {
   fetchPrograms();
 });
+
+function onSelect(_event: Event, row: TableRow<Program>) {
+  const program = row.original;
+  navigateTo(`/admin/programs/${program.id}`);
+}
 </script>

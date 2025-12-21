@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { user } = useAuth();
+
 const items = [
   {
     label: 'About Us',
@@ -41,8 +43,9 @@ const items = [
 
     <template #right>
       <UColorModeButton />
-
+      <nuxt-link to="/admin" v-if="user">Dashboard</nuxt-link>
       <UButton
+        v-else
         to="/auth/login"
         label="Login"
         color="primary"

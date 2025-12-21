@@ -94,7 +94,7 @@ async function handleSignup() {
     await authStore.signup(form);
     // Redirect to login or dashboard
     router.push('/auth/login');
-  } catch (error) {
+  } catch {
     // Error handled in store
   }
 }

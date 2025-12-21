@@ -1,8 +1,14 @@
 import { defineStore } from 'pinia';
 import type { FetchError } from '~/interfaces/app.interface';
-import type { ChangePasswordDTO, LoginDTO, SignupDTO } from '~/interfaces/auth.interface';
+import type {
+  ChangePasswordDTO,
+  LoginDTO,
+  LoginResponse,
+  SignupDTO,
+} from '~/interfaces/auth.interface';
+import { apiFetch } from '~/utils/api-fetch';
 
-export interface User {
+export interface AuthUser {
   id: number;
   email: string;
   firstName: string;
@@ -14,124 +20,24 @@ export interface User {
 }
 
 export interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   loading: boolean;
   error: string | null;
 }
 
-// export const useAuthStore = defineStore('auth', {
-//   state: (): AuthState => ({
-//     user: null,
-//     accessToken: null, // Should ideally be stored in HttpOnly cookie, but for now state/localStorage
-//     refreshToken: null,
-//     loading: false,
-//     error: null,
-//   }),
-
-//   getters: {
-//     isAuthenticated: (state) => !!state.accessToken,
-//     fullName: (state) => (state.user ? `${state.user.firstName} ${state.user.lastName}` : ''),
-//   },
-
-//   actions: {
-//     async login(credentials: any) {
-//       this.loading = true;
-//       this.error = null;
-//       try {
-//         // TODO: Replace with actual API call using useApi or $fetch
-//         // const response = await $fetch('/api/auth/login', { method: 'POST', body: credentials });
-
-//         // Mocking response for now based on auth.service.ts structure
-//         console.log('Logging in with', credentials);
-
-//         // Simulate API delay
-//         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-//         // Mock success
-//         // this.setSession(response);
-//       }
-//       catch (err: any) {
-//         this.error = err.message || 'Login failed';
-//         throw err;
-//       }
-//       finally {
-//         this.loading = false;
-//       }
-//     },
-
-//     async signup(data: any) {
-//       this.loading = true;
-//       this.error = null;
-//       try {
-//         // const response = await $fetch('/api/auth/signup', { method: 'POST', body: data });
-//         console.log('Signing up with', data);
-//         await new Promise((resolve) => setTimeout(resolve, 1000));
-//       }
-//       catch (err: any) {
-//         this.error = err.message || 'Signup failed';
-//         throw err;
-//       }
-//       finally {
-//         this.loading = false;
-//       }
-//     },
-
-//     async forgotPassword(email: string) {
-//       this.loading = true;
-//       this.error = null;
-//       try {
-//         // await $fetch('/api/auth/forgot-password', { method: 'POST', body: { email } });
-//         console.log('Forgot password for', email);
-//         await new Promise((resolve) => setTimeout(resolve, 1000));
-//       }
-//       catch (err: any) {
-//         this.error = err.message || 'Request failed';
-//         throw err;
-//       }
-//       finally {
-//         this.loading = false;
-//       }
-//     },
-
-//     setSession(authResult: { accessToken: string; refreshToken: string; user?: User }) {
-//       this.accessToken = authResult.accessToken;
-//       this.refreshToken = authResult.refreshToken;
-//       if (authResult.user) {
-//         this.user = authResult.user;
-//       }
-//       // Save to localStorage or cookies if needed
-//     },
-
-//     logout() {
-//       this.user = null;
-//       this.accessToken = null;
-//       this.refreshToken = null;
-//       // Clear cookies/localStorage
-//     },
-//   },
-// });
-
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null);
+  const user = ref<AuthUser | null>(null);
   const accessToken = useCookie<string | null>('access_token');
   const refreshToken = useCookie<string | null>('refresh_token');
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
-  const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl + '/auth';
 
   const login = async ({ email, password }: LoginDTO) => {
     try {
       loading.value = true;
-      const response = await $fetch<{
-        success: boolean;
-        message: string;
-        accessToken: string;
-        refreshToken: string;
-        passwordUpdateRequired?: boolean;
-        otp?: number;
-      }>(apiBaseUrl + '/login', {
+      const response = await apiFetch<LoginResponse>('/auth/login', {
         method: 'POST',
         body: { email, password },
       });
@@ -153,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const signup = async (input: SignupDTO) => {
     try {
-      const response = await $fetch<{ success: boolean; message: string }>(apiBaseUrl + '/signup', {
+      const response = await apiFetch<{ success: boolean; message: string }>('/auth/signup', {
         method: 'POST',
         body: input,
       });
@@ -169,8 +75,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       error.value = null;
       loading.value = true;
-      const response = await $fetch<{ success: boolean; message: string }>(
-        apiBaseUrl + '/forgot-password',
+      const response = await apiFetch<{ success: boolean; message: string }>(
+        '/auth/forgot-password',
         {
           method: 'POST',
           body: { email },
@@ -190,8 +96,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       error.value = null;
       loading.value = true;
-      const response = await $fetch<{ success: boolean; message: string }>(
-        apiBaseUrl + '/reset-password',
+      const response = await apiFetch<{ success: boolean; message: string }>(
+        '/auth/reset-password',
         {
           method: 'POST',
           body: input,

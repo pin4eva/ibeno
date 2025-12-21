@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import type { Application } from '~/interfaces/application.interface';
+import type { Application, DocumentUpload } from '~/interfaces/application.interface';
 import { useApplicationStore } from '~/stores/application.store';
 
 type DocumentField =
-  | 'passport'
-  | 'admissionLeterUrl'
-  | 'lastSchoolFeeReceiptUrl'
-  | 'certificateOfOriginUrl'
-  | 'ssceResultUrl';
+  // | 'passport'
+  'admissionLetter' | 'lastSchoolFeeReceipt' | 'certificateOfOrigin' | 'ssceResult';
 
 const props = defineProps<{
   application?: Application | null;
@@ -15,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'updated', payload: Partial<Pick<Application, DocumentField>>): void;
+  (e: 'updated', payload: Partial<Pick<DocumentUpload, DocumentField>>): void;
   (e: 'stepComplete', step: string): void;
 }>();
 
@@ -23,21 +20,21 @@ const applicationStore = useApplicationStore();
 const toast = useToast();
 
 const state = reactive<Record<DocumentField, string>>({
-  passport: props.application?.passport || '',
-  admissionLeterUrl: props.application?.admissionLeterUrl || '',
-  lastSchoolFeeReceiptUrl: props.application?.lastSchoolFeeReceiptUrl || '',
-  certificateOfOriginUrl: props.application?.certificateOfOriginUrl || '',
-  ssceResultUrl: props.application?.ssceResultUrl || '',
+  // passport: props.application?.passport || '',
+  admissionLetter: props.application?.documentUpload?.admissionLetter || '',
+  lastSchoolFeeReceipt: props.application?.documentUpload?.lastSchoolFeeReceipt || '',
+  certificateOfOrigin: props.application?.documentUpload?.certificateOfOrigin || '',
+  ssceResult: props.application?.documentUpload?.ssceResult || '',
 });
 
 watch(
   () => props.application,
   (app) => {
-    state.passport = app?.passport || '';
-    state.admissionLeterUrl = app?.admissionLeterUrl || '';
-    state.lastSchoolFeeReceiptUrl = app?.lastSchoolFeeReceiptUrl || '';
-    state.certificateOfOriginUrl = app?.certificateOfOriginUrl || '';
-    state.ssceResultUrl = app?.ssceResultUrl || '';
+    // state.passport = app?.passport || '';
+    state.admissionLetter = app?.documentUpload?.admissionLetter || '';
+    state.lastSchoolFeeReceipt = app?.documentUpload?.lastSchoolFeeReceipt || '';
+    state.certificateOfOrigin = app?.documentUpload?.certificateOfOrigin || '';
+    state.ssceResult = app?.documentUpload?.ssceResult || '';
   },
   { immediate: true },
 );
@@ -50,53 +47,43 @@ type DocItem = {
 };
 
 const documents: DocItem[] = [
-  { key: 'passport', label: 'Passport photo', accept: 'image/*', required: true },
-  { key: 'admissionLeterUrl', label: 'Admission letter', accept: 'application/pdf,image/*' },
+  // { key: 'passport', label: 'Passport photo', accept: 'image/*', required: true },
+  { key: 'admissionLetter', label: 'Admission letter', accept: 'application/pdf,image/*' },
   {
-    key: 'lastSchoolFeeReceiptUrl',
+    key: 'lastSchoolFeeReceipt',
     label: 'Last school fee receipt',
     accept: 'application/pdf,image/*',
   },
   {
-    key: 'certificateOfOriginUrl',
+    key: 'certificateOfOrigin',
     label: 'Certificate of origin',
     accept: 'application/pdf,image/*',
   },
-  { key: 'ssceResultUrl', label: 'SSCE result', accept: 'application/pdf,image/*' },
+  { key: 'ssceResult', label: 'SSCE result', accept: 'application/pdf,image/*' },
 ];
 
 const uploading = reactive<Record<DocumentField, boolean>>({
-  passport: false,
-  admissionLeterUrl: false,
-  lastSchoolFeeReceiptUrl: false,
-  certificateOfOriginUrl: false,
-  ssceResultUrl: false,
+  // passport: false,
+  admissionLetter: false,
+  lastSchoolFeeReceipt: false,
+  certificateOfOrigin: false,
+  ssceResult: false,
 });
 
 const selectedFileName = reactive<Record<DocumentField, string>>({
-  passport: '',
-  admissionLeterUrl: '',
-  lastSchoolFeeReceiptUrl: '',
-  certificateOfOriginUrl: '',
-  ssceResultUrl: '',
+  // passport: '',
+  admissionLetter: '',
+  lastSchoolFeeReceipt: '',
+  certificateOfOrigin: '',
+  ssceResult: '',
 });
 
 const fileInputs = reactive<Record<DocumentField, HTMLInputElement | null>>({
-  passport: null,
-  admissionLeterUrl: null,
-  lastSchoolFeeReceiptUrl: null,
-  certificateOfOriginUrl: null,
-  ssceResultUrl: null,
-});
-
-// Check if all required documents are uploaded
-const allDocumentsUploaded = computed(() => {
-  return documents.every((doc) => {
-    if (doc.required) {
-      return !!state[doc.key];
-    }
-    return true;
-  });
+  // passport: null,
+  admissionLetter: null,
+  lastSchoolFeeReceipt: null,
+  certificateOfOrigin: null,
+  ssceResult: null,
 });
 
 function openPicker(field: DocumentField) {
@@ -127,7 +114,7 @@ async function handleFileUpload(field: DocumentField, files: FileList | null) {
 
     const appId = props.application?.id;
     if (appId) {
-      await applicationStore.updateApplication({ id: appId, [field]: url });
+      await applicationStore.setDocumentUpload({ applicationId: appId, [field]: url });
     }
 
     emit('updated', { [field]: url });
@@ -147,15 +134,7 @@ async function handleFileUpload(field: DocumentField, files: FileList | null) {
 }
 
 const handleContinue = () => {
-  if (allDocumentsUploaded.value) {
-    emit('stepComplete', 'documents');
-  } else {
-    toast.add({
-      title: 'Missing documents',
-      description: 'Please upload your passport photo before continuing.',
-      color: 'red',
-    });
-  }
+  emit('stepComplete', 'review');
 };
 </script>
 <template>
@@ -168,8 +147,7 @@ const handleContinue = () => {
 
     <UAlert v-else color="neutral" variant="soft">
       <template #description>
-        Click <strong>Upload file</strong> to choose a document. Only
-        <strong>Passport photo</strong> is required.
+        Upload any supporting documents you have. You can replace uploads at any time.
       </template>
     </UAlert>
 
@@ -215,9 +193,7 @@ const handleContinue = () => {
     </UCard>
 
     <div class="flex justify-end mt-4">
-      <UButton @click="handleContinue" :disabled="!allDocumentsUploaded || disabled">
-        Save and Continue
-      </UButton>
+      <UButton @click="handleContinue">Review Application</UButton>
     </div>
   </div>
 </template>

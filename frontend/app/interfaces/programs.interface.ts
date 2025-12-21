@@ -1,3 +1,5 @@
+import type { Application } from './application.interface';
+
 export enum ProgramCategoryEnum {
   Education = 'Education',
   Medical = 'Medical Mission',
@@ -22,6 +24,10 @@ export interface Program extends CreateProgramDTO {
   createdAt?: string;
   /** ISO string from API */
   updatedAt?: string;
+  applications: Application[];
+  _count?: {
+    applications: number;
+  };
 }
 
 export interface UpdateProgramDTO extends Partial<CreateProgramDTO> {

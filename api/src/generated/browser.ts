@@ -42,3 +42,18 @@ export type Program = Prisma.ProgramModel
  * 
  */
 export type Application = Prisma.ApplicationModel
+/**
+ * Model BankDetail
+ * 
+ */
+export type BankDetail = Prisma.BankDetailModel
+/**
+ * Model DocumentUpload
+ * 
+ */
+export type DocumentUpload = Prisma.DocumentUploadModel
+/**
+ * Model SchoolRecord
+ * 
+ */
+export type SchoolRecord = Prisma.SchoolRecordModel

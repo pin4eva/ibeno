@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { CreateProgramDTO, FilterProgramsDTO, UpdateProgramDTO } from '../dto/programs.dto';
-import { Prisma } from 'src/generated/client';
+import { Prisma } from '../../generated/client';
 
 @Injectable()
 export class ProgramsService {
@@ -100,6 +100,7 @@ export class ProgramsService {
     try {
       const program = await this.prisma.program.findUnique({
         where: { id },
+        include: { applications: true, _count: { select: { applications: true } } },
       });
       if (!program) {
         throw new NotFoundException('Program not found');

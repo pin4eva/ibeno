@@ -1,7 +1,14 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApplicationService } from '../services/application.service';
-import { ApplicantLoginDTO, ApplicationDTO, FilterApplicationsDTO } from '../dto/application.dto';
+import {
+  ApplicantLoginDTO,
+  ApplicationDTO,
+  CreateBankDetailDTO,
+  CreateDocumentUploadDTO,
+  CreateSchoolRecordDTO,
+  FilterApplicationsDTO,
+} from '../dto/application.dto';
 
 @ApiTags('Applications')
 @ApiBearerAuth()
@@ -19,9 +26,37 @@ export class ApplicationController {
     return this.applicationService.login(input);
   }
 
+  @Post('passport')
+  uploadPassport(@Body() input: { applicationId: number; passport: string }) {
+    return this.applicationService.uploadPassport(input.applicationId, input.passport);
+  }
+
   @Post()
   startApplication(@Body() input: ApplicationDTO) {
     return this.applicationService.createApplication(input);
+  }
+
+  @Patch('submit-application')
+  submitApplication(@Body('id') id: number) {
+    return this.applicationService.submitApplication(id);
+  }
+
+  // bank details
+  @Post('bank-detail')
+  createBankDetails(@Body() input: CreateBankDetailDTO) {
+    return this.applicationService.updateBankDetails(input);
+  }
+
+  // documents
+  @Post('documents')
+  uploadDocuments(@Body() input: CreateDocumentUploadDTO) {
+    return this.applicationService.uploadDocuments(input);
+  }
+
+  // school records
+  @Post('school-record')
+  uploadSchoolRecords(@Body() input: CreateSchoolRecordDTO) {
+    return this.applicationService.updateSchoolRecord(input);
   }
 
   @Get()

@@ -25,7 +25,7 @@ const items = [
   },
   {
     label: 'Support Programs',
-    to: '/#programs',
+    to: '/programs',
     icon: 'i-lucide-heart-handshake',
   },
 ];
@@ -43,11 +43,19 @@ const items = [
 
     <template #right>
       <UColorModeButton />
+      <UButton
+        to="/student/dashboard"
+        label="Check Status"
+        color="gray"
+        variant="ghost"
+        icon="i-lucide-clipboard-list"
+        class="hidden sm:flex"
+      />
       <nuxt-link to="/admin" v-if="user">Dashboard</nuxt-link>
       <UButton
         v-else
         to="/auth/login"
-        label="Login"
+        label="Staff Login"
         color="primary"
         variant="outline"
         icon="i-lucide-log-in"

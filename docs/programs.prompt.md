@@ -1,43 +1,8 @@
-Develop an asset management module for the admin dashboard with the following requirements:
+Analyze and redesign the application's user flow to enhance clarity and usability, focusing on the journey from the homepage to program discovery, application submission, and applicant login. Specifically:
 
-**Features:**
-
-1. **Asset Creation**
-
-   - Allow admins to create a new asset with fields: asset name, description, location, and asset number.
-   - Enable image upload for each asset.
-   - If an asset number is not provided, automatically generate a unique asset number.
-   - Preserve existing asset numbers for assets already numbered.
-
-2. **Asset Listing**
-
-   - Display all assets with details, including image thumbnails.
-
-3. **Asset Editing**
-
-   - Allow editing of asset details and updating the asset image.
-
-4. **Asset Deletion**
-
-   - Enable deletion of assets from the system.
-
-5. **Search and Filter**
-
-   - Implement search by asset name or asset number.
-   - Provide filtering by location and asset type.
-
-6. **Validation**
-
-   - Ensure all required fields are completed during asset creation and editing.
-
-7. **User Interface**
-   - Design intuitive forms for asset creation and editing.
-   - Present a clean, organized layout for asset listing.
-
-**Technical Requirements:**
-
-- Implement both API endpoints and frontend components for all features.
-- Integrate the module into the admin dashboard.
-- Follow best practices for security and data validation.
-
-Note: When use a `<USelectMenu>` component, don't forget to use `:items` instead of `:options` and ensure it has a `value-key="value"` attribute.,
+- Ensure all CTA buttons on the homepage link to available and relevant pages.
+- Clearly distinguish between different programs (e.g., scholarships, 'free Jamb') with intuitive navigation and descriptions.
+- Provide a prominent, clearly labeled login option for applicants, accessible from the homepage and relevant subpages.
+- Restructure the homepage layout to guide users seamlessly toward program exploration and application processes.
+- Address UI/UX inconsistencies, ensuring a cohesive and accessible design throughout.
+- Reference established UI/UX best practices (e.g., [Nielsen Norman Group Guidelines](https://www.nngroup.com/articles/ten-usability-heuristics/)) and, if possible, include wireframes or annotated mockups to illustrate proposed changes.

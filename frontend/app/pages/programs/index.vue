@@ -43,9 +43,25 @@ const {
         <p class="mt-1 text-sm text-muted">Choose an active program to apply.</p>
       </div>
 
-      <UButton color="neutral" variant="outline" :loading="status === 'pending'" @click="refresh()">
-        Refresh
-      </UButton>
+      <div class="flex items-center gap-2">
+        <UButton
+          to="/student/dashboard"
+          color="gray"
+          variant="ghost"
+          icon="i-lucide-clipboard-list"
+          class="hidden sm:flex"
+        >
+          Check Status
+        </UButton>
+        <UButton
+          color="neutral"
+          variant="outline"
+          :loading="status === 'pending'"
+          @click="refresh()"
+        >
+          Refresh
+        </UButton>
+      </div>
     </div>
 
     <UCard v-if="error" class="mt-6">

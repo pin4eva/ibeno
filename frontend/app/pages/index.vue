@@ -22,13 +22,13 @@ useHead({
             </p>
             <div>
               <UButton
-                to="/applications"
+                to="/programs"
                 size="xl"
                 color="white"
                 variant="solid"
                 class="text-primary-700 py-4 font-semibold rounded-tl-none rounded-br-none rounded-tr-3xl rounded-bl-3xl px-8"
               >
-                Apply For Scholarship
+                Explore Programs
               </UButton>
             </div>
           </div>
@@ -97,7 +97,7 @@ useHead({
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Education Card -->
           <NuxtLink
-            to="/applications"
+            to="/programs"
             class="group block bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-800 overflow-hidden"
           >
             <div class="aspect-video overflow-hidden">
@@ -119,7 +119,7 @@ useHead({
 
           <!-- Medical Mission Card -->
           <NuxtLink
-            to="/support-programs/medical-mission"
+            to="/programs"
             class="group block bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-800 overflow-hidden"
           >
             <div class="aspect-video overflow-hidden">
@@ -141,7 +141,7 @@ useHead({
 
           <!-- Community Service Card -->
           <NuxtLink
-            to="/support-programs/community-service"
+            to="/programs"
             class="group block bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-800 overflow-hidden"
           >
             <div class="aspect-video overflow-hidden">
@@ -196,7 +196,12 @@ useHead({
             <p class="text-gray-600 dark:text-gray-300 mb-6">
               Apply for scholarships, track your application status, and manage your profile.
             </p>
-            <UButton to="/applications" block variant="soft"> Go to Portal </UButton>
+            <div class="space-y-2">
+              <UButton to="/programs" block variant="soft"> Apply Now </UButton>
+              <UButton to="/student/dashboard" block variant="outline" color="gray">
+                Check Status
+              </UButton>
+            </div>
           </div>
 
           <!-- Contractors -->

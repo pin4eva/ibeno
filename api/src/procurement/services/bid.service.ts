@@ -191,10 +191,7 @@ export class BidService {
       throw new BadRequestException('Cannot update bid after submission deadline');
     }
 
-    if (
-      procurement &&
-      procurement.status !== ProcurementStatusEnum.published
-    ) {
+    if (procurement && procurement.status !== ProcurementStatusEnum.published) {
       throw new BadRequestException('Cannot update bid for this procurement');
     }
 

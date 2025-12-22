@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { ProcurementController } from './controllers/procurement.controller';
 import { BidController } from './controllers/bid.controller';
 import { ContractorController } from './controllers/contractor.controller';
@@ -8,7 +9,7 @@ import { BidService } from './services/bid.service';
 import { ContractorService } from './services/contractor.service';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, CloudinaryModule],
   controllers: [ProcurementController, BidController, ContractorController],
   providers: [ProcurementService, BidService, ContractorService],
   exports: [ProcurementService, BidService, ContractorService],

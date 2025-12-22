@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import * as XLSX from 'xlsx';
 import { PrismaService } from '../../prisma.service';
 import {
   CreateContractorDTO,
@@ -251,5 +252,110 @@ export class ContractorService {
       },
       results,
     };
+  }
+
+  /**
+   * Import contractors from Excel file
+   */
+  async importFromExcel(file: Express.Multer.File) {
+    try {
+      const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet);
+
+      const contractors: CreateContractorDTO[] = data.map((row: any) => ({
+        contractorNo: row['Contractor No'] || row['contractorNo'] || '',
+        oldRegNo: row['Old Reg No'] || row['oldRegNo'] || '',
+        cacRegNo: row['CAC Reg No'] || row['cacRegNo'] || '',
+        companyName: row['Company Name'] || row['companyName'] || '',
+        status: row['Status'] || row['status'] || 'ACTIVE',
+        registrationCategory: row['Registration Category'] || row['registrationCategory'] || '',
+        majorArea: row['Major Area'] || row['majorArea'] || '',
+        subArea: row['Sub Area'] || row['subArea'] || '',
+        stateOfOrigin: row['State of Origin'] || row['stateOfOrigin'] || '',
+        community: row['Community'] || row['community'] || '',
+        contactPerson: row['Contact Person'] || row['contactPerson'] || '',
+        phone: row['Phone'] || row['phone'] || '',
+        email: row['Email'] || row['email'] || '',
+        notes: row['Notes'] || row['notes'] || '',
+        sourceSheet: sheetName,
+      }));
+
+      const results = {
+        total: contractors.length,
+        created: 0,
+        updated: 0,
+        errors: [] as Array<{ row: number; error: string }>,
+      };
+
+      for (let i = 0; i < contractors.length; i++) {
+        const contractor = contractors[i];
+        try {
+          // Check if contractor exists
+          const existing = await this.prisma.contractor.findUnique({
+            where: { contractorNo: contractor.contractorNo },
+          });
+
+          if (existing) {
+            // Update existing contractor
+            await this.prisma.contractor.update({
+              where: { contractorNo: contractor.contractorNo },
+              data: contractor,
+            });
+            results.updated++;
+          } else {
+            // Create new contractor
+            await this.createContractor(contractor);
+            results.created++;
+          }
+        } catch (error) {
+          results.errors.push({
+            row: i + 1,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      }
+
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get contractor's bid history
+   */
+  async getContractorBids(contractorNo: string) {
+    const contractor = await this.prisma.contractor.findUnique({
+      where: { contractorNo },
+      include: {
+        bids: {
+          include: {
+            procurement: {
+              select: {
+                id: true,
+                referenceNo: true,
+                title: true,
+                category: true,
+                status: true,
+                submissionDeadline: true,
+              },
+            },
+            events: {
+              orderBy: { createdAt: 'desc' },
+              take: 5,
+            },
+          },
+          orderBy: { submittedAt: 'desc' },
+        },
+      },
+    });
+
+    if (!contractor) {
+      throw new NotFoundException(`Contractor with number ${contractorNo} not found`);
+    }
+
+    return contractor.bids;
   }
 }

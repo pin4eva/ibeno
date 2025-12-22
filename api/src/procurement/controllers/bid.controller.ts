@@ -7,23 +7,82 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { BidService } from '../services/bid.service';
 import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 
 @ApiTags('Bids')
 @Controller('procurements/:procurementId/bids')
 export class BidController {
-  constructor(private readonly bidService: BidService) {}
+  constructor(
+    private readonly bidService: BidService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'technicalProposal', maxCount: 1 },
+      { name: 'commercialProposal', maxCount: 1 },
+    ]),
+  )
   @ApiOperation({ summary: 'Submit a bid (Contractor)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        contractorNo: { type: 'string' },
+        contactName: { type: 'string' },
+        contactEmail: { type: 'string' },
+        contactPhone: { type: 'string' },
+        price: { type: 'number' },
+        notes: { type: 'string' },
+        technicalProposal: {
+          type: 'string',
+          format: 'binary',
+        },
+        commercialProposal: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   async submitBid(
     @Param('procurementId', ParseIntPipe) procurementId: number,
     @Body() input: CreateBidDTO,
+    @UploadedFiles()
+    files?: {
+      technicalProposal?: Express.Multer.File[];
+      commercialProposal?: Express.Multer.File[];
+    },
   ) {
-    return this.bidService.submitBid(procurementId, input);
+    let technicalProposalUrl: string | undefined;
+    let commercialProposalUrl: string | undefined;
+
+    // Upload technical proposal if provided
+    if (files?.technicalProposal?.[0]) {
+      const result = await this.cloudinaryService.uploadImage(files.technicalProposal[0]);
+      technicalProposalUrl = result.secure_url;
+    }
+
+    // Upload commercial proposal if provided
+    if (files?.commercialProposal?.[0]) {
+      const result = await this.cloudinaryService.uploadImage(files.commercialProposal[0]);
+      commercialProposalUrl = result.secure_url;
+    }
+
+    return this.bidService.submitBid(procurementId, {
+      ...input,
+      technicalProposalUrl,
+      commercialProposalUrl,
+    });
   }
 
   @Get()

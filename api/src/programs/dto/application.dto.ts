@@ -214,6 +214,20 @@ export class CreateBankDetailDTO {
   accountName: string;
 }
 
+export interface OldProgramDTO {
+  _id: ObjectId;
+  name: string;
+  year: number;
+  isActive: boolean;
+  description: string;
+  endDate: Date;
+  image: string;
+  startDate: Date;
+  type: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface OldApplicationDTO {
   _id: ObjectId;
   firstName: string;

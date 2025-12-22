@@ -14,6 +14,11 @@ export class UserController {
     return this.userService.getUsers(filter);
   }
 
+  @Patch('migrate')
+  migrateUsers() {
+    return this.userService.importUserAndAuth();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);

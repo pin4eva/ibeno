@@ -1,3 +1,213 @@
 <template>
-  <h1>Procurement</h1>
+  <UContainer>
+    <div class="container mx-auto py-8 space-y-6">
+      <div class="text-center space-y-2">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Open Procurements</h1>
+        <p class="text-gray-600 dark:text-gray-400">
+          Browse and bid on available procurement opportunities
+        </p>
+      </div>
+
+      <!-- Loading State -->
+      <div v-if="procurementStore.loading" class="text-center py-12">
+        <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary-500" />
+        <p class="mt-2 text-gray-600">Loading procurements...</p>
+      </div>
+
+      <!-- Procurement List -->
+      <div
+        v-else-if="filteredProcurements.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <UCard
+          v-for="procurement in filteredProcurements"
+          :key="procurement.id"
+          class="hover:shadow-lg transition-shadow"
+        >
+          <div class="space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">
+                  {{ procurement.title }}
+                </h3>
+                <p class="text-sm text-gray-500 mt-1">{{ procurement.referenceNo }}</p>
+              </div>
+              <UBadge color="green" variant="subtle">{{ procurement.status }}</UBadge>
+            </div>
+
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <UIcon name="i-lucide-map-pin" class="w-4 h-4" />
+                <span>{{ procurement.location }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <UIcon name="i-lucide-tag" class="w-4 h-4" />
+                <span>{{ procurement.category }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <UIcon name="i-lucide-calendar" class="w-4 h-4" />
+                <span>Deadline: {{ formatDate(procurement.submissionDeadline) }}</span>
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+              {{ procurement.description }}
+            </p>
+
+            <div class="flex gap-2 pt-4 border-t">
+              <UButton color="primary" variant="solid" block :to="`/procurement/${procurement.id}`">
+                View Details
+              </UButton>
+            </div>
+          </div>
+        </UCard>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else class="space-y-6 py-12">
+        <div class="text-center space-y-2">
+          <UIcon name="i-lucide-inbox" class="w-16 h-16 mx-auto text-gray-400" />
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">No open procurements</h3>
+          <p class="text-gray-500">
+            There are no open opportunities that match your filters. Clear filters or check back
+            soon.
+          </p>
+          <div class="flex justify-center gap-2">
+            <UButton color="primary" variant="solid" size="sm" @click="resetFilters">
+              Clear filters
+            </UButton>
+            <UButton color="neutral" variant="soft" size="sm" to="/"> Return home </UButton>
+          </div>
+        </div>
+
+        <div v-if="activeProcurements.length" class="space-y-3">
+          <div class="flex items-center gap-2">
+            <UIcon name="i-lucide-rocket" class="w-5 h-5 text-primary-500" />
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-200">
+              Active procurement opportunities
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <UCard
+              v-for="procurement in activeProcurements"
+              :key="procurement.id"
+              class="hover:shadow-lg transition-shadow"
+            >
+              <div class="space-y-4">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">
+                      {{ procurement.title }}
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1">{{ procurement.referenceNo }}</p>
+                  </div>
+                  <UBadge color="green" variant="subtle">{{ procurement.status }}</UBadge>
+                </div>
+
+                <div class="space-y-2 text-sm">
+                  <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                    <UIcon name="i-lucide-map-pin" class="w-4 h-4" />
+                    <span>{{ procurement.location }}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                    <UIcon name="i-lucide-tag" class="w-4 h-4" />
+                    <span>{{ procurement.category }}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                    <UIcon name="i-lucide-calendar" class="w-4 h-4" />
+                    <span>Deadline: {{ formatDate(procurement.submissionDeadline) }}</span>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                  {{ procurement.description }}
+                </p>
+
+                <div class="flex gap-2 pt-4 border-t">
+                  <UButton
+                    color="primary"
+                    variant="solid"
+                    block
+                    :to="`/procurement/${procurement.id}`"
+                  >
+                    View Details
+                  </UButton>
+                </div>
+              </div>
+            </UCard>
+          </div>
+        </div>
+      </div>
+    </div>
+  </UContainer>
 </template>
+
+<script setup lang="ts">
+import { useProcurementStore } from '~/stores/procurement/procurement.store';
+import { ProcurementStatus } from '~/interfaces/procurement/procurement.interface';
+
+const procurementStore = useProcurementStore();
+const toast = useToast();
+
+const search = ref('');
+const selectedCategory = ref<string | undefined>(undefined);
+const selectedLocation = ref<string | undefined>(undefined);
+const activeProcurements = computed(() => procurementStore.publishedProcurements);
+
+const filteredProcurements = computed(() => {
+  let filtered = procurementStore.publishedProcurements;
+
+  if (search.value) {
+    const searchLower = search.value.toLowerCase();
+    filtered = filtered.filter(
+      (p) =>
+        p.title.toLowerCase().includes(searchLower) ||
+        p.referenceNo.toLowerCase().includes(searchLower) ||
+        p.description.toLowerCase().includes(searchLower),
+    );
+  }
+
+  if (selectedCategory.value) {
+    filtered = filtered.filter((p) => p.category === selectedCategory.value);
+  }
+
+  if (selectedLocation.value) {
+    filtered = filtered.filter((p) => p.location === selectedLocation.value);
+  }
+
+  return filtered;
+});
+
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+const resetFilters = () => {
+  search.value = '';
+  selectedCategory.value = undefined;
+  selectedLocation.value = undefined;
+};
+
+const fetchData = async () => {
+  try {
+    await procurementStore.fetchProcurements({ status: ProcurementStatus.PUBLISHED });
+    await procurementStore.fetchCategories();
+    await procurementStore.fetchLocations();
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Error',
+      description: 'Failed to fetch procurements',
+      color: 'red',
+    });
+  }
+};
+
+onMounted(() => {
+  fetchData();
+});
+</script>

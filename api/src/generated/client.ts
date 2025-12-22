@@ -82,3 +82,28 @@ export type SchoolRecord = Prisma.SchoolRecordModel
  * 
  */
 export type Asset = Prisma.AssetModel
+/**
+ * Model Contractor
+ * 
+ */
+export type Contractor = Prisma.ContractorModel
+/**
+ * Model Procurement
+ * 
+ */
+export type Procurement = Prisma.ProcurementModel
+/**
+ * Model ProcurementDocument
+ * 
+ */
+export type ProcurementDocument = Prisma.ProcurementDocumentModel
+/**
+ * Model Bid
+ * 
+ */
+export type Bid = Prisma.BidModel
+/**
+ * Model BidEvent
+ * 
+ */
+export type BidEvent = Prisma.BidEventModel

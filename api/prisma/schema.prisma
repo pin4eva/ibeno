@@ -218,3 +218,122 @@ model Asset {
 
   @@map("assets")
 }
+
+model Contractor {
+  id                   Int       @id @default(autoincrement())
+  contractorNo         String    @unique
+  oldRegNo             String?
+  cacRegNo             String?
+  companyName          String
+  status               String    @default("ACTIVE")
+  registrationCategory String?
+  majorArea            String?
+  subArea              String?
+  stateOfOrigin        String?
+  community            String?
+  contactPerson        String?
+  phone                String?
+  email                String?
+  notes                String?
+  sourceSheet          String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  bids                 Bid[]
+
+  @@map("contractors")
+}
+
+model Procurement {
+  id                    Int                   @id @default(autoincrement())
+  referenceNo           String                @unique
+  title                 String
+  category              String
+  type                  String
+  location              String
+  description           String
+  eligibilityCriteria   String?
+  submissionDeadline    DateTime
+  publishDate           DateTime              @default(now())
+  status                ProcurementStatusEnum @default(draft)
+  budgetEstimate        Float?
+  preBidMeetingDate     DateTime?
+  preBidMeetingLocation String?
+  preBidNotes           String?
+  tags                  String[]              @default([])
+  contactEmail          String?
+  contactPhone          String?
+  createdBy             Int
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  documents             ProcurementDocument[]
+  bids                  Bid[]
+
+  @@map("procurements")
+}
+
+model ProcurementDocument {
+  id            Int         @id @default(autoincrement())
+  procurementId Int
+  name          String
+  url           String
+  mimeType      String?
+  size          Int?
+  createdAt     DateTime    @default(now())
+  procurement   Procurement @relation(fields: [procurementId], references: [id], onDelete: Cascade)
+
+  @@map("procurement_documents")
+}
+
+model Bid {
+  id                    Int            @id @default(autoincrement())
+  procurementId         Int
+  contractorId          Int
+  contractorNo          String
+  contactName           String
+  contactEmail          String
+  contactPhone          String
+  price                 Float?
+  technicalProposalUrl  String?
+  commercialProposalUrl String?
+  otherFiles            String[]       @default([])
+  notes                 String?
+  status                BidStatusEnum  @default(submitted)
+  submittedAt           DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  procurement           Procurement    @relation(fields: [procurementId], references: [id], onDelete: Cascade)
+  contractor            Contractor     @relation(fields: [contractorId], references: [id])
+  events                BidEvent[]
+
+  @@unique([procurementId, contractorId])
+  @@map("bids")
+}
+
+model BidEvent {
+  id        Int      @id @default(autoincrement())
+  bidId     Int
+  action    String
+  actorId   Int?
+  actorRole String?
+  metadata  String?
+  createdAt DateTime @default(now())
+  bid       Bid      @relation(fields: [bidId], references: [id], onDelete: Cascade)
+
+  @@map("bid_events")
+}
+
+enum ProcurementStatusEnum {
+  draft
+  published
+  closed
+  awarded
+  archived
+}
+
+enum BidStatusEnum {
+  submitted
+  under_review
+  accepted
+  rejected
+  withdrawn
+  awarded
+}

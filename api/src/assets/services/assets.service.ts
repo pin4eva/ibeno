@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateAssetDTO, UpdateAssetDTO, FilterAssetsDTO } from '../dto/asset.dto';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
-import { Prisma } from 'src/generated/client';
+import { Prisma } from '../../generated/client';
 
 @Injectable()
 export class AssetsService {

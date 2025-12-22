@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/user.store';
 
+const emit = defineEmits<{
+  success: [];
+}>();
+
 const userStore = useUserStore();
 const { loading, error } = storeToRefs(userStore);
 
@@ -25,7 +29,9 @@ const departments = [
 
 async function handleInvite() {
   await userStore.inviteUser(form);
-  navigateTo('/admin/users');
+  if (!error.value) {
+    emit('success');
+  }
 }
 </script>
 <template>

@@ -8,6 +8,7 @@ export interface User {
   firstName: string;
   lastName: string;
   phone?: string;
+  avatar?: string;
   role: string;
   department: string;
   status: string;
@@ -110,6 +111,38 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
+  const updateProfile = async (data: Partial<User>) => {
+    try {
+      loading.value = true;
+      const response = await apiFetch<User>('/users/profile', {
+        method: 'PATCH',
+        body: data,
+      });
+      return response;
+    } catch (er: unknown) {
+      error.value = (er as FetchError).data?.message || 'Failed to update profile';
+      throw er;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const changePassword = async (data: { oldPassword: string; newPassword: string }) => {
+    try {
+      loading.value = true;
+      const response = await apiFetch('/users/profile/password', {
+        method: 'PATCH',
+        body: data,
+      });
+      return response;
+    } catch (er: unknown) {
+      error.value = (er as FetchError).data?.message || 'Failed to change password';
+      throw er;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     users,
     total,
@@ -120,5 +153,7 @@ export const useUserStore = defineStore('user', () => {
     updateUser,
     deleteUser,
     inviteUser,
+    updateProfile,
+    changePassword,
   };
 });

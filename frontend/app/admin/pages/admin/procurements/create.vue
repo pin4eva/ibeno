@@ -185,8 +185,10 @@
 <script setup lang="ts">
 import type { CreateProcurementInput, ProcurementStatus } from '~/interfaces/procurement/procurement.interface';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
+import { useAuthStore } from '~/stores/auth.store';
 
 const procurementStore = useProcurementStore();
+const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
 
@@ -207,7 +209,7 @@ const formState = reactive<CreateProcurementInput & { status?: string }>({
   tags: [],
   contactEmail: '',
   contactPhone: '',
-  createdBy: 1, // TODO: Get from auth store
+  createdBy: authStore.user?.id || 1, // Use authenticated user ID or fallback to 1
   status: 'draft',
 });
 

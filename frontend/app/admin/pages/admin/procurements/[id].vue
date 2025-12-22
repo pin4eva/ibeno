@@ -358,6 +358,152 @@
       </template>
     </UModal>
   </div>
+
+  <!-- Bid Detail Modal -->
+  <UModal v-model:open="showBidDetailModal" size="lg">
+    <template #header>
+      <h3 class="text-lg font-semibold">Bid Details</h3>
+    </template>
+
+    <template #body>
+      <div v-if="selectedBid" class="space-y-4">
+        <!-- Contractor Information -->
+        <UCard>
+          <template #header>
+            <h4 class="font-semibold">Contractor Information</h4>
+          </template>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Contractor Number</p>
+              <p class="mt-1 text-gray-900 dark:text-white font-mono">{{ selectedBid.contractorNo }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Contact Person</p>
+              <p class="mt-1 text-gray-900 dark:text-white">{{ selectedBid.contactName }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Email</p>
+              <p class="mt-1 text-gray-900 dark:text-white">{{ selectedBid.contactEmail }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Phone</p>
+              <p class="mt-1 text-gray-900 dark:text-white">{{ selectedBid.contactPhone }}</p>
+            </div>
+          </div>
+        </UCard>
+
+        <!-- Bid Details -->
+        <UCard>
+          <template #header>
+            <h4 class="font-semibold">Bid Details</h4>
+          </template>
+          <div class="space-y-3">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Bid Price</p>
+              <p class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
+                {{ selectedBid.price ? `₦${selectedBid.price.toLocaleString()}` : 'N/A' }}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-500">Current Status</p>
+              <UBadge :color="getBidStatusColor(selectedBid.status)" variant="subtle" class="mt-1">
+                {{ selectedBid.status.replace('_', ' ') }}
+              </UBadge>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-500">Submitted At</p>
+              <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(selectedBid.submittedAt) }}</p>
+            </div>
+
+            <div v-if="selectedBid.notes">
+              <p class="text-sm font-medium text-gray-500">Notes</p>
+              <p class="mt-1 text-gray-900 dark:text-white">{{ selectedBid.notes }}</p>
+            </div>
+          </div>
+        </UCard>
+
+        <!-- Documents -->
+        <UCard>
+          <template #header>
+            <h4 class="font-semibold">Proposal Documents</h4>
+          </template>
+          <div class="space-y-2">
+            <div v-if="selectedBid.technicalProposalUrl" class="flex items-center justify-between p-3 rounded-lg border">
+              <div class="flex items-center gap-3">
+                <UIcon name="i-lucide-file" class="w-5 h-5 text-gray-500" />
+                <span class="font-medium">Technical Proposal</span>
+              </div>
+              <UButton
+                icon="i-lucide-download"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                :href="selectedBid.technicalProposalUrl"
+                target="_blank"
+              >
+                Download
+              </UButton>
+            </div>
+
+            <div v-if="selectedBid.commercialProposalUrl" class="flex items-center justify-between p-3 rounded-lg border">
+              <div class="flex items-center gap-3">
+                <UIcon name="i-lucide-file" class="w-5 h-5 text-gray-500" />
+                <span class="font-medium">Commercial Proposal</span>
+              </div>
+              <UButton
+                icon="i-lucide-download"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                :href="selectedBid.commercialProposalUrl"
+                target="_blank"
+              >
+                Download
+              </UButton>
+            </div>
+
+            <div v-if="!selectedBid.technicalProposalUrl && !selectedBid.commercialProposalUrl" class="text-center py-4 text-gray-500">
+              No documents uploaded
+            </div>
+          </div>
+        </UCard>
+
+        <!-- Status Update -->
+        <UCard>
+          <template #header>
+            <h4 class="font-semibold">Update Status</h4>
+          </template>
+          <div class="space-y-3">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Change the status of this bid to reflect the evaluation progress.
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+              <UButton
+                v-for="option in bidStatusOptions"
+                :key="option.value"
+                :color="selectedBid.status === option.value ? 'primary' : 'gray'"
+                :variant="selectedBid.status === option.value ? 'solid' : 'outline'"
+                size="sm"
+                :loading="updatingBidStatus"
+                :disabled="selectedBid.status === option.value"
+                @click="updateBidStatus(selectedBid.id, option.value)"
+              >
+                {{ option.label }}
+              </UButton>
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </template>
+
+    <template #footer>
+      <div class="flex gap-2 justify-end">
+        <UButton color="gray" variant="ghost" @click="showBidDetailModal = false">Close</UButton>
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <script setup lang="ts">
@@ -552,13 +698,90 @@ const deleteDocument = async (documentId: number) => {
 };
 
 const viewBid = (bid: Bid) => {
-  // Navigate to bid detail or show modal
-  console.log('View bid:', bid);
+  selectedBid.value = bid;
+  showBidDetailModal.value = true;
 };
 
 const exportBids = () => {
   // Export bids to CSV
-  console.log('Export bids');
+  if (!procurement.value?.bids || procurement.value.bids.length === 0) {
+    toast.add({
+      title: 'Warning',
+      description: 'No bids to export',
+      color: 'orange',
+    });
+    return;
+  }
+
+  // Create CSV content
+  const headers = ['Contractor No', 'Contact Name', 'Email', 'Phone', 'Price', 'Status', 'Submitted At'];
+  const rows = procurement.value.bids.map((bid) => [
+    bid.contractorNo,
+    bid.contactName,
+    bid.contactEmail,
+    bid.contactPhone,
+    bid.price || 'N/A',
+    bid.status,
+    formatDate(bid.submittedAt),
+  ]);
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+  ].join('\n');
+
+  // Download
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bids-${procurement.value.referenceNo}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
+
+const selectedBid = ref<Bid | null>(null);
+const showBidDetailModal = ref(false);
+const updatingBidStatus = ref(false);
+
+const bidStatusOptions = [
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Under Review', value: 'under_review' },
+  { label: 'Accepted', value: 'accepted' },
+  { label: 'Rejected', value: 'rejected' },
+  { label: 'Awarded', value: 'awarded' },
+];
+
+const updateBidStatus = async (bidId: number, status: string) => {
+  updatingBidStatus.value = true;
+  try {
+    // Import bid store
+    const { useBidStore } = await import('~/stores/procurement/bid.store');
+    const bidStore = useBidStore();
+
+    await bidStore.changeBidStatus(procurementId.value, bidId, {
+      status: status as any,
+    });
+
+    toast.add({
+      title: 'Success',
+      description: `Bid status updated to ${status.replace('_', ' ')}`,
+      color: 'green',
+    });
+
+    // Refresh procurement data
+    await procurementStore.fetchProcurementById(procurementId.value);
+    showBidDetailModal.value = false;
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Error',
+      description: 'Failed to update bid status',
+      color: 'red',
+    });
+  } finally {
+    updatingBidStatus.value = false;
+  }
 };
 
 onMounted(async () => {

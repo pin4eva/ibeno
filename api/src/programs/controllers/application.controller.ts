@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ApplicationService } from '../services/application.service';
+import { AuthGuard } from '../../guards/auth.guard';
 import {
   ApplicantLoginDTO,
   ApplicationDTO,
@@ -9,10 +9,7 @@ import {
   CreateSchoolRecordDTO,
   FilterApplicationsDTO,
 } from '../dto/application.dto';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { Roles } from '../../decorators/roles.decorator';
-import { UserRoleEnum } from '../../generated/enums';
+import { ApplicationService } from '../services/application.service';
 
 @ApiTags('Applications')
 @ApiBearerAuth()

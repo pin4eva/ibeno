@@ -1,17 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { CreateContractorDTO, FilterContractorsDTO } from '../dto/contractor.dto';
+import {
+  CreateContractorDTO,
+  FilterContractorsDTO,
+  UpdateContractorDTO,
+} from '../dto/contractor.dto';
 
 @Injectable()
 export class ContractorService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private async generateContractorNo() {
+    const latest = await this.prisma.contractor.findFirst({
+      orderBy: { id: 'desc' },
+      select: { id: true },
+    });
+    const nextId = (latest?.id || 0) + 1;
+    return `CTR-${nextId.toString().padStart(5, '0')}`;
+  }
+
   /**
    * Create a new contractor
    */
   async createContractor(input: CreateContractorDTO) {
-    return this.prisma.contractor.create({
-      data: input,
+    try {
+      const contractorNo = input.contractorNo?.trim() || (await this.generateContractorNo());
+      return this.prisma.contractor.create({
+        data: { ...input, contractorNo },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update a contractor
+   */
+  async updateContractor(id: number, input: UpdateContractorDTO) {
+    const existing = await this.prisma.contractor.findUnique({ where: { id } });
+
+    if (!existing) {
+      throw new NotFoundException(`Contractor with ID ${id} not found`);
+    }
+
+    const contractorNo = input.contractorNo?.trim() || existing.contractorNo;
+    const { id: _, ...data } = input;
+
+    return this.prisma.contractor.update({
+      where: { id },
+      data: { ...data, contractorNo },
     });
   }
 
@@ -97,7 +134,10 @@ export class ContractorService {
    */
   async bulkCreateContractors(contractors: CreateContractorDTO[]) {
     return this.prisma.contractor.createMany({
-      data: contractors,
+      data: contractors.map((c) => ({
+        ...c,
+        contractorNo: c.contractorNo?.trim() || '',
+      })),
       skipDuplicates: true,
     });
   }

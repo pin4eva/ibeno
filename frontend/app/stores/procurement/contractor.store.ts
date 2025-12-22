@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
 import { apiFetch } from '~/utils/api-fetch';
-import type { Contractor, FilterContractorsInput } from '~/interfaces/procurement/contractor.interface';
+import type {
+  Contractor,
+  CreateContractorInput,
+  FilterContractorsInput,
+  UpdateContractorInput,
+} from '~/interfaces/procurement/contractor.interface';
 
 interface ContractorState {
   contractors: Contractor[];
@@ -61,6 +66,51 @@ export const useContractorStore = defineStore('contractor', {
         return this.currentContractor;
       } catch (error) {
         this.error = error instanceof Error ? error.message : 'Failed to fetch contractor';
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async createContractor(input: CreateContractorInput) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const contractor = await apiFetch<Contractor>('/contractors', {
+          method: 'POST',
+          body: input,
+        });
+        this.contractors = [contractor, ...this.contractors];
+        return contractor;
+      } catch (error) {
+        this.error = error instanceof Error ? error.message : 'Failed to create contractor';
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateContractor(input: UpdateContractorInput) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const contractor = await apiFetch<Contractor>(`/contractors/${input.id}`, {
+          method: 'PATCH',
+          body: input,
+        });
+
+        const index = this.contractors.findIndex((c) => c.id === input.id);
+        if (index !== -1) {
+          this.contractors[index] = contractor;
+        }
+
+        if (this.currentContractor?.id === input.id) {
+          this.currentContractor = contractor;
+        }
+
+        return contractor;
+      } catch (error) {
+        this.error = error instanceof Error ? error.message : 'Failed to update contractor';
         throw error;
       } finally {
         this.loading = false;

@@ -96,6 +96,15 @@ const links = [
     to: '/admin/programs',
   },
   {
+    label: 'Procurement',
+    icon: 'i-lucide-briefcase',
+    children: [
+      { label: 'Procurements', to: '/admin/procurements', icon: 'i-lucide-files' },
+      { label: 'Contractors', to: '/admin/contractors', icon: 'i-lucide-building-2' },
+      { label: 'Bids', to: '/admin/procurements/bids', icon: 'i-lucide-file-text' },
+    ],
+  },
+  {
     label: 'Assets',
     icon: 'i-lucide-package',
     to: '/admin/assets',

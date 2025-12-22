@@ -141,6 +141,22 @@ const columns: TableColumn<Program>[] = [
     },
   },
   {
+    id: 'applications',
+    header: 'Applications',
+    cell: ({ row }) => {
+      const count = row.original._count?.applications ?? row.original.applications?.length ?? 0;
+      return h(
+        UBadge,
+        {
+          color: count > 0 ? 'primary' : 'gray',
+          variant: 'subtle',
+          size: 'xs',
+        },
+        () => `${count}`,
+      );
+    },
+  },
+  {
     accessorKey: 'startDate',
     header: 'Start Date',
     cell: ({ row }) => {

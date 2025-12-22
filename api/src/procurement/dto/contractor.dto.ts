@@ -1,10 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { Type } from 'class-transformer';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateContractorDTO {
   @ApiProperty({ description: 'Contractor number (unique)' })
+  @IsOptional()
   @IsString()
-  contractorNo: string;
+  contractorNo?: string;
 
   @ApiPropertyOptional({ description: 'Old registration number' })
   @IsOptional()
@@ -74,6 +77,13 @@ export class CreateContractorDTO {
   @IsOptional()
   @IsString()
   sourceSheet?: string;
+}
+
+export class UpdateContractorDTO extends PartialType(CreateContractorDTO) {
+  @ApiProperty({ description: 'Contractor ID' })
+  @Type(() => Number)
+  @IsNumber()
+  id: number;
 }
 
 export class FilterContractorsDTO {

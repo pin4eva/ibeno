@@ -56,4 +56,9 @@ export class AuthController {
   async getMe(@CurrentUser() user: User) {
     return user;
   }
+
+  @Post('refresh')
+  refresh(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshAccessToken(refreshToken);
+  }
 }

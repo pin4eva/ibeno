@@ -14,13 +14,13 @@ export default defineNuxtPlugin({
           if (refreshToken.value) {
             try {
               // Ping the API to keep the session alive
-              await $fetch<{ access_token: string }>(apiUrl, {
+              await $fetch<{ accessToken: string }>(apiUrl, {
                 method: 'POST',
                 body: {
-                  refresh_token: refreshToken.value,
+                  refreshToken: refreshToken.value,
                 },
-              }).then(({ access_token }) => {
-                accessToken.value = access_token;
+              }).then((data) => {
+                accessToken.value = data.accessToken;
               });
               console.log('Session keep-alive ping successful.');
             } catch (error) {

@@ -68,4 +68,12 @@ export class ApplicationController {
   getApplicationById(@Param('id') id: number) {
     return this.applicationService.getApplicationById(id);
   }
+
+  @Patch(':id/status')
+  updateApplicationStatus(
+    @Param('id') id: number,
+    @Body() input: { status: string; comment?: string },
+  ) {
+    return this.applicationService.updateApplicationStatus(id, input.status as any, input.comment);
+  }
 }

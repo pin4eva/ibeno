@@ -418,4 +418,55 @@ export class ApplicationService {
 
     return application;
   }
+
+  async updateApplicationStatus(
+    id: number,
+    status: ApplicationStatusEnum,
+    comment?: string,
+  ): Promise<Application> {
+    const application = await this.prisma.application.findUnique({
+      where: { id },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    const updatedApplication = await this.prisma.application.update({
+      where: { id },
+      data: {
+        status,
+        comment: comment || application.comment,
+      },
+      include: {
+        bankDetails: true,
+        schoolRecord: true,
+        documentUpload: true,
+        program: true,
+      },
+    });
+
+    // Send email notification to applicant about status change
+    if (updatedApplication.email) {
+      const statusMessages = {
+        [ApplicationStatusEnum.Accepted]: 'has been approved',
+        [ApplicationStatusEnum.Rejected]: 'has been rejected',
+        [ApplicationStatusEnum.Reviewed]: 'is under review',
+        [ApplicationStatusEnum.InProgress]: 'is in progress',
+        [ApplicationStatusEnum.Submitted]: 'has been submitted',
+      };
+
+      const message = statusMessages[status] || 'has been updated';
+
+      await this.emailService.sendApplicationStatusUpdate(
+        updatedApplication.email,
+        updatedApplication.firstName,
+        updatedApplication.applicationNo || '',
+        message,
+        comment,
+      );
+    }
+
+    return updatedApplication;
+  }
 }

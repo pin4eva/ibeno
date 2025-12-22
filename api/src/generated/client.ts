@@ -77,3 +77,8 @@ export type DocumentUpload = Prisma.DocumentUploadModel
  * 
  */
 export type SchoolRecord = Prisma.SchoolRecordModel
+/**
+ * Model Asset
+ * 
+ */
+export type Asset = Prisma.AssetModel

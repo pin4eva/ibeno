@@ -10,7 +10,7 @@ export default defineNuxtPlugin({
           const environment = useRuntimeConfig().public;
           const refreshToken = useCookie<string>(REFRESH_TOKEN);
           const accessToken = useCookie<string>(ACCESS_TOKEN);
-          const apiUrl = environment.API_URL + '/auth/refresh';
+          const apiUrl = environment.apiBaseUrl + '/auth/refresh';
           if (refreshToken.value) {
             try {
               // Ping the API to keep the session alive

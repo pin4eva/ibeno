@@ -4,6 +4,7 @@ import { Prisma } from '../../generated/client';
 import { OldAuthDto, OldUserDto } from '../dto/auth.dto';
 import { UserRoleEnum, UserStatusEnum } from '../../generated/enums';
 import { UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
+import { MongoClient } from 'mongodb';
 
 @Injectable()
 export class UserService {
@@ -88,14 +89,15 @@ export class UserService {
 
   // import old user data from MongoDB to PostgreSQL
   async importUserAndAuth() {
+    console.log('importing users...');
+    const mongoUrl = process.env.MONGO_URL;
+    if (!mongoUrl) {
+      throw new BadRequestException('MONGO_URL is not defined in environment variables');
+    }
+    const mongoClient = new MongoClient(mongoUrl);
     try {
       // connect to MongoDB
-      const { MongoClient } = await import('mongodb');
-      const mongoUrl = process.env.MONGO_URL;
-      if (!mongoUrl) {
-        throw new BadRequestException('MONGO_URL is not defined in environment variables');
-      }
-      const mongoClient = new MongoClient(mongoUrl);
+
       await mongoClient.connect();
       const mongoDb = mongoClient.db(); // use default database from URI
 
@@ -140,6 +142,8 @@ export class UserService {
       return { message: 'User and Auth data imported successfully' };
     } catch (error) {
       throw error;
+    } finally {
+      await mongoClient.close();
     }
   }
 }

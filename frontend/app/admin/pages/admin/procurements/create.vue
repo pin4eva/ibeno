@@ -26,10 +26,7 @@
               </UFormField>
 
               <UFormField label="Reference Number" name="referenceNo">
-                <UInput
-                  v-model="formState.referenceNo"
-                  placeholder="Auto-generated if blank"
-                />
+                <UInput v-model="formState.referenceNo" placeholder="Auto-generated if blank" />
               </UFormField>
 
               <UFormField label="Category" name="category" required>
@@ -51,12 +48,7 @@
               </UFormField>
 
               <UFormField label="Location" name="location" required>
-                <USelectMenu
-                  v-model="formState.location"
-                  :items="locationOptions"
-                  placeholder="Select location"
-                  value-key="value"
-                />
+                <UInput v-model="formState.location" />
               </UFormField>
 
               <UFormField label="Budget Estimate" name="budgetEstimate">
@@ -183,9 +175,9 @@
 </template>
 
 <script setup lang="ts">
-import type { CreateProcurementInput, ProcurementStatus } from '~/interfaces/procurement/procurement.interface';
-import { useProcurementStore } from '~/stores/procurement/procurement.store';
+import type { CreateProcurementInput } from '~/interfaces/procurement/procurement.interface';
 import { useAuthStore } from '~/stores/auth.store';
+import { useProcurementStore } from '~/stores/procurement/procurement.store';
 
 const procurementStore = useProcurementStore();
 const authStore = useAuthStore();
@@ -231,24 +223,18 @@ const typeOptions = [
   { label: 'Request for Quotation (RFQ)', value: 'Request for Quotation (RFQ)' },
 ];
 
-const locationOptions = [
-  { label: 'Lagos', value: 'Lagos' },
-  { label: 'Abuja', value: 'Abuja' },
-  { label: 'Port Harcourt', value: 'Port Harcourt' },
-  { label: 'Kano', value: 'Kano' },
-  { label: 'Ibadan', value: 'Ibadan' },
-  { label: 'Other', value: 'Other' },
-];
-
 const handleSubmit = async () => {
   try {
     // Parse tags from input
     if (tagsInput.value) {
-      formState.tags = tagsInput.value.split(',').map((tag) => tag.trim()).filter(Boolean);
+      formState.tags = tagsInput.value
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
     }
 
     const procurement = await procurementStore.createProcurement(formState);
-    
+
     toast.add({
       title: 'Success',
       description: `Procurement ${formState.status === 'published' ? 'published' : 'saved as draft'} successfully`,

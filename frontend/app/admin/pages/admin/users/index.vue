@@ -2,13 +2,22 @@
   <div class="space-y-4">
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Users</h2>
-      <UButton
-        icon="i-lucide-user-plus"
-        color="primary"
-        variant="solid"
-        label="Add User"
-        to="/admin/users/create"
-      />
+      <div class="flex gap-2">
+        <UButton
+          icon="i-lucide-mail"
+          color="primary"
+          variant="outline"
+          label="Invite User"
+          @click="isInviteModalOpen = true"
+        />
+        <UButton
+          icon="i-lucide-user-plus"
+          color="primary"
+          variant="solid"
+          label="Add User"
+          to="/admin/users/create"
+        />
+      </div>
     </div>
 
     <!-- Stats -->
@@ -86,6 +95,14 @@
         </div>
       </template>
     </UCard>
+
+    <!-- Invite User Modal -->
+    <UModal v-model:open="isInviteModalOpen" title="Invite User">
+      <template #header>
+        <h3 class="text-lg font-semibold">Invite User</h3>
+      </template>
+      <InviteUser @success="handleInviteSuccess" />
+    </UModal>
   </div>
 </template>
 
@@ -94,11 +111,13 @@ import { h, resolveComponent } from 'vue';
 import type { TableColumn, TableRow } from '@nuxt/ui';
 import { useUserStore, type User } from '~/stores/user.store';
 import { useDebounceFn } from '@vueuse/core';
+import InviteUser from '~/admin/components/InviteUser.vue';
 
 const userStore = useUserStore();
 const page = ref(1);
 const limit = ref(10);
 const search = ref('');
+const isInviteModalOpen = ref(false);
 
 const UAvatar = resolveComponent('UAvatar');
 const UBadge = resolveComponent('UBadge');
@@ -188,5 +207,11 @@ onMounted(() => {
 function onSelect(event: Event, row: TableRow<User>) {
   const user = row.original;
   navigateTo(`/admin/users/${user.id}`);
+}
+
+function handleInviteSuccess() {
+  isInviteModalOpen.value = false;
+  // Optionally refresh the user list
+  fetchUsers();
 }
 </script>

@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Roles } from '../../decorators/roles.decorator';
 import { UserRoleEnum } from '../../generated/enums';
 import { AuthGuard } from '../../guards/auth.guard';
+import { RolesGuard } from '../../guards/roles.guard';
 import { CreateAssetDTO, FilterAssetsDTO, UpdateAssetDTO } from '../dto/asset.dto';
 import { AssetsService } from '../services/assets.service';
 
@@ -25,6 +26,8 @@ export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Create a new asset' })
   @ApiResponse({ status: 201, description: 'Asset created successfully' })
   async create(@Body() data: CreateAssetDTO) {
@@ -61,6 +64,8 @@ export class AssetsController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Update an asset' })
   @ApiResponse({ status: 200, description: 'Asset updated successfully' })
   @ApiResponse({ status: 404, description: 'Asset not found' })
@@ -69,6 +74,8 @@ export class AssetsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin)
   @ApiOperation({ summary: 'Delete an asset' })
   @ApiResponse({ status: 200, description: 'Asset deleted successfully' })
   @ApiResponse({ status: 404, description: 'Asset not found' })

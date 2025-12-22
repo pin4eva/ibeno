@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { Prisma } from '../../generated/client';
 import { OldAuthDto, OldUserDto } from '../dto/auth.dto';
 import { UserRoleEnum, UserStatusEnum } from '../../generated/enums';
-import { UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
+import { ChangeProfilePasswordDTO, UpdateProfileDTO, UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
 import { MongoClient } from 'mongodb';
+import { compare, hash } from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -85,6 +86,47 @@ export class UserService {
       where: { id },
       data: { status: UserStatusEnum.Suspended },
     });
+  }
+
+  // update current user profile
+  async updateProfile(userId: number, data: UpdateProfileDTO) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data,
+    });
+  }
+
+  // change password for current user
+  async changeProfilePassword(userId: number, data: ChangeProfilePasswordDTO) {
+    const authRecord = await this.prisma.auth.findUnique({
+      where: { userId },
+    });
+
+    if (!authRecord) {
+      throw new BadRequestException('Authentication record not found');
+    }
+
+    // Verify old password
+    const isValidPassword = await compare(data.oldPassword, authRecord.password);
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    // Hash new password with salt rounds of 12 for better security
+    const hashedPassword = await hash(data.newPassword, 12);
+
+    // Update password
+    await this.prisma.auth.update({
+      where: { id: authRecord.id },
+      data: { password: hashedPassword },
+    });
+
+    return { message: 'Password changed successfully' };
   }
 
   // import old user data from MongoDB to PostgreSQL

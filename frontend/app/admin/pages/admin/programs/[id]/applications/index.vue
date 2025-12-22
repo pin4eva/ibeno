@@ -28,7 +28,6 @@ const {
   data,
   status: loadStatus,
   error: loadError,
-  refresh,
 } = await useAsyncData(`admin-program-${programId.value}-applications`, async () => {
   try {
     const [program, applications] = await Promise.all([
@@ -88,7 +87,7 @@ const applications = computed(() => data.value?.applications || []);
     <ApplicationsTable
       v-else
       :applications="applications"
-      :pending="loadStatus === 'pending'"
+      :pending="false"
       :program-id="programId"
     />
   </div>

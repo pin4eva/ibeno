@@ -391,7 +391,7 @@ const actionLabels = {
               :required="actionType === 'request-changes'"
               :disabled="isSubmitting"
               placeholder="Enter your comment or reason..."
-              rows="4"
+              :rows="4"
             />
           </UFormField>
 

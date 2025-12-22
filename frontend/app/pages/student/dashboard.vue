@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ApplicationStatusEnum, type Application } from '~/interfaces/application.interface';
-import type { Program } from '~/interfaces/programs.interface';
 import { apiFetch } from '~/utils/api-fetch';
 
 useSeoMeta({

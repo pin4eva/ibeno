@@ -5,7 +5,7 @@ import { OldAuthDto, OldUserDto } from '../dto/auth.dto';
 import { UserRoleEnum, UserStatusEnum } from '../../generated/enums';
 import { ChangeProfilePasswordDTO, UpdateProfileDTO, UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
 import { MongoClient } from 'mongodb';
-import bcrypt from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -112,13 +112,13 @@ export class UserService {
     }
 
     // Verify old password
-    const isValidPassword = await bcrypt.compare(data.oldPassword, authRecord.password);
+    const isValidPassword = await compare(data.oldPassword, authRecord.password);
     if (!isValidPassword) {
       throw new UnauthorizedException('Current password is incorrect');
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+    // Hash new password with salt rounds of 12 for better security
+    const hashedPassword = await hash(data.newPassword, 12);
 
     // Update password
     await this.prisma.auth.update({

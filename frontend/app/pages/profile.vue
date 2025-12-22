@@ -108,7 +108,7 @@
               type="password"
               placeholder="Enter new password"
               required
-              min-length="6"
+              minlength="6"
             />
           </UFormField>
 
@@ -196,11 +196,12 @@ async function handleUpdateProfile() {
       avatar: profileForm.avatar,
     };
 
-    await userStore.updateProfile(updateData);
+    const updatedUser = await userStore.updateProfile(updateData);
 
-    // Refresh current user data
-    const { setUser } = useAuth();
-    await setUser();
+    // Update current user with the returned data
+    if (updatedUser && currentUser.value) {
+      currentUser.value = { ...currentUser.value, ...updatedUser };
+    }
 
     // Show success notification (if using Nuxt UI toast)
     useToast().add({

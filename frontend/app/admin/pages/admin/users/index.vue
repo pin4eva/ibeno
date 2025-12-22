@@ -101,7 +101,9 @@
       <template #header>
         <h3 class="text-lg font-semibold">Invite User</h3>
       </template>
-      <InviteUser @success="handleInviteSuccess" />
+      <template #body>
+        <InviteUser @success="handleInviteSuccess" />
+      </template>
     </UModal>
   </div>
 </template>

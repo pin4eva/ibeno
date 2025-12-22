@@ -366,4 +366,18 @@ export class AuthService {
       throw new UnauthorizedException('Invalid token');
     }
   }
+
+  // get all invitations
+  async getInvitations() {
+    return this.prisma.invitation.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  // delete invitation
+  async deleteInvitation(id: number) {
+    return this.prisma.invitation.delete({
+      where: { id },
+    });
+  }
 }

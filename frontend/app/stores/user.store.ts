@@ -24,11 +24,21 @@ export interface UserFilter {
   department?: string;
 }
 
+export interface Invitation {
+  id: number;
+  email: string;
+  role: string;
+  department: string;
+  status: string;
+  createdAt: string;
+}
+
 export const useUserStore = defineStore('user', () => {
   const users = ref<User[]>([]);
   const total = ref(0);
   const loading = ref(false);
   const error = ref<string | null>(null);
+  const invitations = ref<Invitation[]>([]);
 
   const fetchUsers = async (filter: UserFilter) => {
     try {
@@ -143,11 +153,55 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
+  const fetchInvitations = async () => {
+    try {
+      loading.value = true;
+      const response = await apiFetch<Invitation[]>('/auth/invitations');
+      invitations.value = response;
+      return response;
+    } catch (er: unknown) {
+      error.value = (er as FetchError).data?.message || 'Failed to fetch invitations';
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const deleteInvitation = async (id: number) => {
+    try {
+      loading.value = true;
+      await apiFetch(`/auth/invitations/${id}`, {
+        method: 'DELETE',
+      });
+      invitations.value = invitations.value.filter((i) => i.id !== id);
+    } catch (er: unknown) {
+      error.value = (er as FetchError).data?.message || 'Failed to delete invitation';
+      throw er;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const resendInvitation = async (email: string) => {
+    try {
+      loading.value = true;
+      await apiFetch('/auth/send-invitation-email', {
+        method: 'PATCH',
+        body: { email },
+      });
+    } catch (er: unknown) {
+      error.value = (er as FetchError).data?.message || 'Failed to resend invitation';
+      throw er;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     users,
     total,
     loading,
     error,
+    invitations,
     fetchUsers,
     fetchUser,
     updateUser,
@@ -155,5 +209,8 @@ export const useUserStore = defineStore('user', () => {
     inviteUser,
     updateProfile,
     changePassword,
+    fetchInvitations,
+    deleteInvitation,
+    resendInvitation,
   };
 });

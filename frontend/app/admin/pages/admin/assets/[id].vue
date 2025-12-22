@@ -1,12 +1,7 @@
 <template>
   <div class="max-w-3xl mx-auto space-y-4">
     <div class="flex items-center gap-2">
-      <UButton
-        icon="i-lucide-arrow-left"
-        color="gray"
-        variant="ghost"
-        @click="$router.back()"
-      />
+      <UButton icon="i-lucide-arrow-left" color="gray" variant="ghost" @click="$router.back()" />
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Asset</h2>
     </div>
 
@@ -28,11 +23,7 @@
               v-if="imagePreview"
               class="w-32 h-32 rounded border-2 border-gray-200 dark:border-gray-700 overflow-hidden"
             >
-              <img
-                :src="imagePreview"
-                alt="Preview"
-                class="w-full h-full object-cover"
-              >
+              <img :src="imagePreview" alt="Preview" class="w-full h-full object-cover" />
             </div>
             <div
               v-else
@@ -47,14 +38,9 @@
                 accept="image/*"
                 class="hidden"
                 @change="handleFileSelect"
-              >
+              />
               <div class="flex gap-2">
-                <UButton
-                  type="button"
-                  color="gray"
-                  variant="outline"
-                  @click="fileInput?.click()"
-                >
+                <UButton type="button" color="gray" variant="outline" @click="fileInput?.click()">
                   {{ form.imageUrl ? 'Change Image' : 'Choose Image' }}
                 </UButton>
                 <UButton
@@ -68,58 +54,44 @@
                   Remove
                 </UButton>
               </div>
-              <p class="text-sm text-gray-500 mt-1">
-                Max file size: 5MB
-              </p>
+              <p class="text-sm text-gray-500 mt-1">Max file size: 5MB</p>
             </div>
           </div>
         </div>
 
         <!-- Asset Name -->
-        <UFormGroup label="Asset Name" required>
-          <UInput
-            v-model="form.name"
-            placeholder="Enter asset name"
-            :disabled="loading"
-          />
-        </UFormGroup>
+        <UFormField label="Asset Name" required>
+          <UInput v-model="form.name" placeholder="Enter asset name" :disabled="loading" />
+        </UFormField>
 
         <!-- Description -->
-        <UFormGroup label="Description" required>
+        <UFormField label="Description" required>
           <UTextarea
             v-model="form.description"
             placeholder="Enter asset description"
             :rows="4"
             :disabled="loading"
           />
-        </UFormGroup>
+        </UFormField>
 
         <!-- Location -->
-        <UFormGroup label="Location" required>
-          <UInput
-            v-model="form.location"
-            placeholder="Enter asset location"
-            :disabled="loading"
-          />
-        </UFormGroup>
+        <UFormField label="Location" required>
+          <UInput v-model="form.location" placeholder="Enter asset location" :disabled="loading" />
+        </UFormField>
 
         <!-- Asset Type -->
-        <UFormGroup label="Asset Type">
+        <UFormField label="Asset Type">
           <UInput
             v-model="form.assetType"
             placeholder="Enter asset type (e.g., Furniture, Electronics)"
             :disabled="loading"
           />
-        </UFormGroup>
+        </UFormField>
 
         <!-- Asset Number -->
-        <UFormGroup label="Asset Number" required>
-          <UInput
-            v-model="form.assetNumber"
-            placeholder="Asset number"
-            :disabled="true"
-          />
-        </UFormGroup>
+        <UFormField label="Asset Number" required>
+          <UInput v-model="form.assetNumber" placeholder="Asset number" :disabled="true" />
+        </UFormField>
 
         <!-- Actions -->
         <div class="flex gap-2 justify-end">
@@ -132,13 +104,7 @@
           >
             Cancel
           </UButton>
-          <UButton
-            type="submit"
-            color="primary"
-            :loading="loading"
-          >
-            Update Asset
-          </UButton>
+          <UButton type="submit" color="primary" :loading="loading"> Update Asset </UButton>
         </div>
       </form>
     </UCard>
@@ -150,13 +116,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAssetsStore } from '~/stores/assets.store';
+import type { FetchError } from '~/interfaces/app.interface';
 import type { UpdateAssetDTO } from '~/interfaces/asset.interface';
-
-definePageMeta({
-  layout: 'dashboard',
-  middleware: ['auth'],
-});
+import { useAssetsStore } from '~/stores/assets.store';
 
 const route = useRoute();
 const assetsStore = useAssetsStore();
@@ -228,7 +190,7 @@ const uploadImage = async (file: File): Promise<string> => {
   formData.append('file', file);
 
   try {
-    const response = await $fetch<{ url: string }>('/api/upload', {
+    const response = await apiFetch<{ url: string }>('/upload', {
       method: 'POST',
       body: formData,
     });
@@ -270,10 +232,11 @@ const handleSubmit = async () => {
     });
 
     router.push('/admin/assets');
-  } catch (error) {
+  } catch (er) {
+    const error = er as FetchError;
     toast.add({
       title: 'Error',
-      description: 'Failed to update asset',
+      description: error?.data?.message || 'Failed to update asset',
       color: 'red',
     });
   } finally {
@@ -299,10 +262,11 @@ const loadAsset = async () => {
     if (asset.imageUrl) {
       imagePreview.value = asset.imageUrl;
     }
-  } catch (error) {
+  } catch (er) {
+    const error = er as FetchError;
     toast.add({
       title: 'Error',
-      description: 'Failed to load asset',
+      description: error?.data?.message || 'Failed to load asset',
       color: 'red',
     });
   }

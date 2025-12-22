@@ -51,18 +51,14 @@
         </div>
       </template>
 
-      <UTable
-        :data="filteredAssets"
-        :columns="columns"
-        :loading="assetsStore.loading"
-      >
-        <template #imageUrl-data="{ row }">
+      <UTable :data="filteredAssets" :columns="columns" :loading="assetsStore.loading">
+        <template #imageUrl-cell="{ row }">
           <img
-            v-if="(row as any).imageUrl"
-            :src="(row as any).imageUrl"
-            :alt="(row as any).name"
+            v-if="row.original.imageUrl"
+            :src="row.original.imageUrl"
+            :alt="row.original.name"
             class="w-12 h-12 rounded object-cover"
-          >
+          />
           <div
             v-else
             class="w-12 h-12 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
@@ -71,29 +67,29 @@
           </div>
         </template>
 
-        <template #assetNumber-data="{ row }">
-          <span class="font-mono text-sm">{{ (row as any).assetNumber }}</span>
+        <template #assetNumber-cell="{ row }">
+          <span class="font-mono text-sm">{{ row.original.assetNumber }}</span>
         </template>
 
-        <template #createdAt-data="{ row }">
-          {{ formatDate((row as any).createdAt) }}
+        <template #createdAt-cell="{ row }">
+          {{ formatDate(row.original.createdAt) }}
         </template>
 
-        <template #actions-data="{ row }">
+        <template #actions-cell="{ row }">
           <div class="flex gap-2">
             <UButton
               icon="i-lucide-eye"
               color="primary"
               variant="ghost"
               size="xs"
-              :to="`/admin/assets/${(row as any).id}`"
+              :to="`/admin/assets/${row.original.id}`"
             />
             <UButton
               icon="i-lucide-trash"
               color="red"
               variant="ghost"
               size="xs"
-              @click="confirmDelete(row as any)"
+              @click="confirmDelete(row.original)"
             />
           </div>
         </template>
@@ -101,46 +97,35 @@
     </UCard>
 
     <!-- Delete Confirmation Modal -->
-    <UModal v-model="showDeleteModal">
-      <UCard>
-        <template #header>
-          <h3 class="text-lg font-semibold">Confirm Delete</h3>
-        </template>
+    <UModal v-model:open="showDeleteModal">
+      <template #header>
+        <h3 class="text-lg font-semibold">Confirm Delete</h3>
+      </template>
 
-        <p>Are you sure you want to delete asset <strong>{{ assetToDelete?.name }}</strong>?</p>
+      <template #body>
+        <p>
+          Are you sure you want to delete asset <strong>{{ assetToDelete?.name }}</strong
+          >?
+        </p>
         <p class="text-sm text-gray-500 mt-2">This action cannot be undone.</p>
+      </template>
 
-        <template #footer>
-          <div class="flex gap-2 justify-end">
-            <UButton
-              color="gray"
-              variant="ghost"
-              @click="showDeleteModal = false"
-            >
-              Cancel
-            </UButton>
-            <UButton
-              color="red"
-              :loading="assetsStore.loading"
-              @click="handleDelete"
-            >
-              Delete
-            </UButton>
-          </div>
-        </template>
-      </UCard>
+      <template #footer>
+        <div class="flex gap-2 justify-end">
+          <UButton color="gray" variant="ghost" @click="showDeleteModal = false"> Cancel </UButton>
+          <UButton color="red" :loading="assetsStore.loading" @click="handleDelete">
+            Delete
+          </UButton>
+        </div>
+      </template>
     </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useAssetsStore } from '~/stores/assets.store';
+import type { TableColumn } from '@nuxt/ui';
 import type { Asset } from '~/interfaces/asset.interface';
-
-definePageMeta({
-  layout: 'dashboard',
-  middleware: ['auth'],
-});
+import { useAssetsStore } from '~/stores/assets.store';
 
 const assetsStore = useAssetsStore();
 const toast = useToast();
@@ -151,15 +136,15 @@ const selectedType = ref<string | undefined>(undefined);
 const showDeleteModal = ref(false);
 const assetToDelete = ref<Asset | null>(null);
 
-const columns = [
-  { key: 'imageUrl', label: 'Image' },
-  { key: 'name', label: 'Name' },
-  { key: 'assetNumber', label: 'Asset Number' },
-  { key: 'location', label: 'Location' },
-  { key: 'assetType', label: 'Type' },
-  { key: 'createdAt', label: 'Created' },
-  { key: 'actions', label: 'Actions' },
-] as const;
+const columns: TableColumn<Asset>[] = [
+  { accessorKey: 'imageUrl', header: 'Image' },
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'assetNumber', header: 'Asset Number' },
+  { accessorKey: 'location', header: 'Location' },
+  { accessorKey: 'assetType', header: 'Type' },
+  { accessorKey: 'createdAt', header: 'Created' },
+  { accessorKey: 'actions', header: 'Actions' },
+];
 
 const locationOptions = computed(() => {
   const options: { label: string; value: string | undefined }[] = [
@@ -230,6 +215,7 @@ const handleDelete = async () => {
     showDeleteModal.value = false;
     assetToDelete.value = null;
   } catch (error) {
+    console.error(error);
     toast.add({
       title: 'Error',
       description: 'Failed to delete asset',
@@ -244,6 +230,7 @@ const fetchData = async () => {
     await assetsStore.fetchLocations();
     await assetsStore.fetchAssetTypes();
   } catch (error) {
+    console.error(error);
     toast.add({
       title: 'Error',
       description: 'Failed to fetch assets',

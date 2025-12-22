@@ -33,6 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
   const refreshToken = useCookie<string | null>('refresh_token');
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
+  const { setUser } = useAuth();
 
   const login = async ({ email, password }: LoginDTO) => {
     try {
@@ -46,6 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
         accessToken.value = response.accessToken;
         refreshToken.value = response.refreshToken;
         error.value = null;
+        setUser();
       }
       return response;
     } catch (er) {

@@ -1,31 +1,30 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Put,
-  Delete,
-  Body,
-  Param,
   Query,
-  ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AssetsService } from '../services/assets.service';
-import { CreateAssetDTO, UpdateAssetDTO, FilterAssetsDTO } from '../dto/asset.dto';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserRoleEnum } from '../../generated/enums';
+import { AuthGuard } from '../../guards/auth.guard';
+import { CreateAssetDTO, FilterAssetsDTO, UpdateAssetDTO } from '../dto/asset.dto';
+import { AssetsService } from '../services/assets.service';
 
 @ApiTags('Assets')
+@ApiBearerAuth()
 @Controller('assets')
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard)
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
   @Post()
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Create a new asset' })
   @ApiResponse({ status: 201, description: 'Asset created successfully' })
   async create(@Body() data: CreateAssetDTO) {
@@ -62,7 +61,6 @@ export class AssetsController {
   }
 
   @Put(':id')
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Update an asset' })
   @ApiResponse({ status: 200, description: 'Asset updated successfully' })
   @ApiResponse({ status: 404, description: 'Asset not found' })
@@ -71,7 +69,6 @@ export class AssetsController {
   }
 
   @Delete(':id')
-  @Roles(UserRoleEnum.Admin)
   @ApiOperation({ summary: 'Delete an asset' })
   @ApiResponse({ status: 200, description: 'Asset deleted successfully' })
   @ApiResponse({ status: 404, description: 'Asset not found' })

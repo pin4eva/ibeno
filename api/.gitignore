@@ -3,6 +3,11 @@
 /node_modules
 /build
 
+# Package manager lockfiles (keep only bun.lock)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
 # Logs
 logs
 *.log

@@ -234,12 +234,26 @@
                   />
                 </UFormField>
 
-                <UFormField label="Technical Proposal URL" name="technicalProposalUrl">
-                  <UInput v-model="bidFormState.technicalProposalUrl" placeholder="https://..." />
+                <UFormField label="Technical Proposal" name="technicalProposal">
+                  <UInput
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    @change="handleTechnicalProposalChange"
+                  />
+                  <template #hint>
+                    <span class="text-xs text-gray-500">Upload your technical proposal (PDF, DOC, DOCX)</span>
+                  </template>
                 </UFormField>
 
-                <UFormField label="Commercial Proposal URL" name="commercialProposalUrl">
-                  <UInput v-model="bidFormState.commercialProposalUrl" placeholder="https://..." />
+                <UFormField label="Commercial Proposal" name="commercialProposal">
+                  <UInput
+                    type="file"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    @change="handleCommercialProposalChange"
+                  />
+                  <template #hint>
+                    <span class="text-xs text-gray-500">Upload your commercial proposal (PDF, DOC, DOCX, XLS, XLSX)</span>
+                  </template>
                 </UFormField>
 
                 <UFormField label="Additional Notes" name="notes">
@@ -291,6 +305,9 @@ const procurementId = computed(() => parseInt(route.params.id as string));
 const procurement = computed(() => procurementStore.currentProcurement);
 const showBidForm = ref(false);
 
+const technicalProposalFile = ref<File | null>(null);
+const commercialProposalFile = ref<File | null>(null);
+
 const bidFormState = reactive<CreateBidInput>({
   contractorNo: '',
   contactName: '',
@@ -302,6 +319,20 @@ const bidFormState = reactive<CreateBidInput>({
   otherFiles: [],
   notes: '',
 });
+
+const handleTechnicalProposalChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    technicalProposalFile.value = target.files[0];
+  }
+};
+
+const handleCommercialProposalChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    commercialProposalFile.value = target.files[0];
+  }
+};
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -331,7 +362,35 @@ const getStatusColor = (status: string) => {
 
 const handleBidSubmit = async () => {
   try {
-    await bidStore.submitBid(procurementId.value, bidFormState);
+    // Upload files first if provided
+    let technicalProposalUrl = bidFormState.technicalProposalUrl;
+    let commercialProposalUrl = bidFormState.commercialProposalUrl;
+
+    if (technicalProposalFile.value) {
+      const formData = new FormData();
+      formData.append('file', technicalProposalFile.value);
+      const response = await $fetch<{ url: string }>('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      technicalProposalUrl = response.url;
+    }
+
+    if (commercialProposalFile.value) {
+      const formData = new FormData();
+      formData.append('file', commercialProposalFile.value);
+      const response = await $fetch<{ url: string }>('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      commercialProposalUrl = response.url;
+    }
+
+    await bidStore.submitBid(procurementId.value, {
+      ...bidFormState,
+      technicalProposalUrl,
+      commercialProposalUrl,
+    });
     toast.add({
       title: 'Success',
       description: 'Your bid has been submitted successfully',
@@ -350,6 +409,8 @@ const handleBidSubmit = async () => {
       otherFiles: [],
       notes: '',
     });
+    technicalProposalFile.value = null;
+    commercialProposalFile.value = null;
   } catch (error) {
     console.error(error);
     toast.add({

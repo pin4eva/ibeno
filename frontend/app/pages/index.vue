@@ -198,7 +198,7 @@ useHead({
             </p>
             <div class="space-y-2">
               <UButton to="/programs" block variant="soft"> Apply Now </UButton>
-              <UButton to="/student/dashboard" block variant="outline" color="gray">
+              <UButton to="/applications" block variant="outline" color="gray">
                 Check Status
               </UButton>
             </div>

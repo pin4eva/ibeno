@@ -45,7 +45,7 @@ const {
 
       <div class="flex items-center gap-2">
         <UButton
-          to="/student/dashboard"
+          to="/applications"
           color="gray"
           variant="ghost"
           icon="i-lucide-clipboard-list"

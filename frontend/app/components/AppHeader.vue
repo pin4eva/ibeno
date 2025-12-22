@@ -44,7 +44,7 @@ const items = [
     <template #right>
       <UColorModeButton />
       <UButton
-        to="/student/dashboard"
+        to="/applications"
         label="Check Status"
         color="gray"
         variant="ghost"

@@ -3,8 +3,10 @@ import type { Application, DocumentUpload } from '~/interfaces/application.inter
 import { useApplicationStore } from '~/stores/application.store';
 
 type DocumentField =
-  // | 'passport'
-  'admissionLetter' | 'lastSchoolFeeReceipt' | 'certificateOfOrigin' | 'ssceResult';
+  | 'admissionLetter'
+  | 'lastSchoolFeeReceipt'
+  | 'certificateOfOrigin'
+  | 'ssceResult';
 
 const props = defineProps<{
   application?: Application | null;
@@ -20,7 +22,6 @@ const applicationStore = useApplicationStore();
 const toast = useToast();
 
 const state = reactive<Record<DocumentField, string>>({
-  // passport: props.application?.passport || '',
   admissionLetter: props.application?.documentUpload?.admissionLetter || '',
   lastSchoolFeeReceipt: props.application?.documentUpload?.lastSchoolFeeReceipt || '',
   certificateOfOrigin: props.application?.documentUpload?.certificateOfOrigin || '',
@@ -30,7 +31,6 @@ const state = reactive<Record<DocumentField, string>>({
 watch(
   () => props.application,
   (app) => {
-    // state.passport = app?.passport || '';
     state.admissionLetter = app?.documentUpload?.admissionLetter || '';
     state.lastSchoolFeeReceipt = app?.documentUpload?.lastSchoolFeeReceipt || '';
     state.certificateOfOrigin = app?.documentUpload?.certificateOfOrigin || '';
@@ -47,7 +47,6 @@ type DocItem = {
 };
 
 const documents: DocItem[] = [
-  // { key: 'passport', label: 'Passport photo', accept: 'image/*', required: true },
   { key: 'admissionLetter', label: 'Admission letter', accept: 'application/pdf,image/*' },
   {
     key: 'lastSchoolFeeReceipt',
@@ -63,7 +62,6 @@ const documents: DocItem[] = [
 ];
 
 const uploading = reactive<Record<DocumentField, boolean>>({
-  // passport: false,
   admissionLetter: false,
   lastSchoolFeeReceipt: false,
   certificateOfOrigin: false,
@@ -71,7 +69,6 @@ const uploading = reactive<Record<DocumentField, boolean>>({
 });
 
 const selectedFileName = reactive<Record<DocumentField, string>>({
-  // passport: '',
   admissionLetter: '',
   lastSchoolFeeReceipt: '',
   certificateOfOrigin: '',
@@ -79,7 +76,6 @@ const selectedFileName = reactive<Record<DocumentField, string>>({
 });
 
 const fileInputs = reactive<Record<DocumentField, HTMLInputElement | null>>({
-  // passport: null,
   admissionLetter: null,
   lastSchoolFeeReceipt: null,
   certificateOfOrigin: null,
@@ -193,7 +189,7 @@ const handleContinue = () => {
     </UCard>
 
     <div class="flex justify-end mt-4">
-      <UButton @click="handleContinue">Review Application</UButton>
+      <UButton @click="handleContinue">Save and Continue</UButton>
     </div>
   </div>
 </template>

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import type { FetchError } from '~/interfaces/app.interface';
 import {
   ApplicationStatusEnum,
   type ApplicantLogin,
@@ -33,10 +34,15 @@ export type StartApplicationInput = Pick<
   Partial<Pick<Application, 'middleName'>>;
 
 export const useApplicationStore = defineStore('application', () => {
+  const applicationIdCookie = useCookie<number | null>('application-id');
+  const applicationsCookie = useCookie<Application[] | null>('applications');
+  const router = useRouter();
+
   const application = ref<Application | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
+  const userApplications = computed(() => applicationsCookie.value || []);
   const startApplication = async (data: StartApplicationInput) => {
     loading.value = true;
     error.value = null;
@@ -56,21 +62,30 @@ export const useApplicationStore = defineStore('application', () => {
   };
 
   const loginApplicant = async (credentials: ApplicantLogin) => {
-    loading.value = true;
-    error.value = null;
     try {
+      loading.value = true;
+      error.value = null;
       const response = await apiFetch<Application>('/applications/login', {
         method: 'POST',
         body: credentials,
       });
       application.value = response;
+      loadApplications();
+      setApplication(response);
       return response;
-    } catch (err: unknown) {
-      error.value = getErrorMessage(err, 'Login failed');
+    } catch (err) {
+      const e = err as FetchError;
+      error.value = e?.data?.message || 'Failed to login applicant';
       throw err;
     } finally {
       loading.value = false;
     }
+  };
+
+  const logout = () => {
+    applicationIdCookie.value = null;
+    applicationsCookie.value = null;
+    router.push({ path: '/' });
   };
 
   const updateApplication = async (data: Partial<Application>) => {
@@ -78,15 +93,18 @@ export const useApplicationStore = defineStore('application', () => {
       throw new Error('Application ID is required for update');
     }
     const id = data.id;
-    loading.value = true;
-    error.value = null;
 
     try {
+      loading.value = true;
+      error.value = null;
       const response = await apiFetch<Application>('/applications', {
         method: 'POST',
         body: { ...data, id },
       });
       application.value = response;
+      if (response?.id) {
+        applicationIdCookie.value = response.id;
+      }
       return response;
     } catch (err: unknown) {
       error.value = getErrorMessage(err, 'Failed to update application');
@@ -143,19 +161,45 @@ export const useApplicationStore = defineStore('application', () => {
     if (data) {
       application.value = data || null;
       return data;
-    } else if (id) {
+    }
+    loading.value = true;
+    error.value = null;
+    if (!id && !applicationIdCookie.value) return;
+    const applicationId = id || applicationIdCookie.value;
+    try {
+      const response = await apiFetch<Application>(`/applications/single/${applicationId}`);
+      application.value = response;
+      return response;
+    } catch (err) {
+      const e = err as FetchError;
+      error.value = getErrorMessage(e?.data?.message, 'Failed to fetch application');
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const loadApplications = async (applicantNin?: string) => {
+    let nin = applicantNin;
+    if (application.value?.nin) {
+      nin = application.value.nin;
+    }
+    if (!nin) return;
+    try {
       loading.value = true;
       error.value = null;
-      try {
-        const response = await apiFetch<Application>(`/applications/single/${id}`);
-        application.value = response;
-        return response;
-      } catch (err: unknown) {
-        error.value = getErrorMessage(err, 'Failed to fetch application');
-        throw err;
-      } finally {
-        loading.value = false;
-      }
+      // Fetch all applications by this student's NIN
+      const allApplications = await apiFetch<Application[]>('/applications/student-history', {
+        method: 'POST',
+        body: { nin },
+      });
+      applicationsCookie.value = allApplications;
+      return allApplications;
+    } catch (err) {
+      const e = err as FetchError;
+      error.value = e?.data?.message || 'Failed to load applications';
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -240,6 +284,7 @@ export const useApplicationStore = defineStore('application', () => {
     application,
     loading,
     error,
+    userApplications,
     startApplication,
     loginApplicant,
     updateApplication,
@@ -250,5 +295,7 @@ export const useApplicationStore = defineStore('application', () => {
     setDocumentUpload,
     submitApplication,
     uploadPassport,
+    loadApplications,
+    logout,
   };
 });

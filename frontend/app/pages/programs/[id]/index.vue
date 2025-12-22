@@ -65,7 +65,7 @@ const startedApplicationNo = ref<string | null>(null);
         <div class="mt-4 flex items-center justify-end">
           <UButton
             :to="{
-              path: `/programs/${programId}/login`,
+              path: `/applications`,
               query: startedApplicationNo ? { applicationNo: startedApplicationNo } : {},
             }"
           >

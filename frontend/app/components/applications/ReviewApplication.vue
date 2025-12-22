@@ -59,18 +59,15 @@ const submitApplication = async () => {
 
       <!-- Personal Information -->
       <div class="space-y-3">
+        <div class="flex flex-col items-start gap-2">
+          <img
+            :src="passportPreview"
+            alt="Applicant passport photograph"
+            class="h-28 w-28 border border-gray-200 object-cover shadow-sm"
+          />
+        </div>
         <h3 class="text-lg font-semibold">Personal Information</h3>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
-          <div class="flex flex-col items-start gap-2">
-            <img
-              :src="passportPreview"
-              alt="Applicant passport photograph"
-              class="h-28 w-28 rounded-full border border-gray-200 object-cover shadow-sm"
-            />
-            <p v-if="!application?.passport" class="text-xs text-muted">
-              Passport not uploaded. Placeholder shown.
-            </p>
-          </div>
           <div class="grid gap-4 sm:grid-cols-2 text-sm flex-1">
             <div>
               <p class="text-muted">Full Name</p>
@@ -208,7 +205,7 @@ const submitApplication = async () => {
         </div>
       </div>
     </div>
-    <template v-if="application?.status === ApplicationStatusEnum.InProgress" #footer>
+    <template v-if="application?.status === ApplicationStatusEnum.InProgress && !showAlert" #footer>
       <div class="flex justify-end">
         <UButton @click="submitApplication"> Submit Application </UButton>
       </div>

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../guards/auth.guard';
 import {
@@ -10,6 +10,7 @@ import {
   FilterApplicationsDTO,
 } from '../dto/application.dto';
 import { ApplicationService } from '../services/application.service';
+import { type Request } from 'express';
 
 @ApiTags('Applications')
 @ApiBearerAuth()
@@ -33,8 +34,8 @@ export class ApplicationController {
   }
 
   @Post()
-  startApplication(@Body() input: ApplicationDTO) {
-    return this.applicationService.createApplication(input);
+  startApplication(@Body() input: ApplicationDTO, @Req() req: Request) {
+    return this.applicationService.createApplication(input, req.headers.origin || '');
   }
 
   @Patch('submit-application')

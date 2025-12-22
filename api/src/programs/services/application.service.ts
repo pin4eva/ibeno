@@ -27,7 +27,7 @@ export class ApplicationService {
     private readonly emailService: EmailService,
   ) {}
 
-  async createApplication(input: ApplicationDTO) {
+  async createApplication(input: ApplicationDTO, origin: string) {
     const { id, programId, status, type, comment, passport, examsType, ...data } = input;
     const nin = data.nin?.replaceAll('-', '').replaceAll(' ', '').trim();
     if (!nin) throw new BadRequestException('NIN is required');
@@ -109,6 +109,7 @@ export class ApplicationService {
         data.firstName,
         applicationNo,
         program.name,
+        origin,
       );
 
       return application;
@@ -137,6 +138,15 @@ export class ApplicationService {
   async updateSchoolRecord(input: CreateSchoolRecordDTO) {
     const { applicationId, ...data } = input;
     try {
+      const existingRegNo = await this.prisma.schoolRecord.findFirst({
+        where: {
+          regNo: data.regNo,
+          applicationId: { not: applicationId },
+        },
+      });
+      if (existingRegNo) {
+        throw new BadRequestException('Registration number already exists for another application');
+      }
       const record = await this.prisma.schoolRecord.upsert({
         where: { applicationId },
         create: {

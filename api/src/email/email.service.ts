@@ -59,14 +59,16 @@ export class EmailService {
     name: string,
     applicationNo: string,
     programName: string,
+    loginUrl: string,
   ) {
-    const subject = 'Application Started - IBENO';
+    const subject = 'Application Started - IHCDT';
     const htmlContent = `
       <p>Dear ${name},</p>
       <p>You have successfully started your application for <strong>${programName}</strong>.</p>
       <p>Your Application Number is: <strong>${applicationNo}</strong></p>
       <p>Please use this number and your NIN to log in and complete your application.</p>
-      <p>Best regards,<br/>IBENO Team</p>
+      <p><a href="${loginUrl}/applications/login">Login to Dashboard</a></p>
+      <p>Best regards,<br/>IHCDT Team</p>
     `;
     await this.sendEmail({ to, subject, htmlContent });
   }
@@ -111,7 +113,7 @@ export class EmailService {
       <p>Your application <strong>${applicationNo}</strong> ${statusMessage}.</p>
       ${comment ? `<p><strong>Reviewer Comment:</strong> ${comment}</p>` : ''}
       <p>You can log in to check your application status and details.</p>
-      <p>Best regards,<br/>IBENO Team</p>
+      <p>Best regards,<br/>IHCDT Team</p>
     `;
     await this.sendEmail({ to, subject, htmlContent });
   }

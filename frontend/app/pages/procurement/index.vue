@@ -8,32 +8,6 @@
         </p>
       </div>
 
-      <!-- Filters -->
-      <UCard>
-        <div class="flex flex-wrap gap-3">
-          <UInput
-            v-model="search"
-            icon="i-lucide-search"
-            placeholder="Search procurements..."
-            class="w-full md:w-64"
-          />
-          <USelectMenu
-            v-model="selectedCategory"
-            :items="categoryOptions"
-            placeholder="All Categories"
-            class="w-full md:w-48"
-            value-key="value"
-          />
-          <USelectMenu
-            v-model="selectedLocation"
-            :items="locationOptions"
-            placeholder="All Locations"
-            class="w-full md:w-48"
-            value-key="value"
-          />
-        </div>
-      </UCard>
-
       <!-- Loading State -->
       <div v-if="procurementStore.loading" class="text-center py-12">
         <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary-500" />
@@ -179,26 +153,6 @@ const search = ref('');
 const selectedCategory = ref<string | undefined>(undefined);
 const selectedLocation = ref<string | undefined>(undefined);
 const activeProcurements = computed(() => procurementStore.publishedProcurements);
-
-const categoryOptions = computed(() => {
-  const options: { label: string; value: string | undefined }[] = [
-    { label: 'All Categories', value: undefined },
-  ];
-  procurementStore.categories.forEach((cat) => {
-    options.push({ label: cat, value: cat });
-  });
-  return options;
-});
-
-const locationOptions = computed(() => {
-  const options: { label: string; value: string | undefined }[] = [
-    { label: 'All Locations', value: undefined },
-  ];
-  procurementStore.locations.forEach((loc) => {
-    options.push({ label: loc, value: loc });
-  });
-  return options;
-});
 
 const filteredProcurements = computed(() => {
   let filtered = procurementStore.publishedProcurements;

@@ -1,43 +1,9 @@
-Develop an asset management module for the admin dashboard with the following requirements:
+Revise the post-login flow for applicants as follows:
 
-**Features:**
+1. Replace the `/student/dashboard` route with `/applications/index.vue` to accurately reflect user roles.
+2. Ensure routing consistency by standardizing application detail URLs to `/applications/:applicationId` instead of `/programs/:programId/applications/:applicationId`.
+3. Update the application initiation email to include a direct login URL for applicants to access their dashboard.
+4. Review and streamline the entire applicant journey from login to application completion for clarity and ease of use.
+5. Ensure all UI components and navigation elements reflect these changes for a cohesive user experience.
 
-1. **Asset Creation**
-
-   - Allow admins to create a new asset with fields: asset name, description, location, and asset number.
-   - Enable image upload for each asset.
-   - If an asset number is not provided, automatically generate a unique asset number.
-   - Preserve existing asset numbers for assets already numbered.
-
-2. **Asset Listing**
-
-   - Display all assets with details, including image thumbnails.
-
-3. **Asset Editing**
-
-   - Allow editing of asset details and updating the asset image.
-
-4. **Asset Deletion**
-
-   - Enable deletion of assets from the system.
-
-5. **Search and Filter**
-
-   - Implement search by asset name or asset number.
-   - Provide filtering by location and asset type.
-
-6. **Validation**
-
-   - Ensure all required fields are completed during asset creation and editing.
-
-7. **User Interface**
-   - Design intuitive forms for asset creation and editing.
-   - Present a clean, organized layout for asset listing.
-
-**Technical Requirements:**
-
-- Implement both API endpoints and frontend components for all features.
-- Integrate the module into the admin dashboard.
-- Follow best practices for security and data validation.
-
-Note: When use a `<USelectMenu>` component, don't forget to use `:items` instead of `:options` and ensure it has a `value-key="value"` attribute.,
+Refer to https://www.nngroup.com/articles/ten-usability-heuristics/ for usability best practices.

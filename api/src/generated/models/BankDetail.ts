@@ -230,15 +230,16 @@ export type BankDetailOrderByWithRelationInput = {
 
 export type BankDetailWhereUniqueInput = Prisma.AtLeast<{
   applicationId?: number
-  accountNo?: string
+  applicationId_accountNo?: Prisma.BankDetailApplicationIdAccountNoCompoundUniqueInput
   AND?: Prisma.BankDetailWhereInput | Prisma.BankDetailWhereInput[]
   OR?: Prisma.BankDetailWhereInput[]
   NOT?: Prisma.BankDetailWhereInput | Prisma.BankDetailWhereInput[]
+  accountNo?: Prisma.StringFilter<"BankDetail"> | string
   accountName?: Prisma.StringFilter<"BankDetail"> | string
   bankName?: Prisma.StringFilter<"BankDetail"> | string
   complete?: Prisma.BoolFilter<"BankDetail"> | boolean
   application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
-}, "applicationId" | "accountNo">
+}, "applicationId" | "applicationId_accountNo">
 
 export type BankDetailOrderByWithAggregationInput = {
   applicationId?: Prisma.SortOrder
@@ -322,6 +323,11 @@ export type BankDetailUncheckedUpdateManyInput = {
 export type BankDetailNullableScalarRelationFilter = {
   is?: Prisma.BankDetailWhereInput | null
   isNot?: Prisma.BankDetailWhereInput | null
+}
+
+export type BankDetailApplicationIdAccountNoCompoundUniqueInput = {
+  applicationId: number
+  accountNo: string
 }
 
 export type BankDetailCountOrderByAggregateInput = {

@@ -119,12 +119,13 @@ model Application {
 
 model BankDetail {
   applicationId Int         @unique
-  accountNo     String      @unique
+  accountNo     String
   accountName   String
   bankName      String
   application   Application @relation(fields: [applicationId], references: [id])
   complete      Boolean     @default(false)
 
+  @@unique([applicationId, accountNo])
   @@map("bank_details")
 }
 
@@ -220,12 +221,12 @@ model Asset {
 }
 
 model Contractor {
-  id                   Int       @id @default(autoincrement())
-  contractorNo         String    @unique
+  id                   Int      @id @default(autoincrement())
+  contractorNo         String   @unique
   oldRegNo             String?
   cacRegNo             String?
   companyName          String
-  status               String    @default("ACTIVE")
+  status               String   @default("ACTIVE")
   registrationCategory String?
   majorArea            String?
   subArea              String?
@@ -236,8 +237,8 @@ model Contractor {
   email                String?
   notes                String?
   sourceSheet          String?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   bids                 Bid[]
 
   @@map("contractors")
@@ -285,7 +286,7 @@ model ProcurementDocument {
 }
 
 model Bid {
-  id                    Int            @id @default(autoincrement())
+  id                    Int           @id @default(autoincrement())
   procurementId         Int
   contractorId          Int
   contractorNo          String
@@ -295,13 +296,13 @@ model Bid {
   price                 Float?
   technicalProposalUrl  String?
   commercialProposalUrl String?
-  otherFiles            String[]       @default([])
+  otherFiles            String[]      @default([])
   notes                 String?
-  status                BidStatusEnum  @default(submitted)
-  submittedAt           DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
-  procurement           Procurement    @relation(fields: [procurementId], references: [id], onDelete: Cascade)
-  contractor            Contractor     @relation(fields: [contractorId], references: [id])
+  status                BidStatusEnum @default(submitted)
+  submittedAt           DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  procurement           Procurement   @relation(fields: [procurementId], references: [id], onDelete: Cascade)
+  contractor            Contractor    @relation(fields: [contractorId], references: [id])
   events                BidEvent[]
 
   @@unique([procurementId, contractorId])

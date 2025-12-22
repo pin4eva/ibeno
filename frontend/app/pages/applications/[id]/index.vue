@@ -1,282 +1,283 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui';
-import {
-  ApplicationStatusEnum,
-  GenderEnum,
-  type Application,
-} from '~/interfaces/application.interface';
-import { toDateInput } from '~/utils/date';
+import type { Application } from '~/interfaces/application.interface';
+import { ApplicationStatusEnum } from '~/interfaces/application.interface';
+import type { Program } from '~/interfaces/programs.interface';
+import { useApplicationStore } from '~/stores/application.store';
+import { apiFetch } from '~/utils/api-fetch';
+
+useSeoMeta({
+  title: 'Application',
+});
 
 definePageMeta({
   layout: 'applications',
 });
 
+type ErrorWithMessage = { message?: string };
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (typeof error === 'object' && error !== null) {
+    const maybe = error as ErrorWithMessage;
+    if (typeof maybe.message === 'string' && maybe.message.length) return maybe.message;
+  }
+  return fallback;
+}
+
 const route = useRoute();
 const router = useRouter();
+const applicationId = computed(() => Number(route.params.id));
+
+if (!Number.isFinite(applicationId.value)) {
+  throw createError({ statusCode: 404, statusMessage: 'Application not found' });
+}
+
 const applicationStore = useApplicationStore();
-const toast = useToast();
 
-const applicationId = parseInt(route.params.id as string);
+const {
+  data,
+  status: loadStatus,
+  error: loadError,
+  refresh,
+} = await useAsyncData(`application-${applicationId.value}`, async () => {
+  try {
+    const application = await apiFetch<Application>(`/applications/single/${applicationId.value}`);
+    if (!application) throw new Error('Application not found');
 
-const passportInput = ref<HTMLInputElement | null>(null);
-const uploadingPassport = ref(false);
-const placeholderPassport = '/assets/images/placeholder.png';
-
-onMounted(async () => {
-  if (!applicationStore.application || applicationStore.application.id !== applicationId) {
-    if (!applicationStore.application) {
-      toast.add({ title: 'Session Expired', description: 'Please login again', color: 'yellow' });
-      router.push('/applications/login');
+    if (application?.id) {
+      applicationStore.setApplication(application);
     }
+
+    const program = await apiFetch<Program>(`/programs/single/${application.programId}`);
+
+    return {
+      program,
+      application,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      program: null,
+      application: null,
+    };
   }
 });
 
-const app = computed(() => applicationStore.application);
-
-const items: TabsItem[] = [
-  { slot: 'personal', label: 'Personal Info', value: 'personal' },
-  { slot: 'education', label: 'Education', value: 'education', disabled: !app.value?.complete },
-  {
-    slot: 'bank',
-    label: 'Bank Details',
-    value: 'bank',
-    disabled: !app.value?.schoolRecord?.complete,
-  },
-  {
-    slot: 'documents',
-    label: 'Documents',
-    value: 'documents',
-    disabled: !app.value?.bankDetails?.complete,
-  },
-];
-
-const state = reactive<Partial<Application>>({
-  firstName: '',
-  lastName: '',
-  middleName: '',
-  email: '',
-  phone: '',
-  nin: '',
-  dob: '',
-  gender: GenderEnum.Male,
-  village: '',
-  lga: '',
-  state: '',
-  address: '',
-  ekpuk: '',
-  country: '',
-  passport: '',
-});
-
-const passportPreview = computed(
-  () => applicationStore.application?.passport || placeholderPassport,
+const program = computed(() => data.value?.program || null);
+const application = computed(() => data.value?.application || null);
+const schoolRecord = computed(() => application.value?.schoolRecord || null);
+const bankDetails = computed(() => application.value?.bankDetails || undefined);
+const documentUpload = computed(
+  () =>
+    application.value?.documentUpload || {
+      applicationId: applicationId.value,
+      admissionLetter: '',
+    },
 );
 
-const active = computed({
-  get: () => (route.query.step as string) || 'personal',
-  set: (val: string) => {
-    router.push({
-      query: { step: val },
-    });
-  },
-});
+// Track completed steps
+const completedSteps = ref<Set<string>>(new Set());
 
-watch(
-  () => applicationStore.application,
-  (newApp) => {
-    if (newApp) {
-      Object.assign(state, newApp);
-      state.dob = toDateInput(newApp.dob);
-    }
-  },
-  { immediate: true },
-);
+// Check if application is submitted and should be readonly
+const isSubmitted = computed(() => application.value?.status === ApplicationStatusEnum.Submitted);
+const showReview = ref(false);
 
-function openPassportPicker() {
-  passportInput.value?.click();
-}
+// Validate step completion
+const isStepComplete = (step: string): boolean => {
+  if (!application.value) return false;
+  const schoolRecord = application.value?.schoolRecord;
+  const bankDetails = application.value?.bankDetails;
 
-const nextStep = (step: string) => {
-  router.push({
-    query: { step },
-  });
+  switch (step) {
+    case 'personal':
+      return !!(
+        application.value.firstName &&
+        application.value.lastName &&
+        application.value.email &&
+        application.value.phone &&
+        application.value.nin &&
+        application.value.dob &&
+        application.value.gender &&
+        application.value.state &&
+        application.value.lga &&
+        application.value.address &&
+        application.value.passport
+      );
+    case 'education':
+      return !!(
+        schoolRecord?.school &&
+        schoolRecord?.faculty &&
+        schoolRecord?.department &&
+        schoolRecord?.regNo &&
+        schoolRecord?.level &&
+        schoolRecord?.programDuration
+      );
+    case 'documents':
+      // Documents are optional for now
+      return true;
+    case 'bank':
+      return !!(bankDetails?.bankName && bankDetails?.accountNo && bankDetails?.accountName);
+    default:
+      return false;
+  }
 };
 
-async function handlePassportChange(files: FileList | null) {
-  if (!app.value) return;
-  if (!files?.length) return;
-  const file = files[0];
-  if (!file) return;
-
-  const id = app.value?.id;
-  if (!id) {
-    toast.add({
-      title: 'Session Expired',
-      description: 'Please login again to upload your passport photograph.',
-      color: 'yellow',
+// Update completed steps when application changes
+watchEffect(() => {
+  if (application.value) {
+    const steps = ['personal', 'education', 'documents', 'bank'];
+    steps.forEach((step) => {
+      if (isStepComplete(step)) {
+        completedSteps.value.add(step);
+      }
     });
-    return;
   }
+});
 
-  uploadingPassport.value = true;
-  try {
-    const url = await applicationStore.uploadFile(file);
-    await applicationStore.uploadPassport(id, url);
-    state.passport = url;
-    toast.add({
-      title: 'Passport updated',
-      description: 'Your passport photograph has been saved.',
+const tabs: TabsItem[] = [
+  { label: 'Personal', slot: 'personal', value: 'personal' },
+  { label: 'Education', slot: 'education', value: 'education' },
+  { label: 'Documents', slot: 'documents', value: 'documents' },
+  { label: 'Bank', slot: 'bank', value: 'bank' },
+] satisfies TabsItem[];
+
+const tabItems = computed(() => {
+  const currentTab = route.query.tab ? (route.query.tab as string) : 'personal';
+  return tabs.map((tab) => ({
+    ...tab,
+    disabled: tab.value !== currentTab && !completedSteps.value.has(tab.value as string),
+  }));
+});
+
+const active = computed({
+  get() {
+    if (showReview.value) return 'review';
+    return route.query.tab ? (route.query.tab as string) : 'personal';
+  },
+  set(tab) {
+    if (isSubmitted.value) return; // Prevent navigation when submitted
+
+    const currentTab = route.query.tab ? (route.query.tab as string) : 'personal';
+
+    // Users can only click into tabs they've already completed.
+    // Moving forward happens via the step "Save" buttons.
+    if (tab !== currentTab && !completedSteps.value.has(tab as string)) {
+      return;
+    }
+
+    // Allow navigation to completed tabs or current tab
+    const tabIndex = tabs.findIndex((t) => t.value === tab);
+    if (tabIndex > 0) {
+      const previousTab = tabs?.[tabIndex - 1]?.value;
+      if (!completedSteps.value.has(previousTab as string)) {
+        return; // Cannot navigate if previous step is not complete
+      }
+    }
+
+    router.push({
+      query: { tab },
     });
-  } catch (error: any) {
-    toast.add({
-      title: 'Upload failed',
-      description: error?.message || 'Please try again.',
-      color: 'red',
-    });
-  } finally {
-    uploadingPassport.value = false;
-    if (passportInput.value) passportInput.value.value = '';
+  },
+});
+
+// Handle step completion
+const handleStepComplete = async (step: string) => {
+  completedSteps.value.add(step);
+  await refresh();
+
+  // Move to next tab
+  const currentIndex = tabs.findIndex((t) => t.value === step);
+  if (currentIndex < tabs.length - 1) {
+    const nextTab = tabs?.[currentIndex + 1]?.value;
+    router.push({ query: { tab: nextTab } });
   }
-}
+};
+
+// Handle final submission
+const handleFinalSubmit = async () => {
+  showReview.value = true;
+  await refresh();
+
+  router.replace({ query: {} });
+};
 </script>
 
 <template>
-  <UContainer
-    class="mt-4"
-    v-if="route?.query?.step === 'review' || app?.status !== ApplicationStatusEnum.InProgress"
-  >
-    <ApplicationsReviewApplication v-if="app?.id" :application="app" :application-id="app?.id" />
-  </UContainer>
-  <UContainer v-else class="py-10">
-    <UCard
-      class="mb-4 application-details-card p-5 bg-linear-to-r from-white via-white to-green-50 border border-gray-100 shadow-sm"
-    >
-      <div class="grid gap-2 sm:grid-cols-1 md:grid-cols-3">
-        <div class="grid">
-          <div
-            class="relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
-          >
-            <img
-              :src="passportPreview"
-              alt="Applicant passport photograph"
-              class="object-cover h-60 w-full"
-            />
-            <div
-              class="absolute inset-x-0 bottom-0 bg-black/40 px-2 py-1 text-[11px] font-medium text-white"
-            >
-              Passport
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <p class="text-xs text-muted max-w-xs">
-                Upload a clear JPEG or PNG. A portrait or square image works best.
-              </p>
-              <UButton
-                color="primary"
-                variant="solid"
-                size="sm"
-                :loading="uploadingPassport"
-                @click="openPassportPicker"
-              >
-                {{ state.passport ? 'Change passport' : 'Upload passport' }}
-              </UButton>
-              <UButton
-                v-if="state.passport"
-                color="neutral"
-                variant="soft"
-                size="sm"
-                :to="state.passport"
-                target="_blank"
-              >
-                View current
-              </UButton>
-            </div>
-          </div>
-          <input
-            ref="passportInput"
-            type="file"
-            accept="image/*"
-            class="hidden"
-            @change="(e) => handlePassportChange((e.target as HTMLInputElement).files)"
-          />
-        </div>
-
-        <div class="col-span-2">
-          <div class="flex">
-            <div>
-              <p class="text-sm text-muted">Applicant</p>
-              <h2 class="text-xl font-semibold leading-tight">
-                {{ state.firstName || 'Applicant' }}
-                <span v-if="state.middleName">{{ state.middleName }}</span>
-                {{ state.lastName }}
-              </h2>
-            </div>
-          </div>
-
-          <div class="grid text-sm">
-            <div>
-              <p class="text-muted">NIN</p>
-              <p class="font-medium">{{ state.nin || '—' }}</p>
-            </div>
-            <div>
-              <p class="text-muted">Date of Birth</p>
-              <p class="font-medium">{{ state.dob ? toDateInput(state.dob) : '—' }}</p>
-            </div>
-            <div>
-              <p class="text-muted">Email</p>
-              <p class="font-medium">{{ state.email || '—' }}</p>
-            </div>
-            <div>
-              <p class="text-muted">Phone</p>
-              <p class="font-medium">{{ state.phone || '—' }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+  <UContainer class="py-8">
+    <UCard v-if="loadError">
+      <template #header>
+        <h1 class="text-2xl font-semibold">Application</h1>
+      </template>
+      <p class="text-sm text-muted">
+        {{ getErrorMessage(loadError, 'Failed to load application.') }}
+      </p>
     </UCard>
 
-    <UTabs v-if="route?.query?.step !== 'review'" :items="items" v-model="active" class="w-full">
-      <template #personal>
-        <UCard>
-          <ApplicationsPersonalInformationForm
-            :application="app"
-            @step-complete="(step) => nextStep(step)"
-          />
-        </UCard>
-      </template>
+    <UCard v-else-if="loadStatus === 'pending'">
+      <p class="text-sm text-muted">Loading…</p>
+    </UCard>
 
-      <template #education>
-        <UCard>
-          <ApplicationsEducationForm
-            v-if="app?.id"
-            :application-id="app.id"
-            :school-record="app.schoolRecord"
-            @step-complete="(step) => nextStep(step)"
-          />
-        </UCard>
-      </template>
+    <div v-else class="space-y-6">
+      <!-- Review Page -->
+      <ApplicationsReviewApplication
+        v-if="application?.status === ApplicationStatusEnum.Submitted || showReview"
+        :application-id="applicationId"
+        :application="application"
+      />
 
-      <template #documents>
-        <UCard>
-          <ApplicationsDocumentUploads
-            v-if="app"
-            :application="app"
-            @step-complete="(step) => nextStep(step)"
-          />
-        </UCard>
-      </template>
-      <template #bank>
-        <UCard>
-          <ApplicationsBankForm
-            v-if="app?.id"
-            :application-id="app.id"
-            :bank-details="app.bankDetails"
-            @step-complete="(step) => nextStep(step)"
-          />
-        </UCard>
-      </template>
-    </UTabs>
+      <!-- Application Form Tabs -->
+      <UCard v-else>
+        <template #header>
+          <div class="space-y-1">
+            <h1 class="text-2xl font-semibold">{{ program?.name || 'Application' }}</h1>
+            <p class="text-sm text-muted">
+              Application ID: {{ applicationId }}
+              <span v-if="application?.applicationNo"> • {{ application.applicationNo }}</span>
+            </p>
+          </div>
+        </template>
+
+        <div>
+          <UTabs :items="tabItems" v-model="active" class="w-full">
+            <template #personal>
+              <ApplicationsPersonalInformationForm
+                @step-complete="handleStepComplete('personal')"
+              />
+            </template>
+
+            <template #education>
+              <ApplicationsEducationForm
+                :application-id="applicationId"
+                :school-record="schoolRecord"
+                :disabled="!completedSteps.has('personal')"
+                @step-complete="handleStepComplete('education')"
+              />
+            </template>
+
+            <template #documents>
+              <ApplicationsDocumentUploads
+                :application-id="applicationId"
+                :application="application"
+                :disabled="!completedSteps.has('education')"
+                @updated="(patch) => Object.assign(documentUpload!, patch)"
+                @step-complete="handleStepComplete('documents')"
+              />
+            </template>
+            <template #bank>
+              <ApplicationsBankForm
+                :application-id="applicationId"
+                :bank-details="bankDetails"
+                :disabled="!completedSteps.has('documents')"
+                @step-complete="handleFinalSubmit"
+              />
+            </template>
+          </UTabs>
+
+          <UCard v-if="applicationStore.error" variant="soft">
+            <p class="text-sm text-muted">{{ applicationStore.error }}</p>
+          </UCard>
+        </div>
+      </UCard>
+    </div>
   </UContainer>
 </template>

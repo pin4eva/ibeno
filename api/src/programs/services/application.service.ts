@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { EmailService } from '../../email/email.service';
-import { Application, Prisma } from '../../generated/client';
+import { Application, Prisma, Program } from '../../generated/client';
 import { PrismaService } from '../../prisma.service';
 import {
   ApplicantLoginDTO,
@@ -16,7 +16,9 @@ import {
   CreateSchoolRecordDTO,
   FilterApplicationsDTO,
   OldApplicationDTO,
+  OldProgramDTO,
 } from '../dto/application.dto';
+import { ProgramCategoryEnum } from '../dto/programs.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -307,11 +309,42 @@ export class ApplicationService {
       const mongoDb = mongoClient.db(); // use default database from URI
 
       const applicationCollection = mongoDb.collection<OldApplicationDTO>('students');
+      const programCollection = mongoDb.collection<OldProgramDTO>('sessions');
 
       const applications = await applicationCollection.find().toArray();
+      const sessions = await programCollection.find().toArray();
       const emails = new Set<string>();
       const nins = new Set<string>();
       const applicationsInDB: Application[] = [];
+
+      const programs: Program[] = [];
+
+      for (const session of sessions) {
+        const program = await this.prisma.program.upsert({
+          where: { name: session.name },
+          create: {
+            name: session.name,
+            category: ProgramCategoryEnum.Education,
+            description: session.description,
+            subCategory: session.type,
+            createdAt: session.startDate,
+            updatedAt: session.endDate,
+            isActive: session.isActive,
+            startDate: session.startDate,
+            endDate: session.endDate,
+          },
+          update: {
+            description: session.description,
+            subCategory: session.type,
+            createdAt: session.startDate,
+            updatedAt: session.endDate,
+            isActive: session.isActive,
+            startDate: session.startDate,
+            endDate: session.endDate,
+          },
+        });
+        programs.push(program);
+      }
 
       for (const application of applications) {
         const email = application?.email?.toLowerCase()?.trim();
@@ -326,7 +359,8 @@ export class ApplicationService {
             continue;
           }
         }
-        const programId = application?.type == 'Free Jamb' ? 1 : 2;
+        const program = programs.find((p) => p.subCategory === application.type);
+        const programId = program ? program.id : application?.type == 'Free Jamb' ? 1 : 2;
         const applicationNo = await this.generateApplicationNo(programId);
 
         const applicationData = await this.prisma.application.create({

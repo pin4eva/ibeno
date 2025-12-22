@@ -59,7 +59,12 @@ export const ModelName = {
   BankDetail: 'BankDetail',
   DocumentUpload: 'DocumentUpload',
   SchoolRecord: 'SchoolRecord',
-  Asset: 'Asset'
+  Asset: 'Asset',
+  Contractor: 'Contractor',
+  Procurement: 'Procurement',
+  ProcurementDocument: 'ProcurementDocument',
+  Bid: 'Bid',
+  BidEvent: 'BidEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -227,6 +232,104 @@ export const AssetScalarFieldEnum = {
 } as const
 
 export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const ContractorScalarFieldEnum = {
+  id: 'id',
+  contractorNo: 'contractorNo',
+  oldRegNo: 'oldRegNo',
+  cacRegNo: 'cacRegNo',
+  companyName: 'companyName',
+  status: 'status',
+  registrationCategory: 'registrationCategory',
+  majorArea: 'majorArea',
+  subArea: 'subArea',
+  stateOfOrigin: 'stateOfOrigin',
+  community: 'community',
+  contactPerson: 'contactPerson',
+  phone: 'phone',
+  email: 'email',
+  notes: 'notes',
+  sourceSheet: 'sourceSheet',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContractorScalarFieldEnum = (typeof ContractorScalarFieldEnum)[keyof typeof ContractorScalarFieldEnum]
+
+
+export const ProcurementScalarFieldEnum = {
+  id: 'id',
+  referenceNo: 'referenceNo',
+  title: 'title',
+  category: 'category',
+  type: 'type',
+  location: 'location',
+  description: 'description',
+  eligibilityCriteria: 'eligibilityCriteria',
+  submissionDeadline: 'submissionDeadline',
+  publishDate: 'publishDate',
+  status: 'status',
+  budgetEstimate: 'budgetEstimate',
+  preBidMeetingDate: 'preBidMeetingDate',
+  preBidMeetingLocation: 'preBidMeetingLocation',
+  preBidNotes: 'preBidNotes',
+  tags: 'tags',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProcurementScalarFieldEnum = (typeof ProcurementScalarFieldEnum)[keyof typeof ProcurementScalarFieldEnum]
+
+
+export const ProcurementDocumentScalarFieldEnum = {
+  id: 'id',
+  procurementId: 'procurementId',
+  name: 'name',
+  url: 'url',
+  mimeType: 'mimeType',
+  size: 'size',
+  createdAt: 'createdAt'
+} as const
+
+export type ProcurementDocumentScalarFieldEnum = (typeof ProcurementDocumentScalarFieldEnum)[keyof typeof ProcurementDocumentScalarFieldEnum]
+
+
+export const BidScalarFieldEnum = {
+  id: 'id',
+  procurementId: 'procurementId',
+  contractorId: 'contractorId',
+  contractorNo: 'contractorNo',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  price: 'price',
+  technicalProposalUrl: 'technicalProposalUrl',
+  commercialProposalUrl: 'commercialProposalUrl',
+  otherFiles: 'otherFiles',
+  notes: 'notes',
+  status: 'status',
+  submittedAt: 'submittedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BidScalarFieldEnum = (typeof BidScalarFieldEnum)[keyof typeof BidScalarFieldEnum]
+
+
+export const BidEventScalarFieldEnum = {
+  id: 'id',
+  bidId: 'bidId',
+  action: 'action',
+  actorId: 'actorId',
+  actorRole: 'actorRole',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type BidEventScalarFieldEnum = (typeof BidEventScalarFieldEnum)[keyof typeof BidEventScalarFieldEnum]
 
 
 export const SortOrder = {

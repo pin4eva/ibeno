@@ -62,3 +62,26 @@ export const DepartmentEnum = {
 } as const
 
 export type DepartmentEnum = (typeof DepartmentEnum)[keyof typeof DepartmentEnum]
+
+
+export const ProcurementStatusEnum = {
+  draft: 'draft',
+  published: 'published',
+  closed: 'closed',
+  awarded: 'awarded',
+  archived: 'archived'
+} as const
+
+export type ProcurementStatusEnum = (typeof ProcurementStatusEnum)[keyof typeof ProcurementStatusEnum]
+
+
+export const BidStatusEnum = {
+  submitted: 'submitted',
+  under_review: 'under_review',
+  accepted: 'accepted',
+  rejected: 'rejected',
+  withdrawn: 'withdrawn',
+  awarded: 'awarded'
+} as const
+
+export type BidStatusEnum = (typeof BidStatusEnum)[keyof typeof BidStatusEnum]

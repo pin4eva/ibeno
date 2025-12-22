@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Min, MinLength } from 'class-validator';
 import { DepartmentEnum, UserRoleEnum, UserStatusEnum } from '../../generated/enums';
 
 export class UserFilterDTO {
@@ -69,4 +69,37 @@ export class UpdateUserDTO {
   @IsOptional()
   @IsEnum(UserStatusEnum)
   status?: UserStatusEnum;
+}
+
+export class UpdateProfileDTO {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  firstName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  avatar?: string;
+}
+
+export class ChangeProfilePasswordDTO {
+  @ApiProperty()
+  @IsString()
+  oldPassword: string;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(6)
+  newPassword: string;
 }

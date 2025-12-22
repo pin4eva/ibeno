@@ -80,7 +80,18 @@
               Edit
             </UButton>
             <UButton
-              v-if="procurement.status === 'published'"
+              v-if="procurement.status === ProcurementStatus.DRAFT"
+              icon="i-lucide-rocket"
+              color="green"
+              variant="solid"
+              size="sm"
+              block
+              @click="publishProcurement"
+            >
+              Publish
+            </UButton>
+            <UButton
+              v-if="procurement.status === ProcurementStatus.PUBLISHED"
               icon="i-lucide-lock"
               color="orange"
               variant="solid"
@@ -119,16 +130,24 @@
                 <div>
                   <p class="text-sm font-medium text-gray-500">Budget Estimate</p>
                   <p class="mt-1 text-gray-900 dark:text-white">
-                    {{ procurement.budgetEstimate ? `₦${procurement.budgetEstimate.toLocaleString()}` : 'N/A' }}
+                    {{
+                      procurement.budgetEstimate
+                        ? `₦${procurement.budgetEstimate.toLocaleString()}`
+                        : 'N/A'
+                    }}
                   </p>
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-500">Publish Date</p>
-                  <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(procurement.publishDate) }}</p>
+                  <p class="mt-1 text-gray-900 dark:text-white">
+                    {{ formatDate(procurement.publishDate) }}
+                  </p>
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-500">Submission Deadline</p>
-                  <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(procurement.submissionDeadline) }}</p>
+                  <p class="mt-1 text-gray-900 dark:text-white">
+                    {{ formatDate(procurement.submissionDeadline) }}
+                  </p>
                 </div>
               </div>
             </UCard>
@@ -137,14 +156,17 @@
               <template #header>
                 <h3 class="text-lg font-semibold">Description</h3>
               </template>
-              <p class="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{{ procurement.description }}</p>
+              <div class="prose dark:prose-invert max-w-none" v-html="procurement.description" />
             </UCard>
 
             <UCard v-if="procurement.eligibilityCriteria">
               <template #header>
                 <h3 class="text-lg font-semibold">Eligibility Criteria</h3>
               </template>
-              <p class="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{{ procurement.eligibilityCriteria }}</p>
+              <div
+                class="prose dark:prose-invert max-w-none"
+                v-html="procurement.eligibilityCriteria"
+              />
             </UCard>
           </div>
         </template>
@@ -174,7 +196,7 @@
                 :columns="bidColumns"
               >
                 <template #contractorNo-cell="{ row }">
-                  <span class="font-mono text-sm">{{ row.original.contractorNo }}</span>
+                  <span class="font-mono text-sm">{{ row.original?.contractorNo }}</span>
                 </template>
 
                 <template #status-cell="{ row }">
@@ -202,9 +224,7 @@
                 </template>
               </UTable>
 
-              <div v-else class="text-center py-8 text-gray-500">
-                No bids submitted yet
-              </div>
+              <div v-else class="text-center py-8 text-gray-500">No bids submitted yet</div>
             </UCard>
           </div>
         </template>
@@ -228,7 +248,10 @@
                 </div>
               </template>
 
-              <div v-if="procurement.documents && procurement.documents.length > 0" class="space-y-2">
+              <div
+                v-if="procurement.documents && procurement.documents.length > 0"
+                class="space-y-2"
+              >
                 <div
                   v-for="doc in procurement.documents"
                   :key="doc.id"
@@ -261,9 +284,7 @@
                 </div>
               </div>
 
-              <div v-else class="text-center py-8 text-gray-500">
-                No documents uploaded yet
-              </div>
+              <div v-else class="text-center py-8 text-gray-500">No documents uploaded yet</div>
             </UCard>
           </div>
         </template>
@@ -271,7 +292,7 @@
     </div>
 
     <!-- Edit Modal -->
-    <UModal v-model:open="isEditing" :ui="{ width: 'max-w-3xl' }">
+    <UModal v-model:open="isEditing">
       <template #header>
         <h3 class="text-lg font-semibold">Edit Procurement</h3>
       </template>
@@ -282,7 +303,15 @@
             <UInput v-model="editForm.title" />
           </UFormField>
           <UFormField label="Description" required>
-            <UTextarea v-model="editForm.description" :rows="5" />
+            <WysiwygEditor v-model="editForm.description" />
+          </UFormField>
+          <UFormField label="Status">
+            <USelectMenu
+              v-model="editForm.status"
+              :items="statusOptions"
+              value-key="value"
+              placeholder="Select status"
+            />
           </UFormField>
           <!-- Add more fields as needed -->
         </div>
@@ -290,14 +319,8 @@
 
       <template #footer>
         <div class="flex gap-2 justify-end">
-          <UButton color="gray" variant="ghost" @click="isEditing = false">
-            Cancel
-          </UButton>
-          <UButton
-            color="primary"
-            :loading="procurementStore.loading"
-            @click="handleUpdate"
-          >
+          <UButton color="gray" variant="ghost" @click="isEditing = false"> Cancel </UButton>
+          <UButton color="primary" :loading="procurementStore.loading" @click="handleUpdate">
             Save Changes
           </UButton>
         </div>
@@ -323,9 +346,7 @@
 
       <template #footer>
         <div class="flex gap-2 justify-end">
-          <UButton color="gray" variant="ghost" @click="showUploadModal = false">
-            Cancel
-          </UButton>
+          <UButton color="gray" variant="ghost" @click="showUploadModal = false"> Cancel </UButton>
           <UButton
             color="primary"
             :loading="procurementStore.loading"
@@ -340,25 +361,30 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, reactive, ref } from 'vue';
 import type { TableColumn } from '@nuxt/ui';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
 import type { Bid } from '~/interfaces/procurement/bid.interface';
-import type { UploadDocumentInput } from '~/interfaces/procurement/procurement.interface';
+import {
+  ProcurementStatus,
+  type UploadDocumentInput,
+} from '~/interfaces/procurement/procurement.interface';
+import WysiwygEditor from '~/components/WysiwygEditor.vue';
 
 const route = useRoute();
 const procurementStore = useProcurementStore();
 const toast = useToast();
 
-const procurementId = computed(() => parseInt(route.params.id as string));
+const procurementId = computed(() => parseInt(route.params.id as string, 10));
 const procurement = computed(() => procurementStore.currentProcurement);
-const selectedTab = ref(0);
+const selectedTab = ref<'overview' | 'bids' | 'documents'>('overview');
 const isEditing = ref(false);
 const showUploadModal = ref(false);
 
 const tabs = [
-  { label: 'Overview', value: 'overview', icon: 'i-lucide-info' },
-  { label: 'Bids', value: 'bids', icon: 'i-lucide-users' },
-  { label: 'Documents', value: 'documents', icon: 'i-lucide-file-text' },
+  { label: 'Overview', value: 'overview', icon: 'i-lucide-info', slot: 'overview' },
+  { label: 'Bids', value: 'bids', icon: 'i-lucide-users', slot: 'bids' },
+  { label: 'Documents', value: 'documents', icon: 'i-lucide-file-text', slot: 'documents' },
 ];
 
 const bidColumns: TableColumn<Bid>[] = [
@@ -374,14 +400,24 @@ const bidColumns: TableColumn<Bid>[] = [
 const editForm = reactive({
   title: '',
   description: '',
+  status: ProcurementStatus.DRAFT as ProcurementStatus,
 });
+
+const statusOptions = [
+  { label: 'Draft', value: ProcurementStatus.DRAFT },
+  { label: 'Published', value: ProcurementStatus.PUBLISHED },
+  { label: 'Closed', value: ProcurementStatus.CLOSED },
+  { label: 'Awarded', value: ProcurementStatus.AWARDED },
+  { label: 'Archived', value: ProcurementStatus.ARCHIVED },
+];
 
 const uploadForm = reactive<UploadDocumentInput>({
   name: '',
   url: '',
 });
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString?: string) => {
+  if (!dateString) return '—';
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
@@ -389,14 +425,15 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const getRemainingDays = (deadlineString: string) => {
+const getRemainingDays = (deadlineString?: string) => {
+  if (!deadlineString) return 0;
   const deadline = new Date(deadlineString);
   const now = new Date();
   const diff = deadline.getTime() - now.getTime();
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 };
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status: ProcurementStatus | string) => {
   const colors: Record<string, 'gray' | 'green' | 'orange' | 'blue' | 'red'> = {
     draft: 'gray',
     published: 'green',
@@ -426,26 +463,26 @@ const formatFileSize = (bytes?: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const closeProcurement = async () => {
+const updateStatus = async (status: ProcurementStatus) => {
   try {
-    await procurementStore.updateProcurement({
-      id: procurementId.value,
-      status: 'closed' as never,
-    });
+    await procurementStore.updateProcurementStatus(procurementId.value, status);
     toast.add({
       title: 'Success',
-      description: 'Procurement closed successfully',
+      description: `Status updated to ${status}`,
       color: 'green',
     });
   } catch (error) {
     console.error(error);
     toast.add({
       title: 'Error',
-      description: 'Failed to close procurement',
+      description: 'Failed to update procurement status',
       color: 'red',
     });
   }
 };
+
+const closeProcurement = () => updateStatus(ProcurementStatus.CLOSED);
+const publishProcurement = () => updateStatus(ProcurementStatus.PUBLISHED);
 
 const handleUpdate = async () => {
   try {
@@ -524,6 +561,7 @@ onMounted(async () => {
     if (procurement.value) {
       editForm.title = procurement.value.title;
       editForm.description = procurement.value.description;
+      editForm.status = procurement.value.status;
     }
   } catch (error) {
     console.error(error);

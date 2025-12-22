@@ -20,6 +20,75 @@ export class ContractorService {
   }
 
   /**
+   * Build seed contractor rows
+   */
+  private buildSeedData(): Omit<CreateContractorDTO, 'contractorNo'>[] {
+    return [
+      {
+        companyName: 'AkwaTech Engineering Ltd.',
+        status: 'ACTIVE',
+        registrationCategory: 'Engineering',
+        majorArea: 'Infrastructure',
+        subArea: 'Roads & Drainage',
+        stateOfOrigin: 'Akwa Ibom',
+        community: 'Ibeno',
+        contactPerson: 'Iniobong Etim',
+        phone: '+234-800-100-0001',
+        email: 'contact@akwatera.com',
+        notes: 'Known for regional civil works.',
+      },
+      {
+        companyName: 'Niger Delta Water Works',
+        status: 'ACTIVE',
+        registrationCategory: 'Water',
+        majorArea: 'Utilities',
+        subArea: 'Boreholes',
+        stateOfOrigin: 'Rivers',
+        contactPerson: 'Amaka Chukwu',
+        phone: '+234-800-200-0002',
+        email: 'info@ndwaterworks.com',
+        notes: 'Owns drilling rigs; experienced in community water schemes.',
+      },
+      {
+        companyName: 'Coastal Build & Supply',
+        status: 'ACTIVE',
+        registrationCategory: 'Construction',
+        majorArea: 'Buildings',
+        subArea: 'Educational Facilities',
+        stateOfOrigin: 'Akwa Ibom',
+        contactPerson: 'Sunday Akpan',
+        phone: '+234-800-300-0003',
+        email: 'hello@coastalbuild.com',
+        notes: 'Focus on classrooms and community halls.',
+      },
+      {
+        companyName: 'HealthReach Services',
+        status: 'ACTIVE',
+        registrationCategory: 'Healthcare',
+        majorArea: 'Health Outreach',
+        subArea: 'Mobile Clinics',
+        stateOfOrigin: 'Lagos',
+        contactPerson: 'Dr. Tolu Odede',
+        phone: '+234-800-400-0004',
+        email: 'ops@healthreach.ng',
+        notes: 'NGO partner for medical missions.',
+      },
+      {
+        companyName: 'BrightGrid Solar',
+        status: 'ACTIVE',
+        registrationCategory: 'Energy',
+        majorArea: 'Solar',
+        subArea: 'Mini-grid & Water Pumping',
+        stateOfOrigin: 'Abuja',
+        contactPerson: 'Grace Yusuf',
+        phone: '+234-800-500-0005',
+        email: 'projects@brightgrid.energy',
+        notes: 'Solar integrator for borehole pumps and mini-grids.',
+      },
+    ];
+  }
+
+  /**
    * Create a new contractor
    */
   async createContractor(input: CreateContractorDTO) {
@@ -140,5 +209,47 @@ export class ContractorService {
       })),
       skipDuplicates: true,
     });
+  }
+
+  /**
+   * Seed sample contractors (idempotent by companyName)
+   */
+  async seedContractors() {
+    const seeds = this.buildSeedData();
+    const results: Array<{
+      status: 'created' | 'skipped';
+      id: number;
+      contractorNo: string;
+      companyName: string;
+    }> = [];
+
+    for (const seed of seeds) {
+      const existing = await this.prisma.contractor.findFirst({
+        where: { companyName: seed.companyName },
+        select: { id: true, contractorNo: true, companyName: true },
+      });
+
+      if (existing) {
+        results.push({ status: 'skipped', ...existing });
+        continue;
+      }
+
+      const created = await this.createContractor(seed);
+      results.push({
+        status: 'created',
+        id: created.id,
+        contractorNo: created.contractorNo,
+        companyName: created.companyName,
+      });
+    }
+
+    return {
+      count: {
+        created: results.filter((r) => r.status === 'created').length,
+        skipped: results.filter((r) => r.status === 'skipped').length,
+        total: results.length,
+      },
+      results,
+    };
   }
 }

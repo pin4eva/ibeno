@@ -132,6 +132,33 @@ export const useProcurementStore = defineStore('procurement', {
       }
     },
 
+    async updateProcurementStatus(id: number, status: Procurement['status']) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const procurement = await apiFetch<Procurement>(`/procurements/${id}`, {
+          method: 'PATCH',
+          body: { id, status },
+        });
+
+        const index = this.procurements.findIndex((p) => p.id === id);
+        if (index !== -1) {
+          this.procurements[index] = procurement;
+        }
+
+        if (this.currentProcurement?.id === id) {
+          this.currentProcurement = procurement;
+        }
+
+        return procurement;
+      } catch (error) {
+        this.error = error instanceof Error ? error.message : 'Failed to update procurement status';
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async deleteProcurement(id: number) {
       this.loading = true;
       this.error = null;

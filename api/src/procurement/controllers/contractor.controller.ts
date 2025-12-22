@@ -38,4 +38,10 @@ export class ContractorController {
   ) {
     return this.contractorService.updateContractor(id, input);
   }
+
+  @Post('seed')
+  @ApiOperation({ summary: 'Seed sample contractors (Admin)' })
+  async seedContractors() {
+    return this.contractorService.seedContractors();
+  }
 }

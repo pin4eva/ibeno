@@ -76,4 +76,10 @@ export class ProcurementController {
   async deleteDocument(@Param('documentId', ParseIntPipe) documentId: number) {
     return this.procurementService.deleteDocument(documentId);
   }
+
+  @Post('seed')
+  @ApiOperation({ summary: 'Seed sample procurements (Admin)' })
+  async seedProcurements() {
+    return this.procurementService.seedProcurements();
+  }
 }

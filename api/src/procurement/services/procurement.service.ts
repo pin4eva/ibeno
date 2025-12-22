@@ -13,6 +13,77 @@ export class ProcurementService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Build deterministic-ish seed data with future deadlines
+   */
+  private buildSeedData(): CreateProcurementDTO[] {
+    const now = new Date();
+    const addDays = (days: number) => {
+      const d = new Date(now);
+      d.setDate(d.getDate() + days);
+      return d.toISOString();
+    };
+
+    return [
+      {
+        title: 'Supply and Installation of Solar-Powered Boreholes',
+        category: 'Utilities',
+        type: 'Open Tender',
+        location: 'Ibeno LGA',
+        description:
+          'Provision of community solar-powered boreholes including drilling, pumps, panels, and distribution network.',
+        eligibilityCriteria: 'Registered contractors with proven water projects in Niger Delta.',
+        submissionDeadline: addDays(30),
+        publishDate: addDays(0),
+        budgetEstimate: 25000000,
+        preBidMeetingDate: addDays(10),
+        preBidMeetingLocation: 'Ibeno Council Hall',
+        preBidNotes: 'Attendance recommended; bring company profile.',
+        tags: ['water', 'infrastructure', 'community'],
+        contactEmail: 'procurement@ibeno.local',
+        contactPhone: '+234-800-000-0001',
+        createdBy: 1,
+      },
+      {
+        title: 'Construction of Classroom Blocks for Model Schools',
+        category: 'Education',
+        type: 'Selective Tender',
+        location: 'Akwa Ibom State',
+        description:
+          'Design and build six-unit classroom blocks with furnishings and solar lighting.',
+        eligibilityCriteria: 'COREN registered builders; evidence of similar educational projects.',
+        submissionDeadline: addDays(45),
+        publishDate: addDays(2),
+        budgetEstimate: 42000000,
+        preBidMeetingDate: addDays(15),
+        preBidMeetingLocation: 'Uyo Secretariat',
+        preBidNotes: 'Site visit mandatory before bid submission.',
+        tags: ['education', 'construction'],
+        contactEmail: 'education.tenders@ibeno.local',
+        contactPhone: '+234-800-000-0002',
+        createdBy: 1,
+      },
+      {
+        title: 'Provision of Medical Outreach Services',
+        category: 'Health',
+        type: 'Request for Proposal',
+        location: 'Remote communities',
+        description:
+          'Deploy mobile medical teams for quarterly outreach covering general medicine, maternal health, and vaccinations.',
+        eligibilityCriteria: 'Licensed medical NGOs with cold-chain capacity and field experience.',
+        submissionDeadline: addDays(25),
+        publishDate: addDays(1),
+        budgetEstimate: 18000000,
+        preBidMeetingDate: addDays(8),
+        preBidMeetingLocation: 'Virtual (Teams link to be shared)',
+        tags: ['health', 'outreach', 'ngos'],
+        contactEmail: 'health.procurement@ibeno.local',
+        contactPhone: '+234-800-000-0003',
+        createdBy: 1,
+      },
+    ];
+  }
+
+  /**
    * Generate a unique reference number for procurement
    */
   private async generateReferenceNo(): Promise<string> {
@@ -180,7 +251,9 @@ export class ProcurementService {
         : new Date(existing.publishDate);
 
       if (publishDate > deadline) {
-        throw new BadRequestException('Publish date must be before or equal to submission deadline');
+        throw new BadRequestException(
+          'Publish date must be before or equal to submission deadline',
+        );
       }
     }
 
@@ -265,5 +338,47 @@ export class ProcurementService {
     return this.prisma.procurementDocument.delete({
       where: { id: documentId },
     });
+  }
+
+  /**
+   * Seed sample procurements (idempotent by title)
+   */
+  async seedProcurements() {
+    const seeds = this.buildSeedData();
+    const results: Array<{
+      status: 'created' | 'skipped';
+      id: number;
+      referenceNo: string;
+      title: string;
+    }> = [];
+
+    for (const seed of seeds) {
+      const existing = await this.prisma.procurement.findFirst({
+        where: { title: seed.title },
+        select: { id: true, referenceNo: true, title: true },
+      });
+
+      if (existing) {
+        results.push({ status: 'skipped', ...existing });
+        continue;
+      }
+
+      const created = await this.createProcurement(seed);
+      results.push({
+        status: 'created',
+        id: created.id,
+        referenceNo: created.referenceNo,
+        title: created.title,
+      });
+    }
+
+    return {
+      count: {
+        created: results.filter((r) => r.status === 'created').length,
+        skipped: results.filter((r) => r.status === 'skipped').length,
+        total: results.length,
+      },
+      results,
+    };
   }
 }

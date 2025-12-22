@@ -1,3 +1,5 @@
+import type { Bid } from './bid.interface';
+
 export enum ProcurementStatus {
   DRAFT = 'draft',
   PUBLISHED = 'published',
@@ -39,7 +41,7 @@ export interface Procurement {
   createdAt: string;
   updatedAt: string;
   documents?: ProcurementDocument[];
-  bids?: unknown[];
+  bids?: Bid[];
   _count?: {
     bids: number;
   };

@@ -52,6 +52,7 @@ definePageMeta({
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 
 const form = reactive({
   email: '',
@@ -72,6 +73,10 @@ async function handleLogin() {
     }
 
     if (response?.success) {
+      if (route.query.redirect) {
+        router.push(route.query.redirect as string);
+        return;
+      }
       router.push('/admin');
     }
   } catch {

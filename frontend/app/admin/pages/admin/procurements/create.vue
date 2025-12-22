@@ -66,11 +66,7 @@
           <!-- Description -->
           <div>
             <UFormField label="Description / Scope" name="description" required>
-              <UTextarea
-                v-model="formState.description"
-                :rows="5"
-                placeholder="Enter detailed description and scope of work"
-              />
+              <WysiwygEditor v-model="formState.description" class="max-w-none" />
             </UFormField>
           </div>
 
@@ -175,6 +171,7 @@
 </template>
 
 <script setup lang="ts">
+import WysiwygEditor from '~/components/WysiwygEditor.vue';
 import type { CreateProcurementInput } from '~/interfaces/procurement/procurement.interface';
 import { useAuthStore } from '~/stores/auth.store';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';

@@ -106,7 +106,7 @@
       </div>
 
       <!-- Details Tabs -->
-      <UTabs :items="tabs" v-model:selected="selectedTab">
+      <UTabs :items="tabs" v-model:selected="selectedTab" default-value="overview">
         <!-- Overview Tab -->
         <template #overview>
           <div class="space-y-4 py-4">
@@ -362,7 +362,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
-import type { TableColumn } from '@nuxt/ui';
+import type { TableColumn, TabsItem } from '@nuxt/ui';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
 import type { Bid } from '~/interfaces/procurement/bid.interface';
 import {
@@ -372,16 +372,22 @@ import {
 import WysiwygEditor from '~/components/WysiwygEditor.vue';
 
 const route = useRoute();
+const router = useRouter();
 const procurementStore = useProcurementStore();
 const toast = useToast();
 
 const procurementId = computed(() => parseInt(route.params.id as string, 10));
 const procurement = computed(() => procurementStore.currentProcurement);
-const selectedTab = ref<'overview' | 'bids' | 'documents'>('overview');
+// const selectedTab = ref<'overview' | 'bids' | 'documents'>('overview');
 const isEditing = ref(false);
 const showUploadModal = ref(false);
 
-const tabs = [
+const selectedTab = computed({
+  get: () => (route.query?.tab as string) || 'overview',
+  set: (tab) => router.push({ query: { tab } }),
+});
+
+const tabs: TabsItem[] = [
   { label: 'Overview', value: 'overview', icon: 'i-lucide-info', slot: 'overview' },
   { label: 'Bids', value: 'bids', icon: 'i-lucide-users', slot: 'bids' },
   { label: 'Documents', value: 'documents', icon: 'i-lucide-file-text', slot: 'documents' },

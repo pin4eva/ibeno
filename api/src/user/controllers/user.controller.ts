@@ -1,7 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ChangeProfilePasswordDTO, UpdateProfileDTO, UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
+import {
+  ChangeProfilePasswordDTO,
+  UpdateProfileDTO,
+  UpdateUserDTO,
+  UserFilterDTO,
+} from '../dto/user.dto';
 import { AuthGuard } from '../../guards/auth.guard';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { type User } from '../../generated/client';
@@ -21,6 +26,8 @@ export class UserController {
   }
 
   @Patch('migrate')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin)
   migrateUsers() {
     return this.userService.importUserAndAuth();
   }
@@ -31,6 +38,8 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin)
   async update(@Param('id') id: string, @Body() data: UpdateUserDTO) {
     return this.userService.update(+id, data);
   }

@@ -118,9 +118,9 @@ const links = [
     ],
   },
   {
-    label: 'Settings',
+    label: 'Profile',
     icon: 'i-lucide-settings',
-    to: '/admin/settings',
+    to: '/admin/profile',
   },
 ];
 

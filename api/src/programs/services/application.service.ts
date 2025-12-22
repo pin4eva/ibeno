@@ -469,4 +469,14 @@ export class ApplicationService {
 
     return updatedApplication;
   }
+
+  async getStudentApplications(nin: string) {
+    return this.prisma.application.findMany({
+      where: { nin },
+      include: {
+        program: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }

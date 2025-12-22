@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApplicationService } from '../services/application.service';
 import {
@@ -9,6 +9,10 @@ import {
   CreateSchoolRecordDTO,
   FilterApplicationsDTO,
 } from '../dto/application.dto';
+import { AuthGuard } from '../../guards/auth.guard';
+import { RolesGuard } from '../../guards/roles.guard';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserRoleEnum } from '../../generated/enums';
 
 @ApiTags('Applications')
 @ApiBearerAuth()
@@ -60,6 +64,7 @@ export class ApplicationController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   getAllApplications(@Query() query?: FilterApplicationsDTO) {
     return this.applicationService.getAllApplications(query);
   }
@@ -70,10 +75,16 @@ export class ApplicationController {
   }
 
   @Patch(':id/status')
+  @UseGuards(AuthGuard)
   updateApplicationStatus(
     @Param('id') id: number,
     @Body() input: { status: string; comment?: string },
   ) {
     return this.applicationService.updateApplicationStatus(id, input.status as any, input.comment);
+  }
+
+  @Post('student-history')
+  getStudentApplications(@Body('nin') nin: string) {
+    return this.applicationService.getStudentApplications(nin);
   }
 }

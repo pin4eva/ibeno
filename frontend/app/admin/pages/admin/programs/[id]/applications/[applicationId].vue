@@ -99,7 +99,7 @@ const handleAction = async () => {
     };
 
     const status = statusMap[actionType.value];
-    await apiFetch(`/api/applications/${applicationId}/status`, {
+    await apiFetch(`/applications/${applicationId}/status`, {
       method: 'PATCH',
       body: {
         status,
@@ -130,7 +130,6 @@ const actionLabels = {
   reject: 'Reject Application',
   'request-changes': 'Request Changes',
 };
-
 </script>
 
 <template>
@@ -148,7 +147,13 @@ const actionLabels = {
             label="Back to Program"
             :to="`/admin/programs/${programId}`"
           />
-          <UBadge v-if="app?.status" :color="app.status === 'Accepted' ? 'green' : app.status === 'Rejected' ? 'red' : 'yellow'" variant="subtle">
+          <UBadge
+            v-if="app?.status"
+            :color="
+              app.status === 'Accepted' ? 'green' : app.status === 'Rejected' ? 'red' : 'yellow'
+            "
+            variant="subtle"
+          >
             {{ app.status }}
           </UBadge>
         </div>
@@ -385,7 +390,10 @@ const actionLabels = {
 
       <template #body>
         <form class="space-y-4" @submit.prevent="handleAction">
-          <UFormField label="Comment" :hint="actionType === 'request-changes' ? 'Required' : 'Optional'">
+          <UFormField
+            label="Comment"
+            :hint="actionType === 'request-changes' ? 'Required' : 'Optional'"
+          >
             <UTextarea
               v-model="actionComment"
               :required="actionType === 'request-changes'"
@@ -395,7 +403,9 @@ const actionLabels = {
             />
           </UFormField>
 
-          <div class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-gray-700">
+          <div
+            class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-gray-700"
+          >
             <UButton
               type="button"
               color="gray"
@@ -407,7 +417,9 @@ const actionLabels = {
             </UButton>
             <UButton
               type="submit"
-              :color="actionType === 'approve' ? 'green' : actionType === 'reject' ? 'red' : 'yellow'"
+              :color="
+                actionType === 'approve' ? 'green' : actionType === 'reject' ? 'red' : 'yellow'
+              "
               :loading="isSubmitting"
               :disabled="isSubmitting || (actionType === 'request-changes' && !actionComment)"
             >

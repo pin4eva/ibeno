@@ -57,7 +57,7 @@ const handleLogin = async () => {
     });
 
     currentApplication.value = application;
-    
+
     // Store in session
     if (process.client) {
       sessionStorage.setItem('studentApplication', JSON.stringify(application));
@@ -86,10 +86,11 @@ const loadApplications = async () => {
 
   try {
     // Fetch all applications by this student's NIN
-    const allApplications = await apiFetch<Application[]>('/applications');
-    applications.value = allApplications.filter(
-      (app) => app.nin === currentApplication.value?.nin
-    );
+    const allApplications = await apiFetch<Application[]>('/applications/student-history', {
+      method: 'POST',
+      body: { nin: currentApplication.value?.nin },
+    });
+    applications.value = allApplications;
   } catch (err) {
     loadError.value = getErrorMessage(err, 'Failed to load applications');
   } finally {
@@ -229,7 +230,9 @@ const getStatusColor = (status?: string) => {
                     <h4 class="font-semibold text-gray-900 dark:text-white">
                       Application #{{ app.applicationNo }}
                     </h4>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Program ID: {{ app.programId }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      Program ID: {{ app.programId }}
+                    </p>
                   </div>
                   <UBadge :color="getStatusColor(app.status)" variant="subtle">
                     {{ app.status || 'In Progress' }}
@@ -317,7 +320,9 @@ const getStatusColor = (status?: string) => {
 
           <UAlert v-if="loginError" color="red" variant="soft" :title="loginError" />
 
-          <div class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-gray-700">
+          <div
+            class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-gray-700"
+          >
             <UButton
               type="button"
               color="gray"

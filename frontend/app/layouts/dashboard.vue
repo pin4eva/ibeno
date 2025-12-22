@@ -112,12 +112,15 @@ const links = [
   {
     label: 'Users',
     icon: 'i-lucide-users',
-    to: '/admin/users',
+    children: [
+      { label: 'All Users', to: '/admin/users', icon: 'i-lucide-users' },
+      { label: 'Invitations', to: '/admin/users/invitations', icon: 'i-lucide-mail' },
+    ],
   },
   {
-    label: 'Settings',
+    label: 'Profile',
     icon: 'i-lucide-settings',
-    to: '/admin/settings',
+    to: '/admin/profile',
   },
 ];
 

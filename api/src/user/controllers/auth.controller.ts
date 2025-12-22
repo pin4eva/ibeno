@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { ChangePasswordDTO, InviteUserDTO, LoginDTO, SignupDTO } from '../dto/auth.dto';
@@ -60,5 +60,19 @@ export class AuthController {
   @Post('refresh')
   refresh(@Body('refreshToken') refreshToken: string) {
     return this.authService.refreshAccessToken(refreshToken);
+  }
+
+  // get all invitations
+  @Get('invitations')
+  @UseGuards(AuthGuard)
+  async getInvitations() {
+    return this.authService.getInvitations();
+  }
+
+  // delete invitation
+  @Delete('invitations/:id')
+  @UseGuards(AuthGuard)
+  async deleteInvitation(@Param('id') id: string) {
+    return this.authService.deleteInvitation(+id);
   }
 }

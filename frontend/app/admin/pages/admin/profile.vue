@@ -9,9 +9,7 @@
       <!-- Profile Information Card -->
       <UCard>
         <template #header>
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Profile Information
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Profile Information</h2>
         </template>
 
         <form class="space-y-4" @submit.prevent="handleUpdateProfile">
@@ -35,28 +33,16 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="First Name" name="firstName">
-              <UInput
-                v-model="profileForm.firstName"
-                placeholder="First Name"
-                required
-              />
+              <UInput v-model="profileForm.firstName" placeholder="First Name" required />
             </UFormField>
 
             <UFormField label="Last Name" name="lastName">
-              <UInput
-                v-model="profileForm.lastName"
-                placeholder="Last Name"
-                required
-              />
+              <UInput v-model="profileForm.lastName" placeholder="Last Name" required />
             </UFormField>
           </div>
 
           <UFormField label="Phone" name="phone">
-            <UInput
-              v-model="profileForm.phone"
-              type="tel"
-              placeholder="+234 123 456 7890"
-            />
+            <UInput v-model="profileForm.phone" type="tel" placeholder="+234 123 456 7890" />
           </UFormField>
 
           <UFormField label="Email" name="email">
@@ -87,9 +73,7 @@
       <!-- Change Password Card -->
       <UCard>
         <template #header>
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Change Password
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Change Password</h2>
         </template>
 
         <form class="space-y-4" @submit.prevent="handleChangePassword">
@@ -146,10 +130,6 @@
 
 <script setup lang="ts">
 import { useUserStore } from '~/stores/user.store';
-
-definePageMeta({
-  middleware: 'auth',
-});
 
 const userStore = useUserStore();
 const { user: currentUser } = useAuth();
@@ -260,13 +240,37 @@ async function handleChangePassword() {
 }
 
 function handleAvatarClick() {
-  // TODO: Implement avatar upload
-  // This could open a file picker or use a third-party service like Cloudinary
-  console.log('Avatar upload not implemented yet');
-  useToast().add({
-    title: 'Coming Soon',
-    description: 'Avatar upload will be implemented soon',
-    color: 'blue',
-  });
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    try {
+      profileLoading.value = true;
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await apiFetch<{ url: string }>('/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      profileForm.avatar = response.url;
+
+      // Auto-save profile after upload
+      await handleUpdateProfile();
+    } catch (error: any) {
+      useToast().add({
+        title: 'Error',
+        description: error?.data?.message || 'Failed to upload avatar',
+        color: 'red',
+      });
+    } finally {
+      profileLoading.value = false;
+    }
+  };
+  input.click();
 }
 </script>

@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const requiresAuth = !publicRoutes.includes(to.path);
 
-  if (requiresAuth && isAuthenticated) {
+  if (requiresAuth && !isAuthenticated) {
     return navigateTo('/auth/login?redirect=' + encodeURIComponent(to.fullPath));
   }
 });

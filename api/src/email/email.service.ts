@@ -96,4 +96,23 @@ export class EmailService {
     `;
     await this.sendEmail({ to, subject, htmlContent });
   }
+
+  // send application status update email
+  async sendApplicationStatusUpdate(
+    to: string,
+    name: string,
+    applicationNo: string,
+    statusMessage: string,
+    comment?: string,
+  ) {
+    const subject = `Application Status Update - ${applicationNo}`;
+    const htmlContent = `
+      <p>Dear ${name},</p>
+      <p>Your application <strong>${applicationNo}</strong> ${statusMessage}.</p>
+      ${comment ? `<p><strong>Reviewer Comment:</strong> ${comment}</p>` : ''}
+      <p>You can log in to check your application status and details.</p>
+      <p>Best regards,<br/>IBENO Team</p>
+    `;
+    await this.sendEmail({ to, subject, htmlContent });
+  }
 }

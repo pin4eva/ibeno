@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Application } from '~/interfaces/application.interface';
+import { ApplicationStatusEnum, type Application } from '~/interfaces/application.interface';
 import { apiFetch } from '~/utils/api-fetch';
 
 useSeoMeta({
@@ -7,6 +7,7 @@ useSeoMeta({
 });
 
 const route = useRoute();
+const toast = useToast();
 
 const programId = Number(route.params.id);
 const applicationId = Number(route.params.applicationId);
@@ -19,6 +20,7 @@ const {
   data: app,
   pending,
   error,
+  refresh,
 } = await useAsyncData(`admin-program-${programId}-application-${applicationId}`, () =>
   apiFetch<Application>(`/applications/single/${applicationId}`),
 );
@@ -66,6 +68,68 @@ const docs = computed(() => {
     items.push({ label: 'SSCE Result', url: documents.ssceResult, kind: 'link' });
   return items;
 });
+
+// Action handlers
+const isActionModalOpen = ref(false);
+const actionType = ref<'approve' | 'reject' | 'request-changes' | null>(null);
+const actionComment = ref('');
+const isSubmitting = ref(false);
+
+const openActionModal = (action: 'approve' | 'reject' | 'request-changes') => {
+  actionType.value = action;
+  actionComment.value = '';
+  isActionModalOpen.value = true;
+};
+
+const closeActionModal = () => {
+  isActionModalOpen.value = false;
+  actionType.value = null;
+  actionComment.value = '';
+};
+
+const handleAction = async () => {
+  if (!actionType.value || !app.value) return;
+
+  try {
+    isSubmitting.value = true;
+    const statusMap = {
+      approve: ApplicationStatusEnum.Accepted,
+      reject: ApplicationStatusEnum.Rejected,
+      'request-changes': ApplicationStatusEnum.Reviewed,
+    };
+
+    const status = statusMap[actionType.value];
+    await apiFetch(`/applications/${applicationId}/status`, {
+      method: 'PATCH',
+      body: {
+        status,
+        comment: actionComment.value || undefined,
+      },
+    });
+
+    await refresh();
+    toast.add({
+      title: 'Success',
+      description: `Application ${actionType.value === 'approve' ? 'approved' : actionType.value === 'reject' ? 'rejected' : 'marked for review'} successfully`,
+      color: 'green',
+    });
+    closeActionModal();
+  } catch (err) {
+    toast.add({
+      title: 'Error',
+      description: getErrorMessage(err, 'Failed to update application status'),
+      color: 'red',
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const actionLabels = {
+  approve: 'Approve Application',
+  reject: 'Reject Application',
+  'request-changes': 'Request Changes',
+};
 </script>
 
 <template>
@@ -83,7 +147,39 @@ const docs = computed(() => {
             label="Back to Program"
             :to="`/admin/programs/${programId}`"
           />
+          <UBadge
+            v-if="app?.status"
+            :color="
+              app.status === 'Accepted' ? 'green' : app.status === 'Rejected' ? 'red' : 'yellow'
+            "
+            variant="subtle"
+          >
+            {{ app.status }}
+          </UBadge>
         </div>
+      </div>
+      <div v-if="app && app.status === 'Submitted'" class="flex items-center gap-2">
+        <UButton
+          icon="i-lucide-check"
+          color="green"
+          variant="solid"
+          label="Approve"
+          @click="openActionModal('approve')"
+        />
+        <UButton
+          icon="i-lucide-x"
+          color="red"
+          variant="solid"
+          label="Reject"
+          @click="openActionModal('reject')"
+        />
+        <UButton
+          icon="i-lucide-message-square"
+          color="yellow"
+          variant="outline"
+          label="Request Changes"
+          @click="openActionModal('request-changes')"
+        />
       </div>
     </div>
 
@@ -275,5 +371,63 @@ const docs = computed(() => {
         </template>
       </UTabs>
     </UCard>
+
+    <!-- Action Modal -->
+    <UModal v-model:open="isActionModalOpen" :ui="{ content: 'w-full sm:max-w-lg' }">
+      <template #header>
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">
+              {{ actionType ? actionLabels[actionType] : '' }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Application: {{ app?.applicationNo }}
+            </p>
+          </div>
+          <UButton color="gray" variant="ghost" icon="i-lucide-x" @click="closeActionModal" />
+        </div>
+      </template>
+
+      <template #body>
+        <form class="space-y-4" @submit.prevent="handleAction">
+          <UFormField
+            label="Comment"
+            :hint="actionType === 'request-changes' ? 'Required' : 'Optional'"
+          >
+            <UTextarea
+              v-model="actionComment"
+              :required="actionType === 'request-changes'"
+              :disabled="isSubmitting"
+              placeholder="Enter your comment or reason..."
+              :rows="4"
+            />
+          </UFormField>
+
+          <div
+            class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-gray-700"
+          >
+            <UButton
+              type="button"
+              color="gray"
+              variant="ghost"
+              :disabled="isSubmitting"
+              @click="closeActionModal"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              type="submit"
+              :color="
+                actionType === 'approve' ? 'green' : actionType === 'reject' ? 'red' : 'yellow'
+              "
+              :loading="isSubmitting"
+              :disabled="isSubmitting || (actionType === 'request-changes' && !actionComment)"
+            >
+              Confirm
+            </UButton>
+          </div>
+        </form>
+      </template>
+    </UModal>
   </div>
 </template>

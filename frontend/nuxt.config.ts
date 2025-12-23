@@ -45,4 +45,7 @@ export default defineNuxtConfig({
     '/': { prerender: true },
   },
   extends: ['./app/admin/nuxt.config.ts'],
+  build: {
+    transpile: ['isomorphic-dompurify'],
+  },
 });

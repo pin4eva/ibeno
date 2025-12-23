@@ -7,22 +7,55 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
+  Req,
+  UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { BidService } from '../services/bid.service';
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
+import { AuthGuard } from '../../guards/auth.guard';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 
 @ApiTags('Bids')
 @Controller('procurements/:procurementId/bids')
 export class BidController {
-  constructor(private readonly bidService: BidService) {}
+  constructor(
+    private readonly bidService: BidService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Submit a bid (Contractor)' })
+  @UseInterceptors(FileInterceptor('proposal'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        proposal: { type: 'string', format: 'binary' },
+        contractorNo: { type: 'string' },
+        contactName: { type: 'string' },
+        contactEmail: { type: 'string' },
+        contactPhone: { type: 'string' },
+        amount: { type: 'number' },
+        notes: { type: 'string' },
+      },
+    },
+  })
   async submitBid(
     @Param('procurementId', ParseIntPipe) procurementId: number,
     @Body() input: CreateBidDTO,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
+    if (file) {
+      const result = await this.cloudinaryService.uploadImage(file);
+      input.proposalUrl = result.secure_url;
+    }
     return this.bidService.submitBid(procurementId, input);
   }
 

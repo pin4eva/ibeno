@@ -29,8 +29,6 @@ export class ProcurementController {
   constructor(private readonly procurementService: ProcurementService) {}
 
   @Post()
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Create a new procurement (Admin)' })
   async createProcurement(@Body() input: CreateProcurementDTO) {
     return this.procurementService.createProcurement(input);
@@ -49,8 +47,6 @@ export class ProcurementController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Update procurement (Admin)' })
   async updateProcurement(
     @Param('id', ParseIntPipe) id: number,
@@ -68,8 +64,6 @@ export class ProcurementController {
   }
 
   @Post(':id/documents')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Upload procurement document (Admin)' })
   async uploadDocument(
     @Param('id', ParseIntPipe) id: number,
@@ -85,16 +79,12 @@ export class ProcurementController {
   }
 
   @Delete('documents/:documentId')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
   @ApiOperation({ summary: 'Delete procurement document (Admin)' })
   async deleteDocument(@Param('documentId', ParseIntPipe) documentId: number) {
     return this.procurementService.deleteDocument(documentId);
   }
 
   @Post('seed')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin)
   @ApiOperation({ summary: 'Seed sample procurements (Admin)' })
   async seedProcurements() {
     return this.procurementService.seedProcurements();

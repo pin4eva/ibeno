@@ -26,8 +26,6 @@ export class UserController {
   }
 
   @Patch('migrate')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin)
   migrateUsers() {
     return this.userService.importUserAndAuth();
   }

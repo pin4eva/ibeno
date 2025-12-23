@@ -316,7 +316,9 @@ export class AuthService {
       sessionId,
       tokenType: 'access',
     };
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

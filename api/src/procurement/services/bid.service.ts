@@ -155,6 +155,21 @@ export class BidService {
   }
 
   /**
+   * Get all bids for a contractor
+   */
+  async getBidsByContractor(contractorId: number) {
+    return this.prisma.bid.findMany({
+      where: { contractorId },
+      include: {
+        procurement: true,
+      },
+      orderBy: {
+        submittedAt: 'desc',
+      },
+    });
+  }
+
+  /**
    * Get bid by ID
    */
   async getBidById(bidId: number) {
@@ -191,10 +206,7 @@ export class BidService {
       throw new BadRequestException('Cannot update bid after submission deadline');
     }
 
-    if (
-      procurement &&
-      procurement.status !== ProcurementStatusEnum.published
-    ) {
+    if (procurement && procurement.status !== ProcurementStatusEnum.published) {
       throw new BadRequestException('Cannot update bid for this procurement');
     }
 

@@ -187,95 +187,14 @@
         </UCard>
 
         <!-- Bid Submission Modal -->
-        <UModal v-model:open="showBidForm">
-          <template #header>
-            <h3 class="text-lg font-semibold">Submit Bid</h3>
-          </template>
-
-          <template #body>
-            <UForm :state="bidFormState" @submit="handleBidSubmit">
-              <div class="space-y-4">
-                <UFormField label="Contractor Number" name="contractorNo" required>
-                  <UInput
-                    v-model="bidFormState.contractorNo"
-                    placeholder="Enter your contractor number"
-                  />
-                </UFormField>
-
-                <UFormField label="Contact Person Name" name="contactName" required>
-                  <UInput v-model="bidFormState.contactName" placeholder="Enter contact name" />
-                </UFormField>
-
-                <div class="grid grid-cols-2 gap-4">
-                  <UFormField label="Contact Email" name="contactEmail" required>
-                    <UInput
-                      v-model="bidFormState.contactEmail"
-                      type="email"
-                      placeholder="email@example.com"
-                    />
-                  </UFormField>
-
-                  <UFormField label="Contact Phone" name="contactPhone" required>
-                    <UInput
-                      v-model="bidFormState.contactPhone"
-                      type="tel"
-                      placeholder="+234 800 000 0000"
-                    />
-                  </UFormField>
-                </div>
-
-                <UFormField label="Bid Price (Optional)" name="price">
-                  <UInput
-                    v-model.number="bidFormState.price"
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                  />
-                </UFormField>
-
-                <UFormField label="Technical Proposal" name="technicalProposal">
-                  <UInput
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    @change="handleTechnicalProposalChange"
-                  />
-                  <template #hint>
-                    <span class="text-xs text-gray-500">Upload your technical proposal (PDF, DOC, DOCX)</span>
-                  </template>
-                </UFormField>
-
-                <UFormField label="Commercial Proposal" name="commercialProposal">
-                  <UInput
-                    type="file"
-                    accept=".pdf,.doc,.docx,.xls,.xlsx"
-                    @change="handleCommercialProposalChange"
-                  />
-                  <template #hint>
-                    <span class="text-xs text-gray-500">Upload your commercial proposal (PDF, DOC, DOCX, XLS, XLSX)</span>
-                  </template>
-                </UFormField>
-
-                <UFormField label="Additional Notes" name="notes">
-                  <UTextarea
-                    v-model="bidFormState.notes"
-                    :rows="3"
-                    placeholder="Enter any additional notes"
-                  />
-                </UFormField>
-              </div>
-            </UForm>
-          </template>
-
-          <template #footer>
-            <div class="flex gap-2 justify-end">
-              <UButton color="gray" variant="ghost" @click="showBidForm = false"> Cancel </UButton>
-              <UButton color="primary" :loading="bidStore.loading" @click="handleBidSubmit">
-                Submit Bid
-              </UButton>
-            </div>
-          </template>
-        </UModal>
+        <ProcurementBidSubmissionForm
+          v-if="showBidForm"
+          v-model="showBidForm"
+          :procurement-id="procurementId"
+          :procurement-title="procurement.title"
+          @close="showBidForm = false"
+          @success="handleBidSuccess"
+        />
       </div>
 
       <!-- Error State -->
@@ -293,45 +212,18 @@
 
 <script setup lang="ts">
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
-import { useBidStore } from '~/stores/procurement/bid.store';
-import type { CreateBidInput } from '~/interfaces/procurement/bid.interface';
 
 const route = useRoute();
 const procurementStore = useProcurementStore();
-const bidStore = useBidStore();
+
 const toast = useToast();
 
 const procurementId = computed(() => parseInt(route.params.id as string));
 const procurement = computed(() => procurementStore.currentProcurement);
 const showBidForm = ref(false);
 
-const technicalProposalFile = ref<File | null>(null);
-const commercialProposalFile = ref<File | null>(null);
-
-const bidFormState = reactive<CreateBidInput>({
-  contractorNo: '',
-  contactName: '',
-  contactEmail: '',
-  contactPhone: '',
-  price: undefined,
-  technicalProposalUrl: '',
-  commercialProposalUrl: '',
-  otherFiles: [],
-  notes: '',
-});
-
-const handleTechnicalProposalChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    technicalProposalFile.value = target.files[0];
-  }
-};
-
-const handleCommercialProposalChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    commercialProposalFile.value = target.files[0];
-  }
+const handleBidSuccess = () => {
+  // refresh data if needed
 };
 
 const formatDate = (dateString: string) => {
@@ -350,75 +242,14 @@ const getRemainingDays = (deadlineString: string) => {
 };
 
 const getStatusColor = (status: string) => {
-  const colors: Record<string, 'gray' | 'green' | 'orange' | 'blue' | 'red'> = {
+  const colors: Record<string, 'gray' | 'success' | 'warning' | 'primary' | 'error'> = {
     draft: 'gray',
-    published: 'green',
-    closed: 'orange',
-    awarded: 'blue',
-    archived: 'red',
+    published: 'success',
+    closed: 'warning',
+    awarded: 'primary',
+    archived: 'error',
   };
   return colors[status] || 'gray';
-};
-
-const handleBidSubmit = async () => {
-  try {
-    // Upload files first if provided
-    let technicalProposalUrl = bidFormState.technicalProposalUrl;
-    let commercialProposalUrl = bidFormState.commercialProposalUrl;
-
-    if (technicalProposalFile.value) {
-      const formData = new FormData();
-      formData.append('file', technicalProposalFile.value);
-      const response = await $fetch<{ url: string }>('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      technicalProposalUrl = response.url;
-    }
-
-    if (commercialProposalFile.value) {
-      const formData = new FormData();
-      formData.append('file', commercialProposalFile.value);
-      const response = await $fetch<{ url: string }>('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      commercialProposalUrl = response.url;
-    }
-
-    await bidStore.submitBid(procurementId.value, {
-      ...bidFormState,
-      technicalProposalUrl,
-      commercialProposalUrl,
-    });
-    toast.add({
-      title: 'Success',
-      description: 'Your bid has been submitted successfully',
-      color: 'green',
-    });
-    showBidForm.value = false;
-    // Reset form
-    Object.assign(bidFormState, {
-      contractorNo: '',
-      contactName: '',
-      contactEmail: '',
-      contactPhone: '',
-      price: undefined,
-      technicalProposalUrl: '',
-      commercialProposalUrl: '',
-      otherFiles: [],
-      notes: '',
-    });
-    technicalProposalFile.value = null;
-    commercialProposalFile.value = null;
-  } catch (error) {
-    console.error(error);
-    toast.add({
-      title: 'Error',
-      description: 'Failed to submit bid. Please check your contractor number and try again.',
-      color: 'red',
-    });
-  }
 };
 
 onMounted(async () => {
@@ -429,7 +260,7 @@ onMounted(async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to load procurement details',
-      color: 'red',
+      color: 'error',
     });
   }
 });

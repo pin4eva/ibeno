@@ -10,10 +10,14 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { ContractorService } from '../services/contractor.service';
+import { BidService } from '../services/bid.service';
+import { AuthGuard } from '../../guards/auth.guard';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 import {
   CreateContractorDTO,
   FilterContractorsDTO,
@@ -23,7 +27,10 @@ import {
 @ApiTags('Contractors')
 @Controller('contractors')
 export class ContractorController {
-  constructor(private readonly contractorService: ContractorService) {}
+  constructor(
+    private readonly contractorService: ContractorService,
+    private readonly bidService: BidService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create contractor (Admin)' })

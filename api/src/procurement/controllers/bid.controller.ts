@@ -7,14 +7,19 @@ import {
   Patch,
   Post,
   Query,
-  UploadedFiles,
+  UploadedFile,
   UseInterceptors,
+  Req,
+  UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { BidService } from '../services/bid.service';
-import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
+import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
+import { AuthGuard } from '../../guards/auth.guard';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 
 @ApiTags('Bids')
 @Controller('procurements/:procurementId/bids')
@@ -32,57 +37,32 @@ export class BidController {
     ]),
   )
   @ApiOperation({ summary: 'Submit a bid (Contractor)' })
+  @UseInterceptors(FileInterceptor('proposal'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
+        proposal: { type: 'string', format: 'binary' },
         contractorNo: { type: 'string' },
         contactName: { type: 'string' },
         contactEmail: { type: 'string' },
         contactPhone: { type: 'string' },
-        price: { type: 'number' },
+        amount: { type: 'number' },
         notes: { type: 'string' },
-        technicalProposal: {
-          type: 'string',
-          format: 'binary',
-        },
-        commercialProposal: {
-          type: 'string',
-          format: 'binary',
-        },
       },
     },
   })
   async submitBid(
     @Param('procurementId', ParseIntPipe) procurementId: number,
     @Body() input: CreateBidDTO,
-    @UploadedFiles()
-    files?: {
-      technicalProposal?: Express.Multer.File[];
-      commercialProposal?: Express.Multer.File[];
-    },
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    let technicalProposalUrl: string | undefined;
-    let commercialProposalUrl: string | undefined;
-
-    // Upload technical proposal if provided
-    if (files?.technicalProposal?.[0]) {
-      const result = await this.cloudinaryService.uploadImage(files.technicalProposal[0]);
-      technicalProposalUrl = result.secure_url;
+    if (file) {
+      const result = await this.cloudinaryService.uploadImage(file);
+      input.proposalUrl = result.secure_url;
     }
-
-    // Upload commercial proposal if provided
-    if (files?.commercialProposal?.[0]) {
-      const result = await this.cloudinaryService.uploadImage(files.commercialProposal[0]);
-      commercialProposalUrl = result.secure_url;
-    }
-
-    return this.bidService.submitBid(procurementId, {
-      ...input,
-      technicalProposalUrl,
-      commercialProposalUrl,
-    });
+    return this.bidService.submitBid(procurementId, input);
   }
 
   @Get()

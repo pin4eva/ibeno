@@ -306,6 +306,8 @@ export const BidScalarFieldEnum = {
   contactName: 'contactName',
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
+  amount: 'amount',
+  proposalUrl: 'proposalUrl',
   price: 'price',
   technicalProposalUrl: 'technicalProposalUrl',
   commercialProposalUrl: 'commercialProposalUrl',

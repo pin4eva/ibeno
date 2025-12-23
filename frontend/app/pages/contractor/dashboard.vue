@@ -5,7 +5,9 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Contractor Dashboard</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your bids and track submissions</p>
+          <p class="text-gray-600 dark:text-gray-400 mt-1">
+            Manage your bids and track submissions
+          </p>
         </div>
         <UButton icon="i-lucide-briefcase" color="primary" to="/procurement">
           View Procurements
@@ -112,14 +114,14 @@
           </template>
 
           <UTable :data="bids" :columns="columns">
-            <template #procurement.referenceNo-cell="{ row }">
+            <template #referenceNo-cell="{ row }">
               <span class="font-mono text-sm">{{ row.original.procurement?.referenceNo }}</span>
             </template>
 
-            <template #procurement.title-cell="{ row }">
+            <template #title-cell="{ row }">
               <div>
                 <p class="font-medium">{{ row.original.procurement?.title }}</p>
-                <p class="text-sm text-gray-500">{{ row.original.procurement?.category }}</p>
+                <p class="text-sm text-gray-500">{{ 'category' }}</p>
               </div>
             </template>
 
@@ -157,7 +159,9 @@
         <div class="text-center py-12">
           <UIcon name="i-lucide-inbox" class="w-16 h-16 mx-auto text-gray-400" />
           <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No bids yet</h3>
-          <p class="mt-2 text-gray-500">You haven't submitted any bids. Browse procurements to get started.</p>
+          <p class="mt-2 text-gray-500">
+            You haven't submitted any bids. Browse procurements to get started.
+          </p>
           <UButton class="mt-4" icon="i-lucide-briefcase" color="primary" to="/procurement">
             View Procurements
           </UButton>
@@ -244,7 +248,9 @@
 
             <div>
               <p class="text-sm font-medium text-gray-500">Submitted At</p>
-              <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(selectedBid.submittedAt) }}</p>
+              <p class="mt-1 text-gray-900 dark:text-white">
+                {{ formatDate(selectedBid.submittedAt) }}
+              </p>
             </div>
           </div>
         </template>
@@ -260,6 +266,8 @@
 </template>
 
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui';
+import type { Bid } from '~/interfaces/procurement/bid.interface';
 import { useContractorStore } from '~/stores/procurement/contractor.store';
 
 const contractorStore = useContractorStore();
@@ -267,17 +275,17 @@ const toast = useToast();
 
 const contractorNo = ref('');
 const contractorNoInput = ref('');
-const bids = ref<any[]>([]);
+const bids = ref<Bid[]>([]);
 const showBidDetails = ref(false);
-const selectedBid = ref<any>(null);
+const selectedBid = ref<Bid | null>(null);
 
-const columns = [
-  { key: 'procurement.referenceNo', label: 'Reference No' },
-  { key: 'procurement.title', label: 'Procurement' },
-  { key: 'status', label: 'Status' },
-  { key: 'price', label: 'Bid Amount' },
-  { key: 'submittedAt', label: 'Submitted' },
-  { key: 'actions', label: '' },
+const columns: TableColumn<Bid>[] = [
+  { accessorKey: 'procurement.referenceNo', header: 'Reference No' },
+  { accessorKey: 'procurement.title', header: 'Procurement' },
+  { accessorKey: 'status', header: 'Status' },
+  { accessorKey: 'price', header: 'Bid Amount' },
+  { accessorKey: 'submittedAt', header: 'Submitted' },
+  { accessorKey: 'actions', header: '' },
 ];
 
 const submittedBids = computed(() => {

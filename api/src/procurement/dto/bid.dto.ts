@@ -36,18 +36,29 @@ export class CreateBidDTO {
   @IsString()
   contactPhone: string;
 
-  @ApiPropertyOptional({ description: 'Bid price' })
+  @ApiPropertyOptional({ description: 'Bid amount' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  amount?: number;
+
+  @ApiPropertyOptional({ description: 'Proposal file URL' })
+  @IsOptional()
+  @IsString()
+  proposalUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Bid price (legacy)' })
   @IsOptional()
   @IsNumber()
   @Min(0)
   price?: number;
 
-  @ApiPropertyOptional({ description: 'Technical proposal URL' })
+  @ApiPropertyOptional({ description: 'Technical proposal URL (legacy)' })
   @IsOptional()
   @IsString()
   technicalProposalUrl?: string;
 
-  @ApiPropertyOptional({ description: 'Commercial proposal URL' })
+  @ApiPropertyOptional({ description: 'Commercial proposal URL (legacy)' })
   @IsOptional()
   @IsString()
   commercialProposalUrl?: string;

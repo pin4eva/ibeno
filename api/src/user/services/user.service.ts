@@ -98,12 +98,11 @@ export class UserService {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new BadRequestException('No user ids provided');
     }
-
     const result = await this.prisma.user.deleteMany({
       where: { id: { in: ids } },
     });
-
-    return { count: result.count };
+    const count = result.count;
+    return { count };
   }
 
   // update current user profile

@@ -44,13 +44,6 @@ export class UserController {
     return this.userService.update(+id, data);
   }
 
-  @Delete(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin)
-  async remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
-
   @Delete('bulk-delete')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoleEnum.Admin)
@@ -67,5 +60,11 @@ export class UserController {
   @UseGuards(AuthGuard)
   async changePassword(@CurrentUser() user: User, @Body() data: ChangeProfilePasswordDTO) {
     return this.userService.changeProfilePassword(user.id, data);
+  }
+  @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin)
+  async remove(@Param('id') id: string) {
+    return this.userService.remove(+id);
   }
 }

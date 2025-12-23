@@ -1,7 +1,7 @@
-import DOMPurify from 'isomorphic-dompurify';
+import sanitize from 'sanitize-html';
 
 export function sanitizeHtml(html: string): string {
-  return DOMPurify.sanitize(html);
+  return sanitize(html);
 }
 
 export function stripHtml(html: string): string {

@@ -6,7 +6,7 @@
 }
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  --font-sans: 'Figtree', sans-serif;
 
   --color-white: var(--white);
   --color-green-50: #effdf5;

@@ -78,18 +78,33 @@ export const useBidStore = defineStore('bid', {
       }
     },
 
-    async submitBid(procurementId: number, input: CreateBidInput) {
+    async submitBid(procurementId: number, input: FormData) {
       this.loading = true;
       this.error = null;
       try {
         const bid = await apiFetch<Bid>(`/procurements/${procurementId}/bids`, {
           method: 'POST',
-          body: input,
+          body: input, // fetch handles FormData correctly
         });
         this.bids.unshift(bid);
         return bid;
       } catch (error) {
         this.error = error instanceof Error ? error.message : 'Failed to submit bid';
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchMyBids() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const bids = await apiFetch<Bid[]>(`/contractors/me/bids`);
+        this.bids = bids;
+        return bids;
+      } catch (error) {
+        this.error = error instanceof Error ? error.message : 'Failed to fetch your bids';
         throw error;
       } finally {
         this.loading = false;

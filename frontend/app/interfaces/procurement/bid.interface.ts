@@ -25,6 +25,8 @@ export interface Bid {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
+  amount?: number;
+  proposalUrl?: string;
   price?: number;
   technicalProposalUrl?: string;
   commercialProposalUrl?: string;
@@ -39,6 +41,11 @@ export interface Bid {
     companyName: string;
     status: string;
   };
+  procurement?: {
+    id: number;
+    title: string;
+    referenceNo: string;
+  };
   events?: BidEvent[];
 }
 
@@ -47,6 +54,8 @@ export interface CreateBidInput {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
+  amount?: number;
+  proposalUrl?: string;
   price?: number;
   technicalProposalUrl?: string;
   commercialProposalUrl?: string;

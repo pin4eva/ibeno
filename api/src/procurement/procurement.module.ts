@@ -7,8 +7,10 @@ import { ProcurementService } from './services/procurement.service';
 import { BidService } from './services/bid.service';
 import { ContractorService } from './services/contractor.service';
 
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, CloudinaryModule],
   controllers: [ProcurementController, BidController, ContractorController],
   providers: [ProcurementService, BidService, ContractorService],
   exports: [ProcurementService, BidService, ContractorService],

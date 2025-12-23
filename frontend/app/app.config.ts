@@ -44,9 +44,9 @@ export default defineAppConfig({
     // Data Display
     table: {
       slots: {
-        root: 'border border-gray-200 dark:border-gray-800 rounded overflow-hidden',
+        root: 'border-gray-200 dark:border-gray-800 rounded',
         header: 'bg-gray-50 dark:bg-gray-800/50',
-        th: 'px-4 py-3.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider',
+        th: 'px-4 py-3.5 text-left text-xs font-semibold  uppercase tracking-wider',
         td: 'px-4 py-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap',
         tr: 'border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors',
       },

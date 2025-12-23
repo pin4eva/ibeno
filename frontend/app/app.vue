@@ -26,7 +26,7 @@ useSeoMeta({
 onMounted(() => {
   const token = accessToken.value;
   if (token) {
-    setUser(token);
+    setUser();
   }
 });
 </script>

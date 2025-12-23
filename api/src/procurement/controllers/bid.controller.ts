@@ -14,7 +14,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { BidService } from '../services/bid.service';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
@@ -30,6 +30,12 @@ export class BidController {
   ) {}
 
   @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'technicalProposal', maxCount: 1 },
+      { name: 'commercialProposal', maxCount: 1 },
+    ]),
+  )
   @ApiOperation({ summary: 'Submit a bid (Contractor)' })
   @UseInterceptors(FileInterceptor('proposal'))
   @ApiConsumes('multipart/form-data')

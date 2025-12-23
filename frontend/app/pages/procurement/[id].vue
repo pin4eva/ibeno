@@ -212,13 +212,10 @@
 
 <script setup lang="ts">
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
-import { useBidStore } from '~/stores/procurement/bid.store';
-import { useAuthStore } from '~/stores/auth.store';
 
 const route = useRoute();
 const procurementStore = useProcurementStore();
-const bidStore = useBidStore();
-const authStore = useAuthStore();
+
 const toast = useToast();
 
 const procurementId = computed(() => parseInt(route.params.id as string));

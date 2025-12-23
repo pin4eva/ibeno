@@ -21,7 +21,8 @@
     "@types/node": "^25.0.2",
     "isomorphic-dompurify": "^2.29.0",
     "nuxt": "^4.2.2",
-    "pinia": "^3.0.4"
+    "pinia": "^3.0.4",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

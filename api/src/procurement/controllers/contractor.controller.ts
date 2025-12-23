@@ -9,11 +9,11 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
-  UseGuards,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { ContractorService } from '../services/contractor.service';
 import { BidService } from '../services/bid.service';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -31,17 +31,6 @@ export class ContractorController {
     private readonly contractorService: ContractorService,
     private readonly bidService: BidService,
   ) {}
-
-  @Get('me/bids')
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get current contractor bids' })
-  async getMyBids(@CurrentUser() user: { id: number; email: string }) {
-    const contractor = await this.contractorService.getContractorByEmail(user.email);
-    if (!contractor) {
-      throw new BadRequestException('Contractor profile not found for this user');
-    }
-    return this.bidService.getBidsByContractor(contractor.id);
-  }
 
   @Post()
   @ApiOperation({ summary: 'Create contractor (Admin)' })
@@ -70,9 +59,15 @@ export class ContractorController {
     return this.contractorService.updateContractor(id, input);
   }
 
+  @Post('seed')
+  @ApiOperation({ summary: 'Seed sample contractors (Admin)' })
+  async seedContractors() {
+    return this.contractorService.seedContractors();
+  }
+
   @Post('import')
-  @ApiOperation({ summary: 'Import contractors from Excel (Admin)' })
   @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Import contractors from Excel file (Admin)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -86,12 +81,18 @@ export class ContractorController {
     },
   })
   async importContractors(@UploadedFile() file: Express.Multer.File) {
-    return this.contractorService.importContractors(file.buffer);
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    return this.contractorService.importFromExcel(file);
   }
 
-  @Post('seed')
-  @ApiOperation({ summary: 'Seed sample contractors (Admin)' })
-  async seedContractors() {
-    return this.contractorService.seedContractors();
+  @Get('me/bids')
+  @ApiOperation({ summary: 'Get bid history for current contractor' })
+  async getMyBids(@Query('contractorNo') contractorNo: string) {
+    if (!contractorNo) {
+      throw new BadRequestException('contractorNo query parameter is required');
+    }
+    return this.contractorService.getContractorBids(contractorNo);
   }
 }

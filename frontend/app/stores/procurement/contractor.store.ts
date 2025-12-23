@@ -116,5 +116,48 @@ export const useContractorStore = defineStore('contractor', {
         this.loading = false;
       }
     },
+
+    async importContractors(file: File) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const result = await apiFetch<{
+          total: number;
+          created: number;
+          updated: number;
+          errors: Array<{ row: number; error: string }>;
+        }>('/contractors/import', {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Refresh contractors list after import
+        await this.fetchContractors();
+
+        return result;
+      } catch (error) {
+        this.error = error instanceof Error ? error.message : 'Failed to import contractors';
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchMyBids(contractorNo: string) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const bids = await apiFetch<any[]>(`/contractors/me/bids?contractorNo=${contractorNo}`);
+        return bids;
+      } catch (error) {
+        this.error = error instanceof Error ? error.message : 'Failed to fetch bid history';
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });

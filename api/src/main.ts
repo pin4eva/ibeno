@@ -12,10 +12,10 @@ const devOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:8000',
-  'https://dev-helar-nuxt.vercel.app',
+  'https://dev.ihcdt.org',
 ];
 
-const prodOrigins = ['https://ihcdt.org', 'https://ihcdt.ububa.org', 'https://ihcdt.vercel.app'];
+const prodOrigins = ['https://ihcdt.org', 'https://dev.ihcdt.org', 'https://ihcdt.vercel.app'];
 
 const normalizeOrigin = (origin: string) => origin.trim().replace(/\/$/, '').toLowerCase();
 

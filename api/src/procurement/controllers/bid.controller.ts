@@ -9,17 +9,12 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
-  Req,
-  UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { BidService } from '../services/bid.service';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
-import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
-import { AuthGuard } from '../../guards/auth.guard';
-import { CurrentUser } from '../../decorators/current-user.decorator';
+import { ChangeBidStatusDTO, CreateBidDTO, FilterBidsDTO, UpdateBidDTO } from '../dto/bid.dto';
+import { BidService } from '../services/bid.service';
 
 @ApiTags('Bids')
 @Controller('procurements/:procurementId/bids')

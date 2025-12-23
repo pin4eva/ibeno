@@ -3,7 +3,12 @@ import { PrismaService } from '../../prisma.service';
 import { Prisma } from '../../generated/client';
 import { OldAuthDto, OldUserDto } from '../dto/auth.dto';
 import { UserRoleEnum, UserStatusEnum } from '../../generated/enums';
-import { ChangeProfilePasswordDTO, UpdateProfileDTO, UpdateUserDTO, UserFilterDTO } from '../dto/user.dto';
+import {
+  ChangeProfilePasswordDTO,
+  UpdateProfileDTO,
+  UpdateUserDTO,
+  UserFilterDTO,
+} from '../dto/user.dto';
 import { MongoClient } from 'mongodb';
 import { compare, hash } from 'bcryptjs';
 

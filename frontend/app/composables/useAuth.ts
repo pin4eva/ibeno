@@ -38,10 +38,18 @@ export const useAuth = () => {
     }
   };
 
+  const logout = () => {
+    user.value = null;
+    accessToken.value = null;
+    refreshToken.value = null;
+    window.location.href = '/auth/login';
+  };
+
   return {
     user,
     accessToken,
     refreshToken,
     setUser,
+    logout,
   };
 };

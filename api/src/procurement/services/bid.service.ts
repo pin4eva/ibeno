@@ -155,6 +155,21 @@ export class BidService {
   }
 
   /**
+   * Get all bids for a contractor
+   */
+  async getBidsByContractor(contractorId: number) {
+    return this.prisma.bid.findMany({
+      where: { contractorId },
+      include: {
+        procurement: true,
+      },
+      orderBy: {
+        submittedAt: 'desc',
+      },
+    });
+  }
+
+  /**
    * Get bid by ID
    */
   async getBidById(bidId: number) {

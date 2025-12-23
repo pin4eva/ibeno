@@ -11,6 +11,9 @@
           <span>{{ contractorStore.totalContractors }} contractors</span>
           <UBadge color="green" variant="subtle">{{ activeCount }} active</UBadge>
         </div>
+        <UButton color="gray" variant="outline" icon="i-lucide-upload" @click="showImportModal = true">
+          Import Excel
+        </UButton>
         <UButton color="primary" icon="i-lucide-plus" @click="openCreate">New Contractor</UButton>
       </div>
     </div>
@@ -105,6 +108,79 @@
     @update:open="showModal = $event"
     @saved="handleSaved"
   />
+
+  <!-- Import Modal -->
+  <UModal v-model:open="showImportModal">
+    <template #header>
+      <h3 class="text-lg font-semibold">Import Contractors from Excel</h3>
+    </template>
+
+    <template #body>
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            Upload an Excel file (.xlsx, .xls) containing contractor data. The file should have the following columns:
+          </p>
+          <ul class="text-sm text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
+            <li>Contractor No (or contractorNo)</li>
+            <li>Company Name (or companyName)</li>
+            <li>Status</li>
+            <li>Registration Category (or registrationCategory)</li>
+            <li>Major Area (or majorArea)</li>
+            <li>Contact Person (or contactPerson)</li>
+            <li>Phone, Email, etc.</li>
+          </ul>
+        </div>
+
+        <UFormField label="Excel File" name="file" required>
+          <UInput
+            type="file"
+            accept=".xlsx,.xls"
+            @change="handleFileSelect"
+          />
+        </UFormField>
+
+        <div v-if="importResult" class="p-4 rounded-lg border" :class="importResult.errors.length > 0 ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/20' : 'bg-green-50 border-green-200 dark:bg-green-900/20'">
+          <h4 class="font-semibold mb-2">Import Results</h4>
+          <div class="text-sm space-y-1">
+            <p>Total records: {{ importResult.total }}</p>
+            <p class="text-green-600">Created: {{ importResult.created }}</p>
+            <p class="text-blue-600">Updated: {{ importResult.updated }}</p>
+            <p v-if="importResult.errors.length > 0" class="text-red-600">
+              Errors: {{ importResult.errors.length }}
+            </p>
+          </div>
+          <div v-if="importResult.errors.length > 0" class="mt-3">
+            <details>
+              <summary class="cursor-pointer text-sm font-medium">View Errors</summary>
+              <ul class="mt-2 text-xs space-y-1 max-h-40 overflow-y-auto">
+                <li v-for="(err, idx) in importResult.errors" :key="idx" class="text-red-600">
+                  Row {{ err.row }}: {{ err.error }}
+                </li>
+              </ul>
+            </details>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template #footer>
+      <div class="flex gap-2 justify-end">
+        <UButton color="gray" variant="ghost" @click="closeImportModal">
+          {{ importResult ? 'Close' : 'Cancel' }}
+        </UButton>
+        <UButton
+          v-if="!importResult"
+          color="primary"
+          :loading="importing"
+          :disabled="!selectedFile"
+          @click="handleImport"
+        >
+          Import
+        </UButton>
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <script setup lang="ts">
@@ -122,6 +198,15 @@ const selectedMajorArea = ref<string | undefined>(undefined);
 const selectedState = ref<string | undefined>(undefined);
 const editingContractor = ref<Contractor | null>(null);
 const showModal = ref(false);
+const showImportModal = ref(false);
+const selectedFile = ref<File | null>(null);
+const importing = ref(false);
+const importResult = ref<{
+  total: number;
+  created: number;
+  updated: number;
+  errors: Array<{ row: number; error: string }>;
+} | null>(null);
 
 const columns: TableColumn<Contractor>[] = [
   { accessorKey: 'contractorNo', header: 'Contractor No' },
@@ -234,6 +319,52 @@ const openEdit = (contractor: Contractor) => {
 const handleSaved = () => {
   editingContractor.value = null;
   showModal.value = false;
+};
+
+const handleFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    selectedFile.value = target.files[0];
+    importResult.value = null;
+  }
+};
+
+const handleImport = async () => {
+  if (!selectedFile.value) {
+    toast.add({
+      title: 'Error',
+      description: 'Please select a file to import',
+      color: 'red',
+    });
+    return;
+  }
+
+  importing.value = true;
+  try {
+    const result = await contractorStore.importContractors(selectedFile.value);
+    importResult.value = result;
+
+    toast.add({
+      title: 'Success',
+      description: `Imported ${result.created} contractors, updated ${result.updated}`,
+      color: 'green',
+    });
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Error',
+      description: 'Failed to import contractors',
+      color: 'red',
+    });
+  } finally {
+    importing.value = false;
+  }
+};
+
+const closeImportModal = () => {
+  showImportModal.value = false;
+  selectedFile.value = null;
+  importResult.value = null;
 };
 
 const fetchData = async () => {

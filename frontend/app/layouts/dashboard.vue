@@ -16,11 +16,9 @@
     >
       <div class="flex flex-col h-full">
         <!-- Logo -->
-        <div
-          class="flex items-center justify-center h-16 px-6 border-b border-gray-200 dark:border-gray-700"
-        >
+        <div class="flex items-center h-16 px-6 border-b border-gray-200 dark:border-gray-700">
           <img src="/assets/images/logo.png" alt="logo" class="dashboard-logo" />
-          <span class="text-xl font-bold text-primary-600 dark:text-primary-400">Ibeno</span>
+          <span class="text-xl font-bold text-primary-600 dark:text-primary-400">IHCDT</span>
         </div>
 
         <!-- Navigation -->
@@ -31,13 +29,13 @@
         <!-- User Profile (Bottom of sidebar) -->
         <div class="p-4 border-t border-gray-200 dark:border-gray-700">
           <div class="flex items-center gap-3">
-            <UAvatar :alt="authStore.user?.firstName" size="sm" />
+            <UAvatar :src="user?.avatar" :alt="user?.firstName" size="sm" />
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                {{ authStore.user?.firstName }} {{ authStore.user?.lastName }}
+                {{ user?.firstName }} {{ user?.lastName }}
               </p>
               <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                {{ authStore.user?.email }}
+                {{ user?.email }}
               </p>
             </div>
             <UButton
@@ -45,7 +43,7 @@
               color="gray"
               variant="ghost"
               size="xs"
-              @click="handleLogout"
+              @click="logout"
             />
           </div>
         </div>
@@ -73,10 +71,8 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/auth.store';
-
 const isOpen = ref(false);
-const authStore = useAuthStore();
+const { user, logout } = useAuth();
 const router = useRouter();
 
 // Close sidebar on route change
@@ -123,12 +119,6 @@ const links = [
     to: '/admin/profile',
   },
 ];
-
-function handleLogout() {
-  // Implement logout logic here
-  // authStore.logout();
-  router.push('/auth/login');
-}
 </script>
 
 <style>

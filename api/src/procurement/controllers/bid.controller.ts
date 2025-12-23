@@ -1,19 +1,62 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
+import { ChangeBidStatusDTO, CreateBidDTO, FilterBidsDTO, UpdateBidDTO } from '../dto/bid.dto';
 import { BidService } from '../services/bid.service';
-import { CreateBidDTO, UpdateBidDTO, FilterBidsDTO, ChangeBidStatusDTO } from '../dto/bid.dto';
 
 @ApiTags('Bids')
 @Controller('procurements/:procurementId/bids')
 export class BidController {
-  constructor(private readonly bidService: BidService) {}
+  constructor(
+    private readonly bidService: BidService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'technicalProposal', maxCount: 1 },
+      { name: 'commercialProposal', maxCount: 1 },
+    ]),
+  )
   @ApiOperation({ summary: 'Submit a bid (Contractor)' })
+  @UseInterceptors(FileInterceptor('proposal'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        proposal: { type: 'string', format: 'binary' },
+        contractorNo: { type: 'string' },
+        contactName: { type: 'string' },
+        contactEmail: { type: 'string' },
+        contactPhone: { type: 'string' },
+        amount: { type: 'number' },
+        notes: { type: 'string' },
+      },
+    },
+  })
   async submitBid(
     @Param('procurementId', ParseIntPipe) procurementId: number,
     @Body() input: CreateBidDTO,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
+    if (file) {
+      const result = await this.cloudinaryService.uploadImage(file);
+      input.proposalUrl = result.secure_url;
+    }
     return this.bidService.submitBid(procurementId, input);
   }
 

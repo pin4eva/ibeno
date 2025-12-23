@@ -29,6 +29,7 @@ export type BidAvgAggregateOutputType = {
   id: number | null
   procurementId: number | null
   contractorId: number | null
+  amount: number | null
   price: number | null
 }
 
@@ -36,6 +37,7 @@ export type BidSumAggregateOutputType = {
   id: number | null
   procurementId: number | null
   contractorId: number | null
+  amount: number | null
   price: number | null
 }
 
@@ -47,6 +49,8 @@ export type BidMinAggregateOutputType = {
   contactName: string | null
   contactEmail: string | null
   contactPhone: string | null
+  amount: number | null
+  proposalUrl: string | null
   price: number | null
   technicalProposalUrl: string | null
   commercialProposalUrl: string | null
@@ -64,6 +68,8 @@ export type BidMaxAggregateOutputType = {
   contactName: string | null
   contactEmail: string | null
   contactPhone: string | null
+  amount: number | null
+  proposalUrl: string | null
   price: number | null
   technicalProposalUrl: string | null
   commercialProposalUrl: string | null
@@ -81,6 +87,8 @@ export type BidCountAggregateOutputType = {
   contactName: number
   contactEmail: number
   contactPhone: number
+  amount: number
+  proposalUrl: number
   price: number
   technicalProposalUrl: number
   commercialProposalUrl: number
@@ -97,6 +105,7 @@ export type BidAvgAggregateInputType = {
   id?: true
   procurementId?: true
   contractorId?: true
+  amount?: true
   price?: true
 }
 
@@ -104,6 +113,7 @@ export type BidSumAggregateInputType = {
   id?: true
   procurementId?: true
   contractorId?: true
+  amount?: true
   price?: true
 }
 
@@ -115,6 +125,8 @@ export type BidMinAggregateInputType = {
   contactName?: true
   contactEmail?: true
   contactPhone?: true
+  amount?: true
+  proposalUrl?: true
   price?: true
   technicalProposalUrl?: true
   commercialProposalUrl?: true
@@ -132,6 +144,8 @@ export type BidMaxAggregateInputType = {
   contactName?: true
   contactEmail?: true
   contactPhone?: true
+  amount?: true
+  proposalUrl?: true
   price?: true
   technicalProposalUrl?: true
   commercialProposalUrl?: true
@@ -149,6 +163,8 @@ export type BidCountAggregateInputType = {
   contactName?: true
   contactEmail?: true
   contactPhone?: true
+  amount?: true
+  proposalUrl?: true
   price?: true
   technicalProposalUrl?: true
   commercialProposalUrl?: true
@@ -254,6 +270,8 @@ export type BidGroupByOutputType = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount: number | null
+  proposalUrl: string | null
   price: number | null
   technicalProposalUrl: string | null
   commercialProposalUrl: string | null
@@ -295,6 +313,8 @@ export type BidWhereInput = {
   contactName?: Prisma.StringFilter<"Bid"> | string
   contactEmail?: Prisma.StringFilter<"Bid"> | string
   contactPhone?: Prisma.StringFilter<"Bid"> | string
+  amount?: Prisma.FloatNullableFilter<"Bid"> | number | null
+  proposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
   price?: Prisma.FloatNullableFilter<"Bid"> | number | null
   technicalProposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
   commercialProposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
@@ -316,6 +336,8 @@ export type BidOrderByWithRelationInput = {
   contactName?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
+  proposalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   technicalProposalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   commercialProposalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -341,6 +363,8 @@ export type BidWhereUniqueInput = Prisma.AtLeast<{
   contactName?: Prisma.StringFilter<"Bid"> | string
   contactEmail?: Prisma.StringFilter<"Bid"> | string
   contactPhone?: Prisma.StringFilter<"Bid"> | string
+  amount?: Prisma.FloatNullableFilter<"Bid"> | number | null
+  proposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
   price?: Prisma.FloatNullableFilter<"Bid"> | number | null
   technicalProposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
   commercialProposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
@@ -362,6 +386,8 @@ export type BidOrderByWithAggregationInput = {
   contactName?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
+  proposalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   technicalProposalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   commercialProposalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -388,6 +414,8 @@ export type BidScalarWhereWithAggregatesInput = {
   contactName?: Prisma.StringWithAggregatesFilter<"Bid"> | string
   contactEmail?: Prisma.StringWithAggregatesFilter<"Bid"> | string
   contactPhone?: Prisma.StringWithAggregatesFilter<"Bid"> | string
+  amount?: Prisma.FloatNullableWithAggregatesFilter<"Bid"> | number | null
+  proposalUrl?: Prisma.StringNullableWithAggregatesFilter<"Bid"> | string | null
   price?: Prisma.FloatNullableWithAggregatesFilter<"Bid"> | number | null
   technicalProposalUrl?: Prisma.StringNullableWithAggregatesFilter<"Bid"> | string | null
   commercialProposalUrl?: Prisma.StringNullableWithAggregatesFilter<"Bid"> | string | null
@@ -403,6 +431,8 @@ export type BidCreateInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -424,6 +454,8 @@ export type BidUncheckedCreateInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -440,6 +472,8 @@ export type BidUpdateInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -461,6 +495,8 @@ export type BidUncheckedUpdateInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -480,6 +516,8 @@ export type BidCreateManyInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -495,6 +533,8 @@ export type BidUpdateManyMutationInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -513,6 +553,8 @@ export type BidUncheckedUpdateManyInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -546,6 +588,8 @@ export type BidCountOrderByAggregateInput = {
   contactName?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  proposalUrl?: Prisma.SortOrder
   price?: Prisma.SortOrder
   technicalProposalUrl?: Prisma.SortOrder
   commercialProposalUrl?: Prisma.SortOrder
@@ -560,6 +604,7 @@ export type BidAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   procurementId?: Prisma.SortOrder
   contractorId?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
 
@@ -571,6 +616,8 @@ export type BidMaxOrderByAggregateInput = {
   contactName?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  proposalUrl?: Prisma.SortOrder
   price?: Prisma.SortOrder
   technicalProposalUrl?: Prisma.SortOrder
   commercialProposalUrl?: Prisma.SortOrder
@@ -588,6 +635,8 @@ export type BidMinOrderByAggregateInput = {
   contactName?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  proposalUrl?: Prisma.SortOrder
   price?: Prisma.SortOrder
   technicalProposalUrl?: Prisma.SortOrder
   commercialProposalUrl?: Prisma.SortOrder
@@ -601,6 +650,7 @@ export type BidSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   procurementId?: Prisma.SortOrder
   contractorId?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
 
@@ -725,6 +775,8 @@ export type BidCreateWithoutContractorInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -744,6 +796,8 @@ export type BidUncheckedCreateWithoutContractorInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -792,6 +846,8 @@ export type BidScalarWhereInput = {
   contactName?: Prisma.StringFilter<"Bid"> | string
   contactEmail?: Prisma.StringFilter<"Bid"> | string
   contactPhone?: Prisma.StringFilter<"Bid"> | string
+  amount?: Prisma.FloatNullableFilter<"Bid"> | number | null
+  proposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
   price?: Prisma.FloatNullableFilter<"Bid"> | number | null
   technicalProposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
   commercialProposalUrl?: Prisma.StringNullableFilter<"Bid"> | string | null
@@ -807,6 +863,8 @@ export type BidCreateWithoutProcurementInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -826,6 +884,8 @@ export type BidUncheckedCreateWithoutProcurementInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -868,6 +928,8 @@ export type BidCreateWithoutEventsInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -888,6 +950,8 @@ export type BidUncheckedCreateWithoutEventsInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -919,6 +983,8 @@ export type BidUpdateWithoutEventsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -939,6 +1005,8 @@ export type BidUncheckedUpdateWithoutEventsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -956,6 +1024,8 @@ export type BidCreateManyContractorInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -971,6 +1041,8 @@ export type BidUpdateWithoutContractorInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -990,6 +1062,8 @@ export type BidUncheckedUpdateWithoutContractorInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1008,6 +1082,8 @@ export type BidUncheckedUpdateManyWithoutContractorInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1025,6 +1101,8 @@ export type BidCreateManyProcurementInput = {
   contactName: string
   contactEmail: string
   contactPhone: string
+  amount?: number | null
+  proposalUrl?: string | null
   price?: number | null
   technicalProposalUrl?: string | null
   commercialProposalUrl?: string | null
@@ -1040,6 +1118,8 @@ export type BidUpdateWithoutProcurementInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1059,6 +1139,8 @@ export type BidUncheckedUpdateWithoutProcurementInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1077,6 +1159,8 @@ export type BidUncheckedUpdateManyWithoutProcurementInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  proposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   technicalProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialProposalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1126,6 +1210,8 @@ export type BidSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   contactName?: boolean
   contactEmail?: boolean
   contactPhone?: boolean
+  amount?: boolean
+  proposalUrl?: boolean
   price?: boolean
   technicalProposalUrl?: boolean
   commercialProposalUrl?: boolean
@@ -1148,6 +1234,8 @@ export type BidSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   contactName?: boolean
   contactEmail?: boolean
   contactPhone?: boolean
+  amount?: boolean
+  proposalUrl?: boolean
   price?: boolean
   technicalProposalUrl?: boolean
   commercialProposalUrl?: boolean
@@ -1168,6 +1256,8 @@ export type BidSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   contactName?: boolean
   contactEmail?: boolean
   contactPhone?: boolean
+  amount?: boolean
+  proposalUrl?: boolean
   price?: boolean
   technicalProposalUrl?: boolean
   commercialProposalUrl?: boolean
@@ -1188,6 +1278,8 @@ export type BidSelectScalar = {
   contactName?: boolean
   contactEmail?: boolean
   contactPhone?: boolean
+  amount?: boolean
+  proposalUrl?: boolean
   price?: boolean
   technicalProposalUrl?: boolean
   commercialProposalUrl?: boolean
@@ -1198,7 +1290,7 @@ export type BidSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BidOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "procurementId" | "contractorId" | "contractorNo" | "contactName" | "contactEmail" | "contactPhone" | "price" | "technicalProposalUrl" | "commercialProposalUrl" | "otherFiles" | "notes" | "status" | "submittedAt" | "updatedAt", ExtArgs["result"]["bid"]>
+export type BidOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "procurementId" | "contractorId" | "contractorNo" | "contactName" | "contactEmail" | "contactPhone" | "amount" | "proposalUrl" | "price" | "technicalProposalUrl" | "commercialProposalUrl" | "otherFiles" | "notes" | "status" | "submittedAt" | "updatedAt", ExtArgs["result"]["bid"]>
 export type BidInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   procurement?: boolean | Prisma.ProcurementDefaultArgs<ExtArgs>
   contractor?: boolean | Prisma.ContractorDefaultArgs<ExtArgs>
@@ -1229,6 +1321,8 @@ export type $BidPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     contactName: string
     contactEmail: string
     contactPhone: string
+    amount: number | null
+    proposalUrl: string | null
     price: number | null
     technicalProposalUrl: string | null
     commercialProposalUrl: string | null
@@ -1670,6 +1764,8 @@ export interface BidFieldRefs {
   readonly contactName: Prisma.FieldRef<"Bid", 'String'>
   readonly contactEmail: Prisma.FieldRef<"Bid", 'String'>
   readonly contactPhone: Prisma.FieldRef<"Bid", 'String'>
+  readonly amount: Prisma.FieldRef<"Bid", 'Float'>
+  readonly proposalUrl: Prisma.FieldRef<"Bid", 'String'>
   readonly price: Prisma.FieldRef<"Bid", 'Float'>
   readonly technicalProposalUrl: Prisma.FieldRef<"Bid", 'String'>
   readonly commercialProposalUrl: Prisma.FieldRef<"Bid", 'String'>

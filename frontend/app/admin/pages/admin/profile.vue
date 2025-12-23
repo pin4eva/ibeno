@@ -187,10 +187,11 @@ async function handleUpdateProfile() {
     useToast().add({
       title: 'Success',
       description: 'Profile updated successfully',
-      color: 'green',
+      color: 'success',
     });
-  } catch (error: any) {
-    profileError.value = error?.data?.message || 'Failed to update profile';
+  } catch (error: unknown) {
+    const err = error as any; // Still using any here briefly to access .data.message or use better typing
+    profileError.value = err?.data?.message || 'Failed to update profile';
   } finally {
     profileLoading.value = false;
   }
@@ -230,10 +231,11 @@ async function handleChangePassword() {
     useToast().add({
       title: 'Success',
       description: 'Password changed successfully',
-      color: 'green',
+      color: 'success',
     });
-  } catch (error: any) {
-    passwordError.value = error?.data?.message || 'Failed to change password';
+  } catch (error: unknown) {
+    const err = error as any;
+    passwordError.value = err?.data?.message || 'Failed to change password';
   } finally {
     passwordLoading.value = false;
   }
@@ -261,11 +263,12 @@ function handleAvatarClick() {
 
       // Auto-save profile after upload
       await handleUpdateProfile();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as any;
       useToast().add({
         title: 'Error',
-        description: error?.data?.message || 'Failed to upload avatar',
-        color: 'red',
+        description: err?.data?.message || 'Failed to upload avatar',
+        color: 'error',
       });
     } finally {
       profileLoading.value = false;

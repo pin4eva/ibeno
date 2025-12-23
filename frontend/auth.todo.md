@@ -1,4 +1,0 @@
-- [ ] auth layout
-- [ ] login page
-- [ ] signup page
-- [ ] reset password page

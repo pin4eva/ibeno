@@ -215,9 +215,9 @@ useHead({
             </div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Contractors</h3>
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-              View open contracts, submit bids, and manage your contractor profile.
+              View open tender, submit bids, and manage your contractor profile.
             </p>
-            <UButton to="/contracts" block variant="soft" color="orange"> View Contracts </UButton>
+            <UButton to="/procurement" block variant="soft" color="orange"> View Tenders </UButton>
           </div>
 
           <!-- Staff -->

@@ -27,10 +27,12 @@ const {
   data: programs,
   status,
   error,
-  refresh,
 } = await useAsyncData(
   'programs-active',
-  () => apiFetch<Program[]>('/programs', { query: { isActive: true } }),
+  async () => {
+    const response = await apiFetch<Program[]>('/programs', { query: { isActive: true } });
+    return response;
+  },
   { default: () => [] },
 );
 </script>
@@ -41,26 +43,6 @@ const {
       <div>
         <h1 class="text-2xl font-semibold">Programs</h1>
         <p class="mt-1 text-sm text-muted">Choose an active program to apply.</p>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <UButton
-          to="/applications"
-          color="gray"
-          variant="ghost"
-          icon="i-lucide-clipboard-list"
-          class="hidden sm:flex"
-        >
-          Check Status
-        </UButton>
-        <UButton
-          color="neutral"
-          variant="outline"
-          :loading="status === 'pending'"
-          @click="refresh()"
-        >
-          Refresh
-        </UButton>
       </div>
     </div>
 

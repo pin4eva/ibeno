@@ -3,6 +3,7 @@ import type { FetchError } from '~/interfaces/app.interface';
 export const useAuth = () => {
   const accessToken = useCookie<string | null>(ACCESS_TOKEN);
   const refreshToken = useCookie<string | null>(REFRESH_TOKEN);
+  const { $clearRefreshInterval } = useNuxtApp();
   const config = useRuntimeConfig().public;
   const apiUrl = config.apiBaseUrl;
 
@@ -38,12 +39,43 @@ export const useAuth = () => {
     }
   };
 
+  const refreshTokens = async () => {
+    try {
+      const response = await apiFetch<{ accessToken: string; refreshToken: string }>(
+        `${apiUrl}/auth/refresh`,
+        {
+          method: 'POST',
+          body: { refreshToken: refreshToken.value },
+        },
+      );
+      accessToken.value = response.accessToken;
+      refreshToken.value = response.refreshToken;
+      return response;
+    } catch (error) {
+      accessToken.value = null;
+      refreshToken.value = null;
+      user.value = null;
+      throw error;
+    }
+  };
+
   const logout = () => {
     user.value = null;
     accessToken.value = null;
     refreshToken.value = null;
     window.location.href = '/auth/login';
   };
+
+  onUnmounted(() => {
+    $clearRefreshInterval();
+    if (accessToken.value) {
+      console.log('refreshedTokens');
+
+      refreshTokens().catch((error) => {
+        console.error('Error refreshing tokens on unmount:', error);
+      });
+    }
+  });
 
   return {
     user,

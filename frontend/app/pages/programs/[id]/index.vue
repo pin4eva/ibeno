@@ -28,9 +28,15 @@ const {
   data: program,
   status: programStatus,
   error: programError,
-} = await useAsyncData(`program-${programId.value}`, () =>
-  apiFetch<Program>(`/programs/single/${programId.value}`),
-);
+} = await useAsyncData(`program-${route.params.id}`, async () => {
+  try {
+    const response = await apiFetch<Program>(`/programs/single/${programId.value}`);
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
 
 const started = ref(false);
 const startedApplicationNo = ref<string | null>(null);

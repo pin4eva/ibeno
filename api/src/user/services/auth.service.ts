@@ -184,7 +184,7 @@ export class AuthService {
         throw new BadRequestException('No invitation found for this email');
       }
       const token = invitation.token;
-      const href = origin + '/signup?token=' + token;
+      const href = origin + '/auth/signup?token=' + token;
 
       // Send email logic here
       await this.emailService.sendInvitationEmail(email, href);

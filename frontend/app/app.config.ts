@@ -73,25 +73,11 @@ export default defineAppConfig({
       variants: {
         fieldGroup: {
           horizontal:
-            'not-only:first:rounded-e-none not-only:last:rounded-s-none not-last:not-first:rounded-none focus-visible:z-[1]',
+            'not-only:first:rounded-e-none not-only:last:rounded-s-none not-last:not-first:rounded-none focus-visible:z-1',
           vertical:
-            'not-only:first:rounded-b-none not-only:last:rounded-t-none not-last:not-first:rounded-none focus-visible:z-[1]',
+            'not-only:first:rounded-b-none not-only:last:rounded-t-none not-last:not-first:rounded-none focus-visible:z-1',
         },
-        color: {
-          primary: '',
-          secondary: '',
-          success: '',
-          info: '',
-          warning: '',
-          error: '',
-          neutral: '',
-        },
-        variant: {
-          solid: '',
-          outline: '',
-          soft: '',
-          subtle: '',
-        },
+
         size: {
           xs: {
             base: 'text-[10px]/3 px-1.5 py-0.5 gap-1',

@@ -93,6 +93,19 @@ export class UserService {
     });
   }
 
+  // bulk remove (soft delete) users by setting status to Suspended
+  async bulkRemove(ids: number[]) {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new BadRequestException('No user ids provided');
+    }
+
+    const result = await this.prisma.user.deleteMany({
+      where: { id: { in: ids } },
+    });
+
+    return { count: result.count };
+  }
+
   // update current user profile
   async updateProfile(userId: number, data: UpdateProfileDTO) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });

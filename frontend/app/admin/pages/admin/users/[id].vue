@@ -10,21 +10,24 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</p>
         </div>
       </div>
+
       <div class="flex gap-2">
         <UButton
-          color="red"
-          variant="ghost"
-          label="Delete"
-          :loading="loading"
-          @click="handleDelete"
-        />
-        <UButton
+          v-if="!isEditing"
+          icon="i-lucide-edit"
           color="primary"
           variant="solid"
-          label="Save Changes"
-          :loading="loading"
-          @click="handleSave"
-        />
+          @click="enterEdit"
+        >
+          Edit
+        </UButton>
+
+        <div v-else class="flex gap-2">
+          <UButton color="primary" variant="solid" :loading="loading" @click="handleSave"
+            >Save</UButton
+          >
+          <UButton variant="ghost" color="gray" @click="handleCancel">Cancel</UButton>
+        </div>
       </div>
     </div>
 
@@ -35,7 +38,46 @@
         </div>
       </template>
 
-      <form class="grid grid-cols-1 gap-6 sm:grid-cols-2" @submit.prevent="handleSave">
+      <!-- Read-only view -->
+      <div v-if="!isEditing" class="grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm">
+        <div>
+          <p class="text-xs text-muted">First name</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.firstName }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs text-muted">Last name</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.lastName }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs text-muted">Email</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.email }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs text-muted">Phone</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.phone || '—' }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs text-muted">Role</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.role }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs text-muted">Department</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.department || '—' }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs text-muted">Status</p>
+          <p class="font-medium text-gray-900 dark:text-white">{{ user.status }}</p>
+        </div>
+      </div>
+
+      <!-- Edit form -->
+      <form v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2" @submit.prevent="handleSave">
         <UFormField label="First Name" name="firstName">
           <UInput v-model="form.firstName" />
         </UFormField>
@@ -62,9 +104,7 @@
       </form>
     </UCard>
 
-    <div v-if="error" class="text-red-500 text-sm">
-      {{ error }}
-    </div>
+    <div v-if="error" class="text-red-500 text-sm">{{ error }}</div>
   </div>
 </template>
 
@@ -78,6 +118,7 @@ const { loading, error } = storeToRefs(userStore);
 
 const userId = Number(route.params.id);
 const user = ref<any>(null);
+const isEditing = ref(false);
 
 const form = reactive({
   firstName: '',
@@ -116,22 +157,49 @@ onMounted(async () => {
   }
 });
 
+function enterEdit() {
+  // ensure form has latest values
+  if (user.value) {
+    Object.assign(form, {
+      firstName: user.value.firstName,
+      lastName: user.value.lastName,
+      phone: user.value.phone || '',
+      role: user.value.role,
+      department: user.value.department,
+      status: user.value.status,
+    });
+  }
+  isEditing.value = true;
+}
+
+function handleCancel() {
+  if (!user.value) return;
+  Object.assign(form, {
+    firstName: user.value.firstName,
+    lastName: user.value.lastName,
+    phone: user.value.phone || '',
+    role: user.value.role,
+    department: user.value.department,
+    status: user.value.status,
+  });
+  isEditing.value = false;
+}
+
 async function handleSave() {
   try {
     const updated = await userStore.updateUser(userId, form);
     user.value = updated;
-    // Optional: Show success toast
+    isEditing.value = false;
+    const toast = useToast();
+    toast.add({ title: 'User updated', duration: 3000, color: 'success' });
   } catch (e) {
-    const error = e as FetchError;
-    console.log(error?.data?.message || 'An error occurred while updating the user.');
-
-    // Error handled in store but we can show toast here
+    const err = e as FetchError;
+    const toast = useToast();
+    toast.add({
+      title: 'Update failed',
+      description: err?.data?.message || 'An error occurred while updating the user.',
+      color: 'error',
+    });
   }
-}
-
-async function handleDelete() {
-  if (!confirm('Are you sure you want to delete this user?')) return;
-  await userStore.deleteUser(userId);
-  navigateTo('/admin/users');
 }
 </script>

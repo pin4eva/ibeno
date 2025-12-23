@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { Post } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
@@ -6,6 +7,7 @@ import {
   UpdateProfileDTO,
   UpdateUserDTO,
   UserFilterDTO,
+  BulkDeleteUsersDTO,
 } from '../dto/user.dto';
 import { AuthGuard } from '../../guards/auth.guard';
 import { CurrentUser } from '../../decorators/current-user.decorator';
@@ -49,6 +51,12 @@ export class UserController {
     return this.userService.remove(+id);
   }
 
+  @Delete('bulk-delete')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin)
+  async bulkDelete(@Body() body: BulkDeleteUsersDTO) {
+    return this.userService.bulkRemove(body.ids || []);
+  }
   @Patch('profile')
   @UseGuards(AuthGuard)
   async updateProfile(@CurrentUser() user: User, @Body() data: UpdateProfileDTO) {

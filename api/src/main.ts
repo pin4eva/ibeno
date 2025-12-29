@@ -8,19 +8,19 @@ import { AppModule } from './app.module';
 
 let cachedApp: NestExpressApplication | null = null;
 
+const prodOrigins = [
+  'https://ihcdt.org',
+  'https://api.ihcdt.org',
+  'https://dev.ihcdt.org',
+  'https://dev-api.ihcdt.org',
+];
 const devOrigins = [
+  ...prodOrigins,
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:8000',
   'https://dev.ihcdt.org',
   'https://dev-api.ihcdt.org',
-];
-
-const prodOrigins = [
-  'https://ihcdt.org',
-  'https://dev.ihcdt.org',
-  'https://dev-api.ihcdt.org',
-  'https://api.ihcdt.org',
 ];
 
 const normalizeOrigin = (origin: string) => origin.trim().replace(/\/$/, '').toLowerCase();

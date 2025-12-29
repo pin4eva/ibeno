@@ -10,6 +10,7 @@ let cachedApp: NestExpressApplication | null = null;
 
 const prodOrigins = [
   'https://ihcdt.org',
+  'https://www.ihcdt.org',
   'https://api.ihcdt.org',
   'https://dev.ihcdt.org',
   'https://dev-api.ihcdt.org',

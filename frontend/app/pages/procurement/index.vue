@@ -95,9 +95,8 @@ const { data: procurements } = await useAsyncData(
           status: route.query?.status || undefined,
         },
       });
-      if (procurements.length) return procurements;
-      // return procurements?.filter((p) => p.status !== ProcurementStatus.DRAFT) || [];
-      return [];
+      // if (procurements.length) return procurements;
+      return procurements?.filter((p) => p.status !== ProcurementStatus.DRAFT) || [];
     } catch (error) {
       console.error(error);
       return [];

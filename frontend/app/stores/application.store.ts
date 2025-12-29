@@ -37,6 +37,7 @@ export const useApplicationStore = defineStore('application', () => {
   const applicationIdCookie = useCookie<number | null>('application-id');
   const applicationsCookie = useCookie<Application[] | null>('applications');
   const router = useRouter();
+  const toast = useToast();
 
   const application = ref<Application | null>(null);
   const loading = ref(false);
@@ -75,7 +76,17 @@ export const useApplicationStore = defineStore('application', () => {
       return response;
     } catch (err) {
       const e = err as FetchError;
-      error.value = e?.data?.message || 'Failed to login applicant';
+      let errMsg = 'Failed to login applicant';
+      if (e?.data?.message && Array.isArray(e?.data?.message)) {
+        errMsg = (e?.data?.message as string[]).join(', ');
+      }
+
+      error.value = errMsg;
+      toast.add({
+        color: 'error',
+        title: 'Login Failed',
+        description: errMsg || 'An error occurred during login.',
+      });
       throw err;
     } finally {
       loading.value = false;

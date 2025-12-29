@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import type { FormSubmitEvent } from '#ui/types';
 import { z } from 'zod';
-import type { FetchError } from '~/interfaces/app.interface';
 
 const props = defineProps<{ onLoginSuccess?: () => void }>();
 
 const router = useRouter();
 const { loading, loginApplicant } = useApplicationStore();
-const toast = useToast();
 
 const state = reactive({
   applicationNo: '',
@@ -22,16 +20,11 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  try {
-    const app = await loginApplicant(event.data);
+  const app = await loginApplicant(event.data);
 
-    if (app && app.id) {
-      props.onLoginSuccess?.();
-      router.push(`/applications`);
-    }
-  } catch (e) {
-    const error = e as FetchError;
-    toast.add({ title: 'Error', description: error?.data?.message, color: 'red' });
+  if (app && app.id) {
+    props.onLoginSuccess?.();
+    router.push(`/applications`);
   }
 }
 </script>

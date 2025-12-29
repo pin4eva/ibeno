@@ -51,14 +51,7 @@ const getStatusColor = (status?: string) => {
         </div>
         <div class="flex items-center gap-2">
           <UButton
-            v-if="!currentApplication"
-            icon="i-lucide-log-in"
-            color="primary"
-            label="Login"
-            @click="isLoginOpen = true"
-          />
-          <UButton
-            v-else
+            v-if="currentApplication"
             icon="i-lucide-log-out"
             color="gray"
             variant="ghost"

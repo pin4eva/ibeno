@@ -22,7 +22,12 @@
               </div>
             </div>
           </div>
-          <UBadge :color="getStatusColor(procurement.status)" variant="subtle" size="lg">
+          <UBadge
+            :color="getStatusColor(procurement.status)"
+            variant="subtle"
+            size="lg"
+            class="uppercase"
+          >
             {{ procurement.status }}
           </UBadge>
         </div>
@@ -211,15 +216,13 @@
 </template>
 
 <script setup lang="ts">
+import type { Procurement } from '~/interfaces/procurement/procurement.interface';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
 
 const route = useRoute();
 const procurementStore = useProcurementStore();
 
-const toast = useToast();
-
 const procurementId = computed(() => parseInt(route.params.id as string));
-const procurement = computed(() => procurementStore.currentProcurement);
 const showBidForm = ref(false);
 
 const handleBidSuccess = () => {
@@ -252,16 +255,13 @@ const getStatusColor = (status: string) => {
   return colors[status] || 'gray';
 };
 
-onMounted(async () => {
+const { data: procurement } = await useAsyncData(`procurement-${route.params.id}`, async () => {
   try {
-    await procurementStore.fetchProcurementById(procurementId.value);
+    const procurement = await apiFetch<Procurement>(`/procurements/${procurementId.value}`);
+    return procurement;
   } catch (error) {
-    console.error(error);
-    toast.add({
-      title: 'Error',
-      description: 'Failed to load procurement details',
-      color: 'error',
-    });
+    console.error({ error });
+    throw error;
   }
 });
 </script>

@@ -103,3 +103,10 @@ export class ChangeProfilePasswordDTO {
   @MinLength(6)
   newPassword: string;
 }
+
+export class BulkDeleteUsersDTO {
+  @ApiProperty({ type: [Number] })
+  @Type(() => Number)
+  @IsInt({ each: true })
+  ids!: number[];
+}

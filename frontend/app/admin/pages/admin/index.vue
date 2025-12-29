@@ -36,6 +36,124 @@
         </UCard>
       </NuxtLink>
     </div>
+
+    <!-- Details -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <UCard>
+          <template #header>
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">Recent Programs</h3>
+              <UButton
+                icon="i-lucide-arrow-right"
+                color="gray"
+                variant="ghost"
+                to="/admin/programs"
+              >
+                View all
+              </UButton>
+            </div>
+          </template>
+
+          <div class="space-y-3">
+            <div v-if="programsStore.programs.length === 0" class="text-sm text-muted p-4">
+              No programs yet.
+            </div>
+            <div v-else class="divide-y">
+              <div
+                v-for="program in recentPrograms"
+                :key="program.id"
+                class="flex items-center justify-between py-3"
+              >
+                <div>
+                  <p class="font-medium text-gray-900 dark:text-white">{{ program.name }}</p>
+                  <p class="text-sm text-muted">
+                    {{ program.category }} • {{ program.subCategory || 'General' }}
+                  </p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <UBadge variant="subtle" :color="program.isActive ? 'success' : 'neutral'">{{
+                    program.isActive ? 'Active' : 'Inactive'
+                  }}</UBadge>
+                  <p class="text-sm text-muted">{{ program._count?.applications || 0 }} apps</p>
+                  <UButton
+                    size="sm"
+                    variant="ghost"
+                    color="gray"
+                    :to="`/admin/programs/${program.id}`"
+                    >Manage</UButton
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </UCard>
+      </div>
+
+      <div>
+        <UCard>
+          <template #header>
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">Recent Users</h3>
+              <UButton icon="i-lucide-arrow-right" color="gray" variant="ghost" to="/admin/users"
+                >View all</UButton
+              >
+            </div>
+          </template>
+
+          <div class="space-y-3">
+            <div v-if="userStore.users.length === 0" class="text-sm text-muted p-4">
+              No users yet.
+            </div>
+            <div v-else class="divide-y">
+              <div
+                v-for="u in recentUsers"
+                :key="u.id"
+                class="flex items-center justify-between py-3"
+              >
+                <div class="flex items-center gap-3">
+                  <UAvatar :alt="u.firstName" :src="u.avatar" size="sm" />
+                  <div>
+                    <p class="font-medium text-gray-900 dark:text-white">
+                      {{ u.firstName }} {{ u.lastName }}
+                    </p>
+                    <p class="text-sm text-muted">{{ u.email }}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <UBadge variant="subtle" :color="u.status === 'Active' ? 'success' : 'neutral'">{{
+                    u.status
+                  }}</UBadge>
+                  <UButton size="sm" variant="ghost" color="gray" :to="`/admin/users/${u.id}`"
+                    >View</UButton
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </UCard>
+
+        <UCard class="mt-4">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+                Pending Invitations
+              </h3>
+              <UButton
+                icon="i-lucide-arrow-right"
+                color="gray"
+                variant="ghost"
+                to="/admin/users/invitations"
+                >View</UButton
+              >
+            </div>
+          </template>
+          <div class="p-3 text-sm text-muted">
+            {{ userStore.invitations.length }} pending invitation(s).
+          </div>
+        </UCard>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,8 +176,10 @@ const stats = computed(() => [
   },
   {
     label: 'Total Applications',
-    value: '0',
-    change: 'All programs',
+    value: (
+      programsStore.programs.reduce((sum, p) => sum + (p._count?.applications || 0), 0) || 0
+    ).toString(),
+    change: 'Across all programs',
     icon: 'i-lucide-file-text',
     to: '/admin/programs',
   },
@@ -81,15 +201,20 @@ const stats = computed(() => [
 
 const fetchDashboardData = async () => {
   try {
-    // Fetch programs
-    await programsStore.fetchPrograms();
+    // Fetch programs (include counts)
+    await programsStore.fetchPrograms({});
 
-    // Fetch users count
-    await userStore.fetchUsers({ page: 1, limit: 1 });
+    // Fetch recent users and counts
+    await userStore.fetchUsers({ page: 1, limit: 5 });
+    await userStore.fetchCounts();
+    await userStore.fetchInvitations();
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
   }
 };
+
+const recentPrograms = computed(() => programsStore.programs.slice(0, 5));
+const recentUsers = computed(() => userStore.users.slice(0, 5));
 
 onMounted(() => {
   fetchDashboardData();

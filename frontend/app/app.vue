@@ -1,5 +1,6 @@
 <script setup>
 const { setUser } = useAuth();
+const accessToken = useCookie(ACCESS_TOKEN);
 useHead({
   meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
   link: [{ rel: 'icon', href: '/favicon.ico' }],
@@ -22,15 +23,20 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 });
 
-callOnce(() => {
-  setUser();
+onMounted(() => {
+  const token = accessToken.value;
+  if (token) {
+    setUser();
+  }
 });
 </script>
 
 <template>
   <UApp>
+    <NuxtRouteAnnouncer />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <NuxtLoadingIndicator />
   </UApp>
 </template>

@@ -45,7 +45,7 @@ const items = [
       <UColorModeButton />
       <UButton
         to="/applications"
-        label="Check Status"
+        label="Applications"
         color="gray"
         variant="ghost"
         icon="i-lucide-clipboard-list"

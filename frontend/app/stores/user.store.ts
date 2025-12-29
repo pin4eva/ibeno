@@ -39,6 +39,9 @@ export const useUserStore = defineStore('user', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const invitations = ref<Invitation[]>([]);
+  const activeCount = ref(0);
+  const inactiveCount = ref(0);
+  const suspendedCount = ref(0);
 
   const fetchUsers = async (filter: UserFilter) => {
     try {
@@ -99,6 +102,22 @@ export const useUserStore = defineStore('user', () => {
       users.value = users.value.filter((u) => u.id !== id);
     } catch (er: unknown) {
       error.value = (er as FetchError).data?.message || 'Failed to delete user';
+      throw er;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const bulkDeleteUsers = async (ids: number[]) => {
+    try {
+      loading.value = true;
+      await apiFetch('/users/bulk-delete', {
+        method: 'DELETE',
+        body: { ids },
+      });
+      users.value = users.value.filter((u) => !ids.includes(u.id));
+    } catch (er: unknown) {
+      error.value = (er as FetchError).data?.message || 'Failed to delete users';
       throw er;
     } finally {
       loading.value = false;
@@ -166,6 +185,36 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
+  const fetchCounts = async () => {
+    try {
+      loading.value = true;
+      // Active
+      const activeResp = await apiFetch<{ data: User[]; meta: { total: number } }>('/users', {
+        query: { status: 'Active', limit: 1 },
+      });
+      activeCount.value = activeResp.meta?.total || 0;
+
+      // Inactive
+      const inactiveResp = await apiFetch<{ data: User[]; meta: { total: number } }>('/users', {
+        query: { status: 'Inactive', limit: 1 },
+      });
+      inactiveCount.value = inactiveResp.meta?.total || 0;
+
+      // Suspended
+      const suspendedResp = await apiFetch<{ data: User[]; meta: { total: number } }>('/users', {
+        query: { status: 'Suspended', limit: 1 },
+      });
+      suspendedCount.value = suspendedResp.meta?.total || 0;
+
+      // Ensure invitations are fresh
+      await fetchInvitations();
+    } catch (er: unknown) {
+      // ignore counts failure
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const deleteInvitation = async (id: number) => {
     try {
       loading.value = true;
@@ -202,6 +251,9 @@ export const useUserStore = defineStore('user', () => {
     loading,
     error,
     invitations,
+    activeCount,
+    inactiveCount,
+    suspendedCount,
     fetchUsers,
     fetchUser,
     updateUser,
@@ -210,7 +262,9 @@ export const useUserStore = defineStore('user', () => {
     updateProfile,
     changePassword,
     fetchInvitations,
+    fetchCounts,
     deleteInvitation,
     resendInvitation,
+    bulkDeleteUsers,
   };
 });

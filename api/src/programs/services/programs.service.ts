@@ -88,6 +88,11 @@ export class ProgramsService {
       }
       const programs = await this.prisma.program.findMany({
         where,
+        include: {
+          _count: {
+            select: { applications: true },
+          },
+        },
       });
       return programs;
     } catch (error) {

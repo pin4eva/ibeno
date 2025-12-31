@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InvitationDTO, UpdateInvitationDTO } from '../dto/invitation.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { randomBytes } from 'crypto';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../../email/email.service';
 
 @Injectable()
 export class InvitationService {

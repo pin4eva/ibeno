@@ -157,18 +157,22 @@
 
       <template #body>
         <p>
-          Are you sure you want to delete procurement <strong>{{ procurementToDelete?.title }}</strong>?
+          Are you sure you want to delete procurement
+          <strong>{{ procurementToDelete?.title }}</strong
+          >?
         </p>
         <p class="text-sm text-gray-500 mt-2">
-          {{ procurementToDelete?.status === 'draft' ? 'This action cannot be undone.' : 'This will archive the procurement.' }}
+          {{
+            procurementToDelete?.status === 'draft'
+              ? 'This action cannot be undone.'
+              : 'This will archive the procurement.'
+          }}
         </p>
       </template>
 
       <template #footer>
         <div class="flex gap-2 justify-end">
-          <UButton color="gray" variant="ghost" @click="showDeleteModal = false">
-            Cancel
-          </UButton>
+          <UButton color="gray" variant="ghost" @click="showDeleteModal = false"> Cancel </UButton>
           <UButton color="red" :loading="procurementStore.loading" @click="handleDelete">
             Delete
           </UButton>
@@ -180,7 +184,10 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
-import type { Procurement, ProcurementStatus } from '~/interfaces/procurement/procurement.interface';
+import type {
+  Procurement,
+  ProcurementStatus,
+} from '~/interfaces/procurement/procurement.interface';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
 
 const procurementStore = useProcurementStore();
@@ -281,12 +288,12 @@ const getRemainingDays = (deadlineString: string) => {
 };
 
 const getStatusColor = (status: string) => {
-  const colors: Record<string, 'gray' | 'green' | 'orange' | 'blue' | 'red'> = {
+  const colors: Record<string, 'gray' | 'success' | 'orange' | 'blue' | 'error'> = {
     draft: 'gray',
-    published: 'green',
+    published: 'success',
     closed: 'orange',
     awarded: 'blue',
-    archived: 'red',
+    archived: 'error',
   };
   return colors[status] || 'gray';
 };
@@ -304,7 +311,7 @@ const handleDelete = async () => {
     toast.add({
       title: 'Success',
       description: 'Procurement deleted successfully',
-      color: 'green',
+      color: 'success',
     });
     showDeleteModal.value = false;
     procurementToDelete.value = null;
@@ -313,7 +320,7 @@ const handleDelete = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to delete procurement',
-      color: 'red',
+      color: 'error',
     });
   }
 };
@@ -328,7 +335,7 @@ const fetchData = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to fetch procurements',
-      color: 'red',
+      color: 'error',
     });
   }
 };

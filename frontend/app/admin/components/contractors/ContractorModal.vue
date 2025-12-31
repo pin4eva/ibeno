@@ -198,7 +198,7 @@ const handleSubmit = async () => {
       toast.add({
         title: 'Updated',
         description: 'Contractor updated successfully',
-        color: 'green',
+        color: 'success',
       });
     } else {
       const created = await contractorStore.createContractor(payload as CreateContractorInput);
@@ -206,14 +206,14 @@ const handleSubmit = async () => {
       toast.add({
         title: 'Created',
         description: 'Contractor created successfully',
-        color: 'green',
+        color: 'success',
       });
       resetForm();
     }
     emit('update:open', false);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to save contractor';
-    toast.add({ title: 'Error', description: message, color: 'red' });
+    toast.add({ title: 'Error', description: message, color: 'error' });
   } finally {
     saving.value = false;
   }

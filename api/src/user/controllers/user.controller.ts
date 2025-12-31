@@ -32,18 +32,6 @@ export class UserController {
     return this.userService.importUserAndAuth();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin)
-  async update(@Param('id') id: string, @Body() data: UpdateUserDTO) {
-    return this.userService.update(+id, data);
-  }
-
   @Delete('bulk-delete')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoleEnum.Admin)
@@ -66,5 +54,17 @@ export class UserController {
   @Roles(UserRoleEnum.Admin)
   async remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.userService.findOne(+id);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.Admin)
+  async update(@Param('id') id: string, @Body() data: UpdateUserDTO) {
+    return this.userService.update(+id, data);
   }
 }

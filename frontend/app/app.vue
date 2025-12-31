@@ -18,8 +18,8 @@ useSeoMeta({
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
-  twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
+  ogImage: 'https://ihcdt.org/assets/images/ibeno-home-screen.png',
+  twitterImage: 'https://ihcdt.org/assets/images/ibeno-home-screen.png',
   twitterCard: 'summary_large_image',
 });
 

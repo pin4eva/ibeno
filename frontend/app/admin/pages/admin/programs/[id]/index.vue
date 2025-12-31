@@ -54,6 +54,9 @@ const isEditOpen = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
 const isToggling = ref(false);
+const isBulkSending = ref(false);
+const isBulkResultsOpen = ref(false);
+const bulkFailures = ref<Array<{ id: number; email?: string; error?: string }>>([]);
 
 const editForm = ref({
   name: '',
@@ -110,13 +113,13 @@ async function saveProgram() {
 
     await apiFetch(`/api/programs/${programId.value}`, { method: 'PATCH', body: payload });
     await refresh();
-    toast.add({ title: 'Updated', description: 'Program updated successfully', color: 'green' });
+    toast.add({ title: 'Updated', description: 'Program updated successfully', color: 'success' });
     isEditOpen.value = false;
   } catch (err) {
     toast.add({
       title: 'Update failed',
       description: getErrorMessage(err, 'Unable to update program'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isSaving.value = false;
@@ -127,7 +130,7 @@ async function toggleActive() {
   if (!program.value) return;
   try {
     isToggling.value = true;
-    await apiFetch(`/api/programs/${programId.value}/status`, {
+    await apiFetch(`/programs/${programId.value}/status`, {
       method: 'PATCH',
       body: { isActive: !program.value.isActive },
     });
@@ -135,13 +138,13 @@ async function toggleActive() {
     toast.add({
       title: 'Status updated',
       description: `Program ${program.value.isActive ? 'deactivated' : 'activated'} successfully`,
-      color: 'green',
+      color: 'success',
     });
   } catch (err) {
     toast.add({
       title: 'Error',
       description: getErrorMessage(err, 'Could not update status'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isToggling.value = false;
@@ -152,17 +155,58 @@ async function deleteProgram() {
   if (!program.value) return;
   try {
     isDeleting.value = true;
-    await apiFetch(`/api/programs/${programId.value}`, { method: 'DELETE' });
-    toast.add({ title: 'Deleted', description: 'Program removed', color: 'green' });
+    await apiFetch(`/programs/${programId.value}`, { method: 'DELETE' });
+    toast.add({ title: 'Deleted', description: 'Program removed', color: 'success' });
     router.push('/admin/programs');
   } catch (err) {
     toast.add({
       title: 'Delete failed',
       description: getErrorMessage(err, 'Could not delete program'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isDeleting.value = false;
+  }
+}
+
+async function bulkSendStartedEmails() {
+  if (!program.value) return;
+  try {
+    isBulkSending.value = true;
+    const res = await apiFetch<{
+      total: number;
+      success: number;
+      failed: number;
+      failures: Array<{ id: number; email?: string; error?: string }>;
+    }>(`/applications/bulk-send-started/${programId.value}`, {
+      method: 'POST',
+      body: { origin: window.location.origin },
+    });
+
+    if (res.failed && res.failed > 0) {
+      bulkFailures.value = res.failures || [];
+      isBulkResultsOpen.value = true;
+      toast.add({
+        title: 'Bulk send completed',
+        description: `${res.success} sent, ${res.failed} failed`,
+        color: 'warning',
+      });
+    } else {
+      bulkFailures.value = [];
+      toast.add({
+        title: 'Bulk send completed',
+        description: `${res.success} emails sent`,
+        color: 'success',
+      });
+    }
+  } catch (err) {
+    toast.add({
+      title: 'Error',
+      description: getErrorMessage(err, 'Could not send emails'),
+      color: 'error',
+    });
+  } finally {
+    isBulkSending.value = false;
   }
 }
 </script>
@@ -188,15 +232,23 @@ async function deleteProgram() {
           icon="i-lucide-pencil"
           color="primary"
           variant="solid"
-          label="Update"
           :disabled="!program"
           @click="openEdit"
         />
         <UButton
+          icon="i-lucide-mail"
+          color="primary"
+          variant="solid"
+          :loading="isBulkSending"
+          :disabled="!program || isBulkSending"
+          @click="bulkSendStartedEmails"
+        >
+          Send Start Emails
+        </UButton>
+        <UButton
           icon="i-lucide-trash-2"
-          color="red"
+          color="error"
           variant="soft"
-          label="Delete"
           :loading="isDeleting"
           :disabled="!program || isDeleting"
           @click="deleteProgram"
@@ -229,12 +281,9 @@ async function deleteProgram() {
           </div>
 
           <div class="flex items-center gap-2">
-            <UBadge :color="program.isActive ? 'green' : 'red'" variant="subtle">
-              {{ program.isActive ? 'Active' : 'Inactive' }}
-            </UBadge>
             <UButton
               size="sm"
-              color="gray"
+              :color="program.isActive ? 'error' : 'primary'"
               variant="outline"
               :loading="isToggling"
               @click="toggleActive"
@@ -291,11 +340,12 @@ async function deleteProgram() {
       :applications="applications"
       :pending="pending"
       :program-id="programId"
+      @deleted="refresh"
     />
 
     <UModal v-model:open="isEditOpen" :ui="{ content: 'w-full sm:max-w-4xl' }">
       <template #header>
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between w-full">
           <div>
             <h3 class="text-lg font-semibold">Update program</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Edit fields and save.</p>
@@ -356,6 +406,34 @@ async function deleteProgram() {
             </UButton>
           </div>
         </form>
+      </template>
+    </UModal>
+
+    <UModal v-model:open="isBulkResultsOpen" :ui="{ content: 'w-full sm:max-w-2xl' }">
+      <template #header>
+        <div class="flex items-center justify-between w-full">
+          <h3 class="text-lg font-semibold">Bulk send results</h3>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-lucide-x"
+            @click="isBulkResultsOpen = false"
+          />
+        </div>
+      </template>
+      <template #body>
+        <div v-if="bulkFailures.length === 0" class="p-4 text-sm text-gray-600">
+          No failures — all emails sent successfully.
+        </div>
+        <div v-else class="space-y-3">
+          <p class="text-sm text-gray-600">The following emails failed to send:</p>
+          <div class="divide-y">
+            <div v-for="f in bulkFailures" :key="f.id" class="py-2">
+              <p class="font-medium">{{ f.email || 'Unknown' }}</p>
+              <p class="text-sm text-muted">{{ f.error }}</p>
+            </div>
+          </div>
+        </div>
       </template>
     </UModal>
   </div>

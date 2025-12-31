@@ -76,7 +76,7 @@ const handlePassportUpload = async (files: FileList | null) => {
   if (!file) return;
 
   if (!application.value?.id) {
-    toast.add({ title: 'Error', description: 'Application ID is missing', color: 'red' });
+    toast.add({ title: 'Error', description: 'Application ID is missing', color: 'error' });
     return;
   }
 
@@ -84,7 +84,11 @@ const handlePassportUpload = async (files: FileList | null) => {
   try {
     const url = await applicationStore.uploadFile(file);
     await applicationStore.uploadPassport(application.value.id, url);
-    toast.add({ title: 'Success', description: 'Passport uploaded successfully', color: 'green' });
+    toast.add({
+      title: 'Success',
+      description: 'Passport uploaded successfully',
+      color: 'success',
+    });
     applicationStore.setApplication({
       ...application.value,
       passport: url,
@@ -94,7 +98,7 @@ const handlePassportUpload = async (files: FileList | null) => {
     toast.add({
       title: 'Error',
       description: error?.data?.message || 'Failed to upload passport',
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isUploadingPassport.value = false;
@@ -106,7 +110,7 @@ const handleSubmit = async () => {
     throw new Error('Application ID is required');
   }
   if (!application.value.passport) {
-    toast.add({ title: 'Error', description: 'Passport photograph is required', color: 'red' });
+    toast.add({ title: 'Error', description: 'Passport photograph is required', color: 'error' });
     return;
   }
   isLoading.value = true;

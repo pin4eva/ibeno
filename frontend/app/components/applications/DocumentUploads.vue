@@ -122,7 +122,7 @@ async function handleFileUpload(field: DocumentField, files: FileList | null) {
     toast.add({
       title: 'Upload failed',
       description: getErrorMessage(error, 'Please try again.'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     uploading[field] = false;

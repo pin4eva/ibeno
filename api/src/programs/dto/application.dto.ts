@@ -242,3 +242,9 @@ export interface OldApplicationDTO {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export class BulkDeleteApplicationsDTO {
+  @ApiProperty({ type: [Number] })
+  @IsInt({ each: true })
+  ids: number[];
+}

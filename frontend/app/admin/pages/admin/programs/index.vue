@@ -132,7 +132,7 @@ const columns: TableColumn<Program>[] = [
       return h(
         UBadge,
         {
-          color: row.original.isActive ? 'green' : 'red',
+          color: row.original.isActive ? 'success' : 'error',
           variant: 'subtle',
           size: 'xs',
         },
@@ -195,13 +195,13 @@ const columns: TableColumn<Program>[] = [
                 useToast().add({
                   title: 'Success',
                   description: `Program ${wasActive ? 'deactivated' : 'activated'} successfully`,
-                  color: 'green',
+                  color: 'success',
                 });
               } catch {
                 useToast().add({
                   title: 'Error',
                   description: 'Failed to toggle program status',
-                  color: 'red',
+                  color: 'error',
                 });
               }
             },
@@ -217,24 +217,24 @@ const columns: TableColumn<Program>[] = [
               toast.add({
                 title: 'Delete Program',
                 description: `Are you sure you want to delete "${row.original.name}"? This action cannot be undone.`,
-                color: 'red',
+                color: 'error',
                 actions: [
                   {
                     label: 'Delete',
-                    color: 'red',
+                    color: 'error',
                     // click: async () => {
                     //   try {
                     //     await programsStore.deleteProgram(row.original.id);
                     //     toast.add({
                     //       title: 'Success',
                     //       description: 'Program deleted successfully',
-                    //       color: 'green',
+                    //       color: 'success',
                     //     });
                     //   } catch {
                     //     toast.add({
                     //       title: 'Error',
                     //       description: 'Failed to delete program',
-                    //       color: 'red',
+                    //       color: 'error',
                     //     });
                     //   }
                     // },

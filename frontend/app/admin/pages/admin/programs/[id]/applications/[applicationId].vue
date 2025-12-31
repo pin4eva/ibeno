@@ -111,14 +111,14 @@ const handleAction = async () => {
     toast.add({
       title: 'Success',
       description: `Application ${actionType.value === 'approve' ? 'approved' : actionType.value === 'reject' ? 'rejected' : 'marked for review'} successfully`,
-      color: 'green',
+      color: 'success',
     });
     closeActionModal();
   } catch (err) {
     toast.add({
       title: 'Error',
       description: getErrorMessage(err, 'Failed to update application status'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isSubmitting.value = false;
@@ -150,7 +150,7 @@ const actionLabels = {
           <UBadge
             v-if="app?.status"
             :color="
-              app.status === 'Accepted' ? 'green' : app.status === 'Rejected' ? 'red' : 'yellow'
+              app.status === 'Accepted' ? 'success' : app.status === 'Rejected' ? 'error' : 'yellow'
             "
             variant="subtle"
           >
@@ -418,7 +418,7 @@ const actionLabels = {
             <UButton
               type="submit"
               :color="
-                actionType === 'approve' ? 'green' : actionType === 'reject' ? 'red' : 'yellow'
+                actionType === 'approve' ? 'success' : actionType === 'reject' ? 'error' : 'yellow'
               "
               :loading="isSubmitting"
               :disabled="isSubmitting || (actionType === 'request-changes' && !actionComment)"

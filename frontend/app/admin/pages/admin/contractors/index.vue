@@ -9,11 +9,8 @@
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
           <UIcon name="i-lucide-users" class="w-4 h-4" />
           <span>{{ contractorStore.totalContractors }} contractors</span>
-          <UBadge color="green" variant="subtle">{{ activeCount }} active</UBadge>
         </div>
-        <UButton color="gray" variant="outline" icon="i-lucide-upload" @click="showImportModal = true">
-          Import Excel
-        </UButton>
+
         <UButton color="primary" icon="i-lucide-plus" @click="openCreate">New Contractor</UButton>
       </div>
     </div>
@@ -119,7 +116,8 @@
       <div class="space-y-4">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Upload an Excel file (.xlsx, .xls) containing contractor data. The file should have the following columns:
+            Upload an Excel file (.xlsx, .xls) containing contractor data. The file should have the
+            following columns:
           </p>
           <ul class="text-sm text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Contractor No (or contractorNo)</li>
@@ -132,15 +130,15 @@
           </ul>
         </div>
 
-        <UFormField label="Excel File" name="file" required>
-          <UInput
-            type="file"
-            accept=".xlsx,.xls"
-            @change="handleFileSelect"
-          />
-        </UFormField>
-
-        <div v-if="importResult" class="p-4 rounded-lg border" :class="importResult.errors.length > 0 ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/20' : 'bg-green-50 border-green-200 dark:bg-green-900/20'">
+        <div
+          v-if="importResult"
+          class="p-4 rounded-lg border"
+          :class="
+            importResult.errors.length > 0
+              ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/20'
+              : 'bg-green-50 border-green-200 dark:bg-green-900/20'
+          "
+        >
           <h4 class="font-semibold mb-2">Import Results</h4>
           <div class="text-sm space-y-1">
             <p>Total records: {{ importResult.total }}</p>
@@ -169,15 +167,6 @@
         <UButton color="gray" variant="ghost" @click="closeImportModal">
           {{ importResult ? 'Close' : 'Cancel' }}
         </UButton>
-        <UButton
-          v-if="!importResult"
-          color="primary"
-          :loading="importing"
-          :disabled="!selectedFile"
-          @click="handleImport"
-        >
-          Import
-        </UButton>
       </div>
     </template>
   </UModal>
@@ -200,7 +189,7 @@ const editingContractor = ref<Contractor | null>(null);
 const showModal = ref(false);
 const showImportModal = ref(false);
 const selectedFile = ref<File | null>(null);
-const importing = ref(false);
+
 const importResult = ref<{
   total: number;
   created: number;
@@ -281,13 +270,11 @@ const filteredContractors = computed(() => {
   return results;
 });
 
-const activeCount = computed(() => contractorStore.activeContractors.length);
-
-const statusColor = (status: string): 'green' | 'gray' | 'red' | 'orange' => {
+const statusColor = (status: string): 'success' | 'gray' | 'error' | 'orange' => {
   const normalized = status.toLowerCase();
-  if (normalized.includes('active')) return 'green';
+  if (normalized.includes('active')) return 'success';
   if (normalized.includes('inactive')) return 'gray';
-  if (normalized.includes('suspend') || normalized.includes('blocked')) return 'red';
+  if (normalized.includes('suspend') || normalized.includes('blocked')) return 'error';
   return 'orange';
 };
 
@@ -321,46 +308,6 @@ const handleSaved = () => {
   showModal.value = false;
 };
 
-const handleFileSelect = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    selectedFile.value = target.files[0];
-    importResult.value = null;
-  }
-};
-
-const handleImport = async () => {
-  if (!selectedFile.value) {
-    toast.add({
-      title: 'Error',
-      description: 'Please select a file to import',
-      color: 'red',
-    });
-    return;
-  }
-
-  importing.value = true;
-  try {
-    const result = await contractorStore.importContractors(selectedFile.value);
-    importResult.value = result;
-
-    toast.add({
-      title: 'Success',
-      description: `Imported ${result.created} contractors, updated ${result.updated}`,
-      color: 'green',
-    });
-  } catch (error) {
-    console.error(error);
-    toast.add({
-      title: 'Error',
-      description: 'Failed to import contractors',
-      color: 'red',
-    });
-  } finally {
-    importing.value = false;
-  }
-};
-
 const closeImportModal = () => {
   showImportModal.value = false;
   selectedFile.value = null;
@@ -372,7 +319,7 @@ const fetchData = async () => {
     await contractorStore.fetchContractors();
   } catch (error) {
     console.error(error);
-    toast.add({ title: 'Error', description: 'Failed to load contractors', color: 'red' });
+    toast.add({ title: 'Error', description: 'Failed to load contractors', color: 'error' });
   }
 };
 

@@ -1,19 +1,7 @@
 import { defineStore } from 'pinia';
 import type { FetchError } from '~/interfaces/app.interface';
 import { apiFetch } from '~/utils/api-fetch';
-
-export interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  avatar?: string;
-  role: string;
-  department: string;
-  status: string;
-  createdAt: string;
-}
+import { type User } from '~/interfaces/user.interface';
 
 export interface UserFilter {
   page: number;
@@ -42,6 +30,8 @@ export const useUserStore = defineStore('user', () => {
   const activeCount = ref(0);
   const inactiveCount = ref(0);
   const suspendedCount = ref(0);
+  const invitationUrl = '/invitations';
+  const toast = useToast();
 
   const fetchUsers = async (filter: UserFilter) => {
     try {
@@ -118,6 +108,7 @@ export const useUserStore = defineStore('user', () => {
       users.value = users.value.filter((u) => !ids.includes(u.id));
     } catch (er: unknown) {
       error.value = (er as FetchError).data?.message || 'Failed to delete users';
+      toast.add({ title: 'Error', description: error.value, color: 'error' });
       throw er;
     } finally {
       loading.value = false;
@@ -127,7 +118,7 @@ export const useUserStore = defineStore('user', () => {
   const inviteUser = async (data: { email: string; role: string; department: string }) => {
     try {
       loading.value = true;
-      const response = await apiFetch('/auth/invite', {
+      const response = await apiFetch(invitationUrl, {
         method: 'POST',
         body: data,
       });
@@ -175,7 +166,7 @@ export const useUserStore = defineStore('user', () => {
   const fetchInvitations = async () => {
     try {
       loading.value = true;
-      const response = await apiFetch<Invitation[]>('/auth/invitations');
+      const response = await apiFetch<Invitation[]>(invitationUrl);
       invitations.value = response;
       return response;
     } catch (er: unknown) {
@@ -210,6 +201,7 @@ export const useUserStore = defineStore('user', () => {
       await fetchInvitations();
     } catch (er: unknown) {
       // ignore counts failure
+      console.error(er);
     } finally {
       loading.value = false;
     }
@@ -233,12 +225,13 @@ export const useUserStore = defineStore('user', () => {
   const resendInvitation = async (email: string) => {
     try {
       loading.value = true;
-      await apiFetch('/auth/send-invitation-email', {
+      await apiFetch(invitationUrl + '/resend', {
         method: 'PATCH',
         body: { email },
       });
     } catch (er: unknown) {
       error.value = (er as FetchError).data?.message || 'Failed to resend invitation';
+      toast.add({ title: 'Error', description: error.value, color: 'error' });
       throw er;
     } finally {
       loading.value = false;

@@ -7,6 +7,7 @@ import type {
   SignupDTO,
 } from '~/interfaces/auth.interface';
 import { apiFetch } from '~/utils/api-fetch';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '~/utils/constants';
 
 export interface AuthUser {
   id: number;
@@ -29,8 +30,8 @@ export interface AuthState {
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null);
-  const accessToken = useCookie<string | null>('access_token');
-  const refreshToken = useCookie<string | null>('refresh_token');
+  const accessToken = useCookie<string | null>(ACCESS_TOKEN);
+  const refreshToken = useCookie<string | null>(REFRESH_TOKEN);
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
   const { setUser } = useAuth();
@@ -73,6 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
       loading.value = false;
     }
   };
+
   const forgotPassword = async (email: string) => {
     try {
       error.value = null;

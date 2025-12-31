@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ProgramsService } from '../services/programs.service';
 import { CreateProgramDTO, FilterProgramsDTO, UpdateProgramDTO } from '../dto/programs.dto';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -46,9 +46,8 @@ export class ProgramsController {
   }
 
   // Open or close program enrollment
-  @Post('enrollment/:id/toggle')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoleEnum.Admin, UserRoleEnum.Editor)
+  @Patch(':id/status')
+  @UseGuards(AuthGuard)
   toggleProgramEnrollment(@Param('id') id: number) {
     return this.programsService.toggleProgramEnrollment(id);
   }

@@ -152,7 +152,7 @@ const handleFileSelect = (event: Event) => {
     toast.add({
       title: 'Error',
       description: 'File size must be less than 5MB',
-      color: 'red',
+      color: 'error',
     });
     return;
   }
@@ -162,7 +162,7 @@ const handleFileSelect = (event: Event) => {
     toast.add({
       title: 'Error',
       description: 'Please select an image file',
-      color: 'red',
+      color: 'error',
     });
     return;
   }
@@ -207,7 +207,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Error',
       description: 'Please fill in all required fields',
-      color: 'red',
+      color: 'error',
     });
     return;
   }
@@ -228,7 +228,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Success',
       description: 'Asset updated successfully',
-      color: 'green',
+      color: 'success',
     });
 
     router.push('/admin/assets');
@@ -237,7 +237,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Error',
       description: error?.data?.message || 'Failed to update asset',
-      color: 'red',
+      color: 'error',
     });
   } finally {
     loading.value = false;
@@ -267,7 +267,7 @@ const loadAsset = async () => {
     toast.add({
       title: 'Error',
       description: error?.data?.message || 'Failed to load asset',
-      color: 'red',
+      color: 'error',
     });
   }
 };

@@ -1,4 +1,5 @@
 import type { FetchError } from '~/interfaces/app.interface';
+import type { UserRoleEnum, User } from '~/interfaces/user.interface';
 
 export const useAuth = () => {
   const accessToken = useCookie<string | null>(ACCESS_TOKEN);
@@ -6,8 +7,14 @@ export const useAuth = () => {
   const { $clearRefreshInterval } = useNuxtApp();
   const config = useRuntimeConfig().public;
   const apiUrl = config.apiBaseUrl;
-
+  const router = useRouter();
   const user = useState<User | null>('authUser', () => null);
+
+  const isPermitted = (requiredRoles: UserRoleEnum[]): boolean => {
+    if (!user.value) return false;
+    const rolesArray = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+    return rolesArray.includes(user.value.role);
+  };
 
   const setUser = async (userData?: User | null) => {
     if (userData) {
@@ -59,11 +66,12 @@ export const useAuth = () => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     user.value = null;
     accessToken.value = null;
     refreshToken.value = null;
     window.location.href = '/auth/login';
+    await router.push('/auth/login');
   };
 
   onUnmounted(() => {
@@ -81,6 +89,7 @@ export const useAuth = () => {
     user,
     accessToken,
     refreshToken,
+    isPermitted,
     setUser,
     logout,
   };

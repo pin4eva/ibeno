@@ -135,7 +135,7 @@ const handleSubmit = async () => {
     loading.value = true;
 
     if (!form.value.category) {
-      toast.add({ title: 'Error', description: 'Category is required', color: 'red' });
+      toast.add({ title: 'Error', description: 'Category is required', color: 'error' });
       return;
     }
 
@@ -163,7 +163,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Success',
       description: 'Program created successfully',
-      color: 'green',
+      color: 'success',
     });
 
     router.push('/admin/programs');
@@ -172,7 +172,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Error',
       description: programsStore.error || 'Failed to create program',
-      color: 'red',
+      color: 'error',
     });
   } finally {
     loading.value = false;

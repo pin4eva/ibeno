@@ -13,7 +13,9 @@
         </div>
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
           <span class="font-mono text-xs">{{ contractor?.contractorNo || '—' }}</span>
-          <span v-if="contractor?.registrationCategory">• {{ contractor.registrationCategory }}</span>
+          <span v-if="contractor?.registrationCategory"
+            >• {{ contractor.registrationCategory }}</span
+          >
           <span v-if="contractor?.majorArea">• {{ contractor.majorArea }}</span>
           <span v-if="contractor?.stateOfOrigin">• {{ contractor.stateOfOrigin }}</span>
         </div>
@@ -28,7 +30,13 @@
       </div>
     </div>
 
-    <UAlert v-if="error" color="red" variant="soft" title="Failed to load contractor" :description="error" />
+    <UAlert
+      v-if="error"
+      color="red"
+      variant="soft"
+      title="Failed to load contractor"
+      :description="error"
+    />
 
     <div v-if="loading" class="grid gap-4 md:grid-cols-3">
       <USkeleton class="h-32" />
@@ -173,12 +181,12 @@ const bidColumns: TableColumn<NonNullable<Contractor['bids']>[number]>[] = [
 
 const bids = computed(() => contractor.value?.bids || []);
 
-const statusColor = (status?: string): 'green' | 'gray' | 'orange' | 'red' => {
+const statusColor = (status?: string): 'success' | 'gray' | 'orange' | 'error' => {
   if (!status) return 'gray';
   const normalized = status.toLowerCase();
-  if (normalized.includes('active')) return 'green';
+  if (normalized.includes('active')) return 'success';
   if (normalized.includes('inactive')) return 'gray';
-  if (normalized.includes('suspend') || normalized.includes('blocked')) return 'red';
+  if (normalized.includes('suspend') || normalized.includes('blocked')) return 'error';
   return 'orange';
 };
 
@@ -194,7 +202,7 @@ const fetchContractor = async () => {
     await contractorStore.fetchContractorByNo(contractorNo.value);
   } catch (err) {
     console.error(err);
-    toast.add({ title: 'Error', description: 'Could not load contractor', color: 'red' });
+    toast.add({ title: 'Error', description: 'Could not load contractor', color: 'error' });
   }
 };
 

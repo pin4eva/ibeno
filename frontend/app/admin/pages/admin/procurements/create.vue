@@ -235,7 +235,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Success',
       description: `Procurement ${formState.status === 'published' ? 'published' : 'saved as draft'} successfully`,
-      color: 'green',
+      color: 'success',
     });
 
     router.push(`/admin/procurements/${procurement.id}`);
@@ -244,7 +244,7 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to create procurement',
-      color: 'red',
+      color: 'error',
     });
   }
 };

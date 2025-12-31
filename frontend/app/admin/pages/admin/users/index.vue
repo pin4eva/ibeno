@@ -223,7 +223,7 @@ const baseColumns: TableColumn<User>[] = [
       return h(
         UBadge,
         {
-          color: row.original.status === 'Active' ? 'green' : 'red',
+          color: row.original.status === 'Active' ? 'success' : 'error',
           variant: 'subtle',
           size: 'xs',
         },

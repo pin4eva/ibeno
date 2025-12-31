@@ -15,7 +15,7 @@
       <UTable :data="userStore.invitations" :columns="columns" :loading="userStore.loading">
         <template #status-cell="{ row }">
           <UBadge
-            :color="row.original.status === 'Accepted' ? 'green' : 'yellow'"
+            :color="row.original.status === 'Accepted' ? 'success' : 'yellow'"
             variant="subtle"
             size="xs"
           >

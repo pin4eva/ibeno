@@ -110,13 +110,13 @@ async function saveProgram() {
 
     await apiFetch(`/api/programs/${programId.value}`, { method: 'PATCH', body: payload });
     await refresh();
-    toast.add({ title: 'Updated', description: 'Program updated successfully', color: 'green' });
+    toast.add({ title: 'Updated', description: 'Program updated successfully', color: 'success' });
     isEditOpen.value = false;
   } catch (err) {
     toast.add({
       title: 'Update failed',
       description: getErrorMessage(err, 'Unable to update program'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isSaving.value = false;
@@ -127,7 +127,7 @@ async function toggleActive() {
   if (!program.value) return;
   try {
     isToggling.value = true;
-    await apiFetch(`/api/programs/${programId.value}/status`, {
+    await apiFetch(`/programs/${programId.value}/status`, {
       method: 'PATCH',
       body: { isActive: !program.value.isActive },
     });
@@ -135,13 +135,13 @@ async function toggleActive() {
     toast.add({
       title: 'Status updated',
       description: `Program ${program.value.isActive ? 'deactivated' : 'activated'} successfully`,
-      color: 'green',
+      color: 'success',
     });
   } catch (err) {
     toast.add({
       title: 'Error',
       description: getErrorMessage(err, 'Could not update status'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isToggling.value = false;
@@ -153,13 +153,13 @@ async function deleteProgram() {
   try {
     isDeleting.value = true;
     await apiFetch(`/api/programs/${programId.value}`, { method: 'DELETE' });
-    toast.add({ title: 'Deleted', description: 'Program removed', color: 'green' });
+    toast.add({ title: 'Deleted', description: 'Program removed', color: 'success' });
     router.push('/admin/programs');
   } catch (err) {
     toast.add({
       title: 'Delete failed',
       description: getErrorMessage(err, 'Could not delete program'),
-      color: 'red',
+      color: 'error',
     });
   } finally {
     isDeleting.value = false;
@@ -188,15 +188,13 @@ async function deleteProgram() {
           icon="i-lucide-pencil"
           color="primary"
           variant="solid"
-          label="Update"
           :disabled="!program"
           @click="openEdit"
         />
         <UButton
           icon="i-lucide-trash-2"
-          color="red"
+          color="error"
           variant="soft"
-          label="Delete"
           :loading="isDeleting"
           :disabled="!program || isDeleting"
           @click="deleteProgram"
@@ -229,12 +227,9 @@ async function deleteProgram() {
           </div>
 
           <div class="flex items-center gap-2">
-            <UBadge :color="program.isActive ? 'green' : 'red'" variant="subtle">
-              {{ program.isActive ? 'Active' : 'Inactive' }}
-            </UBadge>
             <UButton
               size="sm"
-              color="gray"
+              :color="program.isActive ? 'error' : 'primary'"
               variant="outline"
               :loading="isToggling"
               @click="toggleActive"
@@ -295,7 +290,7 @@ async function deleteProgram() {
 
     <UModal v-model:open="isEditOpen" :ui="{ content: 'w-full sm:max-w-4xl' }">
       <template #header>
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between w-full">
           <div>
             <h3 class="text-lg font-semibold">Update program</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Edit fields and save.</p>

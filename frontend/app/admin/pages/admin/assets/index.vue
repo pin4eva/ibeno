@@ -210,7 +210,7 @@ const handleDelete = async () => {
     toast.add({
       title: 'Success',
       description: 'Asset deleted successfully',
-      color: 'green',
+      color: 'success',
     });
     showDeleteModal.value = false;
     assetToDelete.value = null;
@@ -219,7 +219,7 @@ const handleDelete = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to delete asset',
-      color: 'red',
+      color: 'error',
     });
   }
 };
@@ -234,7 +234,7 @@ const fetchData = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to fetch assets',
-      color: 'red',
+      color: 'error',
     });
   }
 };

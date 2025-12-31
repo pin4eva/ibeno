@@ -24,13 +24,13 @@ const isLoading = computed(() => applicationStore.loading);
 const getStatusColor = (status?: string) => {
   switch (status) {
     case ApplicationStatusEnum.Accepted:
-      return 'green';
+      return 'success';
     case ApplicationStatusEnum.Rejected:
-      return 'red';
+      return 'error';
     case ApplicationStatusEnum.Submitted:
-      return 'blue';
+      return 'info';
     case ApplicationStatusEnum.Reviewed:
-      return 'yellow';
+      return 'warning';
     case ApplicationStatusEnum.InProgress:
     default:
       return 'gray';

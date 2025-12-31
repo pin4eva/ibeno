@@ -375,7 +375,9 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <p class="text-sm font-medium text-gray-500">Contractor Number</p>
-              <p class="mt-1 text-gray-900 dark:text-white font-mono">{{ selectedBid.contractorNo }}</p>
+              <p class="mt-1 text-gray-900 dark:text-white font-mono">
+                {{ selectedBid.contractorNo }}
+              </p>
             </div>
             <div>
               <p class="text-sm font-medium text-gray-500">Contact Person</p>
@@ -414,7 +416,9 @@
 
             <div>
               <p class="text-sm font-medium text-gray-500">Submitted At</p>
-              <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(selectedBid.submittedAt) }}</p>
+              <p class="mt-1 text-gray-900 dark:text-white">
+                {{ formatDate(selectedBid.submittedAt) }}
+              </p>
             </div>
 
             <div v-if="selectedBid.notes">
@@ -430,7 +434,10 @@
             <h4 class="font-semibold">Proposal Documents</h4>
           </template>
           <div class="space-y-2">
-            <div v-if="selectedBid.technicalProposalUrl" class="flex items-center justify-between p-3 rounded-lg border">
+            <div
+              v-if="selectedBid.technicalProposalUrl"
+              class="flex items-center justify-between p-3 rounded-lg border"
+            >
               <div class="flex items-center gap-3">
                 <UIcon name="i-lucide-file" class="w-5 h-5 text-gray-500" />
                 <span class="font-medium">Technical Proposal</span>
@@ -447,7 +454,10 @@
               </UButton>
             </div>
 
-            <div v-if="selectedBid.commercialProposalUrl" class="flex items-center justify-between p-3 rounded-lg border">
+            <div
+              v-if="selectedBid.commercialProposalUrl"
+              class="flex items-center justify-between p-3 rounded-lg border"
+            >
               <div class="flex items-center gap-3">
                 <UIcon name="i-lucide-file" class="w-5 h-5 text-gray-500" />
                 <span class="font-medium">Commercial Proposal</span>
@@ -464,7 +474,10 @@
               </UButton>
             </div>
 
-            <div v-if="!selectedBid.technicalProposalUrl && !selectedBid.commercialProposalUrl" class="text-center py-4 text-gray-500">
+            <div
+              v-if="!selectedBid.technicalProposalUrl && !selectedBid.commercialProposalUrl"
+              class="text-center py-4 text-gray-500"
+            >
               No documents uploaded
             </div>
           </div>
@@ -586,24 +599,24 @@ const getRemainingDays = (deadlineString?: string) => {
 };
 
 const getStatusColor = (status: ProcurementStatus | string) => {
-  const colors: Record<string, 'gray' | 'green' | 'orange' | 'blue' | 'red'> = {
+  const colors: Record<string, 'gray' | 'success' | 'orange' | 'blue' | 'error'> = {
     draft: 'gray',
-    published: 'green',
+    published: 'success',
     closed: 'orange',
     awarded: 'blue',
-    archived: 'red',
+    archived: 'error',
   };
   return colors[status] || 'gray';
 };
 
 const getBidStatusColor = (status: string) => {
-  const colors: Record<string, 'gray' | 'green' | 'orange' | 'blue' | 'red' | 'yellow'> = {
+  const colors: Record<string, 'gray' | 'success' | 'orange' | 'blue' | 'error' | 'yellow'> = {
     submitted: 'blue',
     under_review: 'yellow',
-    accepted: 'green',
-    rejected: 'red',
+    accepted: 'success',
+    rejected: 'error',
     withdrawn: 'gray',
-    awarded: 'green',
+    awarded: 'success',
   };
   return colors[status] || 'gray';
 };
@@ -621,14 +634,14 @@ const updateStatus = async (status: ProcurementStatus) => {
     toast.add({
       title: 'Success',
       description: `Status updated to ${status}`,
-      color: 'green',
+      color: 'success',
     });
   } catch (error) {
     console.error(error);
     toast.add({
       title: 'Error',
       description: 'Failed to update procurement status',
-      color: 'red',
+      color: 'error',
     });
   }
 };
@@ -645,7 +658,7 @@ const handleUpdate = async () => {
     toast.add({
       title: 'Success',
       description: 'Procurement updated successfully',
-      color: 'green',
+      color: 'success',
     });
     isEditing.value = false;
   } catch (error) {
@@ -653,7 +666,7 @@ const handleUpdate = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to update procurement',
-      color: 'red',
+      color: 'error',
     });
   }
 };
@@ -664,7 +677,7 @@ const handleUploadDocument = async () => {
     toast.add({
       title: 'Success',
       description: 'Document uploaded successfully',
-      color: 'green',
+      color: 'success',
     });
     showUploadModal.value = false;
     uploadForm.name = '';
@@ -674,7 +687,7 @@ const handleUploadDocument = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to upload document',
-      color: 'red',
+      color: 'error',
     });
   }
 };
@@ -685,14 +698,14 @@ const deleteDocument = async (documentId: number) => {
     toast.add({
       title: 'Success',
       description: 'Document deleted successfully',
-      color: 'green',
+      color: 'success',
     });
   } catch (error) {
     console.error(error);
     toast.add({
       title: 'Error',
       description: 'Failed to delete document',
-      color: 'red',
+      color: 'error',
     });
   }
 };
@@ -714,7 +727,15 @@ const exportBids = () => {
   }
 
   // Create CSV content
-  const headers = ['Contractor No', 'Contact Name', 'Email', 'Phone', 'Price', 'Status', 'Submitted At'];
+  const headers = [
+    'Contractor No',
+    'Contact Name',
+    'Email',
+    'Phone',
+    'Price',
+    'Status',
+    'Submitted At',
+  ];
   const rows = procurement.value.bids.map((bid) => [
     bid.contractorNo,
     bid.contactName,
@@ -766,7 +787,7 @@ const updateBidStatus = async (bidId: number, status: string) => {
     toast.add({
       title: 'Success',
       description: `Bid status updated to ${status.replace('_', ' ')}`,
-      color: 'green',
+      color: 'success',
     });
 
     // Refresh procurement data
@@ -777,7 +798,7 @@ const updateBidStatus = async (bidId: number, status: string) => {
     toast.add({
       title: 'Error',
       description: 'Failed to update bid status',
-      color: 'red',
+      color: 'error',
     });
   } finally {
     updatingBidStatus.value = false;
@@ -797,7 +818,7 @@ onMounted(async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to load procurement details',
-      color: 'red',
+      color: 'error',
     });
   }
 });

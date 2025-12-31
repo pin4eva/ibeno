@@ -305,7 +305,7 @@ const loadBids = async () => {
     toast.add({
       title: 'Error',
       description: 'Please enter your contractor number',
-      color: 'red',
+      color: 'error',
     });
     return;
   }
@@ -318,7 +318,7 @@ const loadBids = async () => {
     toast.add({
       title: 'Error',
       description: 'Failed to load bids. Please check your contractor number.',
-      color: 'red',
+      color: 'error',
     });
     contractorNo.value = '';
   }
@@ -333,13 +333,13 @@ const formatDate = (dateString: string) => {
 };
 
 const getStatusColor = (status: string) => {
-  const colors: Record<string, 'gray' | 'blue' | 'green' | 'orange' | 'red'> = {
+  const colors: Record<string, 'gray' | 'blue' | 'success' | 'orange' | 'error'> = {
     submitted: 'blue',
     under_review: 'orange',
-    accepted: 'green',
-    rejected: 'red',
+    accepted: 'success',
+    rejected: 'error',
     withdrawn: 'gray',
-    awarded: 'green',
+    awarded: 'success',
   };
   return colors[status] || 'gray';
 };

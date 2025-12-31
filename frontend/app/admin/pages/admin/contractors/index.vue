@@ -11,7 +11,12 @@
           <span>{{ contractorStore.totalContractors }} contractors</span>
           <UBadge color="green" variant="subtle">{{ activeCount }} active</UBadge>
         </div>
-        <UButton color="gray" variant="outline" icon="i-lucide-upload" @click="showImportModal = true">
+        <UButton
+          color="gray"
+          variant="outline"
+          icon="i-lucide-upload"
+          @click="showImportModal = true"
+        >
           Import Excel
         </UButton>
         <UButton color="primary" icon="i-lucide-plus" @click="openCreate">New Contractor</UButton>
@@ -119,7 +124,8 @@
       <div class="space-y-4">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Upload an Excel file (.xlsx, .xls) containing contractor data. The file should have the following columns:
+            Upload an Excel file (.xlsx, .xls) containing contractor data. The file should have the
+            following columns:
           </p>
           <ul class="text-sm text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Contractor No (or contractorNo)</li>
@@ -133,14 +139,18 @@
         </div>
 
         <UFormField label="Excel File" name="file" required>
-          <UInput
-            type="file"
-            accept=".xlsx,.xls"
-            @change="handleFileSelect"
-          />
+          <UInput type="file" accept=".xlsx,.xls" @change="handleFileSelect" />
         </UFormField>
 
-        <div v-if="importResult" class="p-4 rounded-lg border" :class="importResult.errors.length > 0 ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/20' : 'bg-green-50 border-green-200 dark:bg-green-900/20'">
+        <div
+          v-if="importResult"
+          class="p-4 rounded-lg border"
+          :class="
+            importResult.errors.length > 0
+              ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/20'
+              : 'bg-green-50 border-green-200 dark:bg-green-900/20'
+          "
+        >
           <h4 class="font-semibold mb-2">Import Results</h4>
           <div class="text-sm space-y-1">
             <p>Total records: {{ importResult.total }}</p>
@@ -283,11 +293,11 @@ const filteredContractors = computed(() => {
 
 const activeCount = computed(() => contractorStore.activeContractors.length);
 
-const statusColor = (status: string): 'green' | 'gray' | 'red' | 'orange' => {
+const statusColor = (status: string): 'success' | 'gray' | 'error' | 'orange' => {
   const normalized = status.toLowerCase();
-  if (normalized.includes('active')) return 'green';
+  if (normalized.includes('active')) return 'success';
   if (normalized.includes('inactive')) return 'gray';
-  if (normalized.includes('suspend') || normalized.includes('blocked')) return 'red';
+  if (normalized.includes('suspend') || normalized.includes('blocked')) return 'error';
   return 'orange';
 };
 
@@ -334,7 +344,7 @@ const handleImport = async () => {
     toast.add({
       title: 'Error',
       description: 'Please select a file to import',
-      color: 'red',
+      color: 'error',
     });
     return;
   }
@@ -347,14 +357,14 @@ const handleImport = async () => {
     toast.add({
       title: 'Success',
       description: `Imported ${result.created} contractors, updated ${result.updated}`,
-      color: 'green',
+      color: 'success',
     });
   } catch (error) {
     console.error(error);
     toast.add({
       title: 'Error',
       description: 'Failed to import contractors',
-      color: 'red',
+      color: 'error',
     });
   } finally {
     importing.value = false;
@@ -372,7 +382,7 @@ const fetchData = async () => {
     await contractorStore.fetchContractors();
   } catch (error) {
     console.error(error);
-    toast.add({ title: 'Error', description: 'Failed to load contractors', color: 'red' });
+    toast.add({ title: 'Error', description: 'Failed to load contractors', color: 'error' });
   }
 };
 

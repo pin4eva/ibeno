@@ -6,7 +6,7 @@ export const useAuth = () => {
   const { $clearRefreshInterval } = useNuxtApp();
   const config = useRuntimeConfig().public;
   const apiUrl = config.apiBaseUrl;
-
+  const router = useRouter();
   const user = useState<User | null>('authUser', () => null);
 
   const setUser = async (userData?: User | null) => {
@@ -59,11 +59,12 @@ export const useAuth = () => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     user.value = null;
     accessToken.value = null;
     refreshToken.value = null;
     window.location.href = '/auth/login';
+    await router.push('/auth/login');
   };
 
   onUnmounted(() => {

@@ -89,7 +89,9 @@ const userMenuItems = computed<DropdownMenuItem[][]>(() => [
     {
       label: 'Logout',
       icon: 'i-lucide-log-out',
-      click: logout,
+      onSelect: async () => {
+        await logout();
+      },
     },
   ],
 ]);

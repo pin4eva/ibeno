@@ -1,4 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../../guards/roles.guard';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserRoleEnum } from '../../generated/enums';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../guards/auth.guard';
 import {
@@ -84,5 +87,14 @@ export class ApplicationController {
   @Post('student-history')
   getStudentApplications(@Body('nin') nin: string) {
     return this.applicationService.getStudentApplications(nin);
+  }
+
+  @Post('bulk-send-started/:programId')
+  @UseGuards(AuthGuard)
+  bulkSendApplicationStartedEmail(
+    @Param('programId') programId: number,
+    @Body('origin') origin?: string,
+  ) {
+    return this.applicationService.bulkSendApplicationStartedEmail(programId, origin || '');
   }
 }

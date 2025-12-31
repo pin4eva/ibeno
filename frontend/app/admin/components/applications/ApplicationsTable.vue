@@ -8,14 +8,11 @@ const props = defineProps<{
   programId: number;
 }>();
 
-const toast = useToast();
-
-const UCheckbox = resolveComponent('UCheckbox');
 const NuxtLink = resolveComponent('NuxtLink');
 
 const applicationSearch = ref('');
 const applicationPage = ref(1);
-const selectedIds = ref<Set<number>>(new Set());
+
 const applicationPageSize = ref(10);
 const pageSizeOptions = [5, 10, 20, 50].map((value) => ({ label: `${value} / page`, value }));
 
@@ -42,7 +39,7 @@ const filteredApplications = computed(() => {
 const applicationTotalPages = computed(() =>
   Math.max(1, Math.ceil(filteredApplications.value.length / applicationPageSize.value)),
 );
-const selectedCount = computed(() => selectedIds.value.size);
+
 const pagedApplications = computed(() => {
   const start = (applicationPage.value - 1) * applicationPageSize.value;
   return filteredApplications.value.slice(start, start + applicationPageSize.value);
@@ -64,67 +61,7 @@ watch(
   { immediate: true },
 );
 
-const allPageSelected = computed(
-  () =>
-    pagedApplications.value.length > 0 &&
-    pagedApplications.value.every((app) => (app.id ? selectedIds.value.has(app.id) : false)),
-);
-
-const somePageSelected = computed(
-  () =>
-    pagedApplications.value.some((app) => app.id && selectedIds.value.has(app.id)) &&
-    !allPageSelected.value,
-);
-
-function toggleSelect(id: number | undefined, checked: boolean) {
-  if (!id) return;
-  if (checked) {
-    selectedIds.value.add(id);
-  } else {
-    selectedIds.value.delete(id);
-  }
-}
-
-function toggleSelectAllPage(checked: boolean) {
-  pagedApplications.value.forEach((app) => {
-    if (!app.id) return;
-    if (checked) {
-      selectedIds.value.add(app.id);
-    } else {
-      selectedIds.value.delete(app.id);
-    }
-  });
-}
-
-function handleBulkEmail() {
-  if (!selectedIds.value.size) return;
-  toast.add({
-    title: 'Selection captured',
-    description: `${selectedIds.value.size} application${selectedIds.value.size === 1 ? '' : 's'} selected. Integrate email flow here.`,
-  });
-}
-
 const applicationColumns: TableColumn<Application>[] = [
-  {
-    id: 'select',
-    header: () =>
-      h(UCheckbox, {
-        modelValue: allPageSelected.value,
-        indeterminate: somePageSelected.value,
-        'onUpdate:modelValue': (val: boolean) => toggleSelectAllPage(val),
-        'aria-label': 'Select all on page',
-      }),
-    cell: ({ row }) => {
-      const checked = computed(() =>
-        row.original.id ? selectedIds.value.has(row.original.id) : false,
-      );
-      return h(UCheckbox, {
-        modelValue: checked.value,
-        'onUpdate:modelValue': (val: boolean) => toggleSelect(row.original.id, val),
-        'aria-label': 'Select row',
-      });
-    },
-  },
   {
     accessorKey: 'applicationNo',
     header: 'App No',
@@ -165,20 +102,6 @@ const applicationColumns: TableColumn<Application>[] = [
             icon="i-lucide-search"
             class="w-64"
           />
-          <UBadge variant="subtle">{{ filteredApplications.length }}</UBadge>
-          <UBadge v-if="selectedCount" color="primary" variant="soft">
-            {{ selectedCount }} selected
-          </UBadge>
-          <UButton
-            size="sm"
-            color="primary"
-            variant="outline"
-            :disabled="!selectedCount"
-            icon="i-lucide-mail"
-            @click="handleBulkEmail"
-          >
-            Email selected
-          </UButton>
         </div>
       </div>
     </template>

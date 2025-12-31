@@ -480,6 +480,48 @@ export class ApplicationService {
     return updatedApplication;
   }
 
+  /**
+   * Send "Application Started" emails in bulk for a program.
+   * Returns a summary of successes and failures.
+   */
+  async bulkSendApplicationStartedEmail(programId: number, origin: string) {
+    const program = await this.prisma.program.findUnique({ where: { id: programId } });
+    if (!program) throw new NotFoundException('Program not found');
+
+    const applicationsAll = await this.prisma.application.findMany({ where: { programId } });
+    const applications = applicationsAll.filter((a) => !!a.email);
+
+    const result = {
+      total: applications.length,
+      success: 0,
+      failed: 0,
+      failures: [] as Array<{ id: number; email?: string | null; error?: string }>,
+    };
+
+    for (const app of applications) {
+      try {
+        if (!app.email) {
+          result.failed++;
+          result.failures.push({ id: app.id, email: app.email, error: 'Missing email' });
+          continue;
+        }
+        await this.emailService.sendApplicationStartedEmail(
+          app.email,
+          app.firstName || `${app.firstName || ''} ${app.lastName || ''}`.trim() || 'Applicant',
+          app.applicationNo || '',
+          program.name,
+          origin || '',
+        );
+        result.success++;
+      } catch (err) {
+        result.failed++;
+        result.failures.push({ id: app.id, email: app.email, error: err?.message || String(err) });
+      }
+    }
+
+    return result;
+  }
+
   async getStudentApplications(nin: string) {
     return this.prisma.application.findMany({
       where: { nin },

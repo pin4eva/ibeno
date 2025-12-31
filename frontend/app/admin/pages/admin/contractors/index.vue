@@ -9,16 +9,8 @@
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
           <UIcon name="i-lucide-users" class="w-4 h-4" />
           <span>{{ contractorStore.totalContractors }} contractors</span>
-          <UBadge color="green" variant="subtle">{{ activeCount }} active</UBadge>
         </div>
-        <UButton
-          color="gray"
-          variant="outline"
-          icon="i-lucide-upload"
-          @click="showImportModal = true"
-        >
-          Import Excel
-        </UButton>
+
         <UButton color="primary" icon="i-lucide-plus" @click="openCreate">New Contractor</UButton>
       </div>
     </div>
@@ -138,10 +130,6 @@
           </ul>
         </div>
 
-        <UFormField label="Excel File" name="file" required>
-          <UInput type="file" accept=".xlsx,.xls" @change="handleFileSelect" />
-        </UFormField>
-
         <div
           v-if="importResult"
           class="p-4 rounded-lg border"
@@ -179,15 +167,6 @@
         <UButton color="gray" variant="ghost" @click="closeImportModal">
           {{ importResult ? 'Close' : 'Cancel' }}
         </UButton>
-        <UButton
-          v-if="!importResult"
-          color="primary"
-          :loading="importing"
-          :disabled="!selectedFile"
-          @click="handleImport"
-        >
-          Import
-        </UButton>
       </div>
     </template>
   </UModal>
@@ -210,7 +189,7 @@ const editingContractor = ref<Contractor | null>(null);
 const showModal = ref(false);
 const showImportModal = ref(false);
 const selectedFile = ref<File | null>(null);
-const importing = ref(false);
+
 const importResult = ref<{
   total: number;
   created: number;
@@ -291,8 +270,6 @@ const filteredContractors = computed(() => {
   return results;
 });
 
-const activeCount = computed(() => contractorStore.activeContractors.length);
-
 const statusColor = (status: string): 'success' | 'gray' | 'error' | 'orange' => {
   const normalized = status.toLowerCase();
   if (normalized.includes('active')) return 'success';
@@ -329,46 +306,6 @@ const openEdit = (contractor: Contractor) => {
 const handleSaved = () => {
   editingContractor.value = null;
   showModal.value = false;
-};
-
-const handleFileSelect = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    selectedFile.value = target.files[0];
-    importResult.value = null;
-  }
-};
-
-const handleImport = async () => {
-  if (!selectedFile.value) {
-    toast.add({
-      title: 'Error',
-      description: 'Please select a file to import',
-      color: 'error',
-    });
-    return;
-  }
-
-  importing.value = true;
-  try {
-    const result = await contractorStore.importContractors(selectedFile.value);
-    importResult.value = result;
-
-    toast.add({
-      title: 'Success',
-      description: `Imported ${result.created} contractors, updated ${result.updated}`,
-      color: 'success',
-    });
-  } catch (error) {
-    console.error(error);
-    toast.add({
-      title: 'Error',
-      description: 'Failed to import contractors',
-      color: 'error',
-    });
-  } finally {
-    importing.value = false;
-  }
 };
 
 const closeImportModal = () => {

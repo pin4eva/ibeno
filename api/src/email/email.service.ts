@@ -85,7 +85,9 @@ export class EmailService {
     const htmlContent = `
       <p>Dear User,</p>
       <p>You have been invited to join IHCDT. Click the link below to accept the invitation and sign up:</p>
-      <a href="${invitationLink}">Accept Invitation</a>
+      <a href="${invitationLink}">Accept Invitation</a> or copy and paste the following URL into your browser:</p>
+      <p>${invitationLink}</p>
+
       <p>We look forward to having you with us!</p>
       <p>Best regards,<br/>IHCDT Team</p>
     `;

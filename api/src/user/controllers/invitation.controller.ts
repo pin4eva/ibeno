@@ -24,6 +24,7 @@ export class InvitationController {
   @Patch('resend')
   resendInvitation(@Body('email') email: string, @Req() request: Request) {
     const origin = request.headers.origin || '';
+
     return this.invitationService.sendInvitationEmail(email, origin);
   }
 

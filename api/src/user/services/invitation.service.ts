@@ -29,7 +29,7 @@ export class InvitationService {
       }
       const token = randomBytes(16).toString('hex');
 
-      const href = `${origin}/signup?token=${token}`;
+      const href = `${origin}/auth/signup?token=${token}`;
 
       await this.emailService.sendInvitationEmail(email, href);
 
@@ -55,7 +55,7 @@ export class InvitationService {
     if (!invitation) {
       throw new BadRequestException('No invitation found for this email');
     }
-    const href = `${origin}/signup?token=${invitation.token}`;
+    const href = `${origin}/auth/signup?token=${invitation.token}`;
     await this.emailService.sendInvitationEmail(email, href);
   }
 

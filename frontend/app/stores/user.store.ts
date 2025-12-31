@@ -235,7 +235,7 @@ export const useUserStore = defineStore('user', () => {
   const resendInvitation = async (email: string) => {
     try {
       loading.value = true;
-      await apiFetch('/auth/send-invitation-email', {
+      await apiFetch(invitationUrl + '/resend', {
         method: 'PATCH',
         body: { email },
       });

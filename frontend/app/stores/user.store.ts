@@ -43,6 +43,7 @@ export const useUserStore = defineStore('user', () => {
   const inactiveCount = ref(0);
   const suspendedCount = ref(0);
   const invitationUrl = '/invitations';
+  const toast = useToast();
 
   const fetchUsers = async (filter: UserFilter) => {
     try {
@@ -119,6 +120,7 @@ export const useUserStore = defineStore('user', () => {
       users.value = users.value.filter((u) => !ids.includes(u.id));
     } catch (er: unknown) {
       error.value = (er as FetchError).data?.message || 'Failed to delete users';
+      toast.add({ title: 'Error', description: error.value, color: 'error' });
       throw er;
     } finally {
       loading.value = false;
@@ -241,6 +243,7 @@ export const useUserStore = defineStore('user', () => {
       });
     } catch (er: unknown) {
       error.value = (er as FetchError).data?.message || 'Failed to resend invitation';
+      toast.add({ title: 'Error', description: error.value, color: 'error' });
       throw er;
     } finally {
       loading.value = false;

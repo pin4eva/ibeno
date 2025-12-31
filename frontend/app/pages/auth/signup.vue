@@ -24,10 +24,6 @@
         </UFormField>
       </div>
 
-      <UFormField label="Email address" name="email">
-        <UInput v-model="form.email" type="email" required />
-      </UFormField>
-
       <UFormField label="Phone Number" name="phone">
         <UInput v-model="form.phone" type="tel" required />
       </UFormField>
@@ -66,7 +62,6 @@ const form = reactive({
   token: '',
   firstName: '',
   lastName: '',
-  email: '',
   phone: '',
   password: '',
 });
@@ -76,15 +71,16 @@ const confirmPassword = ref('');
 const hasToken = computed(() => !!route.query.token);
 
 onMounted(() => {
-  if (route.query.token) {
+  if (route.query?.token) {
     form.token = route.query.token as string;
-  }
-  if (route.query.email) {
-    form.email = route.query.email as string;
   }
 });
 
 async function handleSignup() {
+  if (!route?.query?.token || !form.token) {
+    authStore.error = 'Invitation token is required';
+    return;
+  }
   if (form.password !== confirmPassword.value) {
     authStore.error = 'Passwords do not match';
     return;

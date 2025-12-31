@@ -42,6 +42,7 @@ export const useUserStore = defineStore('user', () => {
   const activeCount = ref(0);
   const inactiveCount = ref(0);
   const suspendedCount = ref(0);
+  const invitationUrl = '/invitations';
 
   const fetchUsers = async (filter: UserFilter) => {
     try {
@@ -127,7 +128,7 @@ export const useUserStore = defineStore('user', () => {
   const inviteUser = async (data: { email: string; role: string; department: string }) => {
     try {
       loading.value = true;
-      const response = await apiFetch('/auth/invite', {
+      const response = await apiFetch(invitationUrl, {
         method: 'POST',
         body: data,
       });
@@ -175,7 +176,7 @@ export const useUserStore = defineStore('user', () => {
   const fetchInvitations = async () => {
     try {
       loading.value = true;
-      const response = await apiFetch<Invitation[]>('/auth/invitations');
+      const response = await apiFetch<Invitation[]>(invitationUrl);
       invitations.value = response;
       return response;
     } catch (er: unknown) {
@@ -210,6 +211,7 @@ export const useUserStore = defineStore('user', () => {
       await fetchInvitations();
     } catch (er: unknown) {
       // ignore counts failure
+      console.error(er);
     } finally {
       loading.value = false;
     }

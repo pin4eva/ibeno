@@ -522,6 +522,15 @@ export class ApplicationService {
     return result;
   }
 
+  async bulkDeleteApplications(ids: number[]) {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new BadRequestException('No application ids provided');
+    }
+
+    const result = await this.prisma.application.deleteMany({ where: { id: { in: ids } } });
+    return { count: result.count };
+  }
+
   async getStudentApplications(nin: string) {
     return this.prisma.application.findMany({
       where: { nin },

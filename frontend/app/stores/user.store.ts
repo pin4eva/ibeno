@@ -1,19 +1,7 @@
 import { defineStore } from 'pinia';
 import type { FetchError } from '~/interfaces/app.interface';
 import { apiFetch } from '~/utils/api-fetch';
-
-export interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  avatar?: string;
-  role: string;
-  department: string;
-  status: string;
-  createdAt: string;
-}
+import { type User } from '~/interfaces/user.interface';
 
 export interface UserFilter {
   page: number;

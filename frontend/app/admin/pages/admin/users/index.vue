@@ -151,8 +151,9 @@
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue';
 import type { TableColumn, TableRow } from '@nuxt/ui';
-import { useUserStore, type User } from '~/stores/user.store';
+import { useUserStore } from '~/stores/user.store';
 import { useDebounceFn } from '@vueuse/core';
+import type { User } from '~/interfaces/user.interface';
 import InviteUser from '~/admin/components/InviteUser.vue';
 
 const userStore = useUserStore();

@@ -74,6 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
       loading.value = false;
     }
   };
+
   const forgotPassword = async (email: string) => {
     try {
       error.value = null;

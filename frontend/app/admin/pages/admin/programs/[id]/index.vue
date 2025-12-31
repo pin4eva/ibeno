@@ -340,6 +340,7 @@ async function bulkSendStartedEmails() {
       :applications="applications"
       :pending="pending"
       :program-id="programId"
+      @deleted="refresh"
     />
 
     <UModal v-model:open="isEditOpen" :ui="{ content: 'w-full sm:max-w-4xl' }">

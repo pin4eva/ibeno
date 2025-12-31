@@ -1,4 +1,4 @@
-import { UserRoleEnum } from '~/interfaces/auth.interface';
+import { UserRoleEnum } from '~/interfaces/user.interface';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const accessToken = useCookie<string | null>(ACCESS_TOKEN);

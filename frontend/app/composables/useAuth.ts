@@ -1,4 +1,5 @@
 import type { FetchError } from '~/interfaces/app.interface';
+import type { UserRoleEnum, User } from '~/interfaces/user.interface';
 
 export const useAuth = () => {
   const accessToken = useCookie<string | null>(ACCESS_TOKEN);
@@ -8,6 +9,12 @@ export const useAuth = () => {
   const apiUrl = config.apiBaseUrl;
   const router = useRouter();
   const user = useState<User | null>('authUser', () => null);
+
+  const isPermitted = (requiredRoles: UserRoleEnum[]): boolean => {
+    if (!user.value) return false;
+    const rolesArray = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+    return rolesArray.includes(user.value.role);
+  };
 
   const setUser = async (userData?: User | null) => {
     if (userData) {
@@ -82,6 +89,7 @@ export const useAuth = () => {
     user,
     accessToken,
     refreshToken,
+    isPermitted,
     setUser,
     logout,
   };

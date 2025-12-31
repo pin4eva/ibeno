@@ -1,11 +1,3 @@
-export const UserRoleEnum = {
-  User: 'User',
-  Admin: 'Admin',
-  Editor: 'Editor',
-  Developer: 'Developer',
-  Student: 'Student',
-  Contractor: 'Contractor',
-} as const;
 export interface LoginDTO {
   email: string;
   password: string;

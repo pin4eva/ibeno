@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
 import type { Application } from '~/interfaces/application.interface';
+import { UserRoleEnum } from '~/interfaces/user.interface';
+import { apiFetch } from '~/utils/api-fetch';
 
 const props = defineProps<{
   applications: Application[];
@@ -11,6 +13,9 @@ const props = defineProps<{
 const NuxtLink = resolveComponent('NuxtLink');
 
 const applicationSearch = ref('');
+const selectedIds = ref<Set<number>>(new Set());
+const isDeleteModalOpen = ref(false);
+const isBulkDeleting = ref(false);
 const applicationPage = ref(1);
 
 const applicationPageSize = ref(10);
@@ -63,6 +68,35 @@ watch(
 
 const applicationColumns: TableColumn<Application>[] = [
   {
+    accessorKey: 'select',
+    header: () =>
+      h('input', {
+        type: 'checkbox',
+        onChange: (e: Event) => {
+          const checked = (e.target as HTMLInputElement).checked;
+          if (checked) {
+            props.applications.forEach((a) => {
+              if (a.id) selectedIds.value.add(a.id as number);
+            });
+          } else {
+            selectedIds.value.clear();
+          }
+        },
+      }),
+    cell: ({ row }) =>
+      h('input', {
+        type: 'checkbox',
+        checked: !!row.original.id && selectedIds.value.has(row.original.id as number),
+        onChange: (e: Event) => {
+          const checked = (e.target as HTMLInputElement).checked;
+          const id = row.original.id as number | undefined;
+          if (!id) return;
+          if (checked) selectedIds.value.add(id);
+          else selectedIds.value.delete(id);
+        },
+      }),
+  },
+  {
     accessorKey: 'applicationNo',
     header: 'App No',
     cell: ({ row }) => {
@@ -87,6 +121,45 @@ const applicationColumns: TableColumn<Application>[] = [
       row.original.createdAt ? new Date(row.original.createdAt).toLocaleString() : '-',
   },
 ];
+
+const toast = useToast();
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (typeof error === 'object' && error !== null) {
+    const maybe = error as { message?: string };
+    if (typeof maybe.message === 'string' && maybe.message.length) return maybe.message;
+  }
+  return fallback;
+}
+
+const emit = defineEmits<{
+  (e: 'deleted'): void;
+}>();
+
+async function deleteSelected() {
+  if (!selectedIds.value.size) return;
+  try {
+    isBulkDeleting.value = true;
+    const ids = Array.from(selectedIds.value);
+    await apiFetch('/applications/bulk-delete', { method: 'DELETE', body: { ids } });
+    toast.add({
+      title: 'Deleted',
+      description: `${ids.length} applications deleted`,
+      color: 'success',
+    });
+    selectedIds.value.clear();
+    emit('deleted');
+    isDeleteModalOpen.value = false;
+  } catch (err) {
+    toast.add({
+      title: 'Delete failed',
+      description: getErrorMessage(err, 'Could not delete applications'),
+      color: 'error',
+    });
+  } finally {
+    isBulkDeleting.value = false;
+  }
+}
 </script>
 
 <template>
@@ -102,6 +175,17 @@ const applicationColumns: TableColumn<Application>[] = [
             icon="i-lucide-search"
             class="w-64"
           />
+          <RoleGuard :roles="[UserRoleEnum.Admin]">
+            <UButton
+              v-if="selectedIds.size"
+              icon="i-lucide-trash"
+              color="error"
+              variant="ghost"
+              :label="'Delete ' + selectedIds.size + ' applications'"
+              :disabled="selectedIds.size === 0"
+              @click="isDeleteModalOpen = true"
+            />
+          </RoleGuard>
         </div>
       </div>
     </template>
@@ -119,5 +203,24 @@ const applicationColumns: TableColumn<Application>[] = [
         />
       </div>
     </template>
+    <UModal v-model:open="isDeleteModalOpen" title="Delete applications">
+      <template #header>
+        <h3 class="text-lg font-semibold">Delete selected applications</h3>
+      </template>
+      <template #body>
+        <p>
+          Are you sure you want to delete {{ selectedIds.size }} selected application(s)? This
+          action cannot be undone.
+        </p>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton variant="ghost" color="gray" @click="isDeleteModalOpen = false">Cancel</UButton>
+          <UButton color="error" variant="solid" :loading="isBulkDeleting" @click="deleteSelected"
+            >Delete</UButton
+          >
+        </div>
+      </template>
+    </UModal>
   </UCard>
 </template>

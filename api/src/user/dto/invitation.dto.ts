@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsInt } from 'class-validator';
-import { UserRoleEnum, DepartmentEnum } from 'src/generated/enums';
+import { UserRoleEnum, DepartmentEnum } from '../../generated/enums';
 
 export class InvitationDTO {
   @ApiProperty()

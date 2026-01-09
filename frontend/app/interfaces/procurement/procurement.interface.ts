@@ -55,10 +55,10 @@ export interface CreateProcurementInput {
   location: string;
   description: string;
   eligibilityCriteria?: string;
-  submissionDeadline: string;
-  publishDate?: string;
+  submissionDeadline: string | Date;
+  publishDate?: string | Date;
   budgetEstimate?: number;
-  preBidMeetingDate?: string;
+  preBidMeetingDate?: string | Date;
   preBidMeetingLocation?: string;
   preBidNotes?: string;
   tags?: string[];

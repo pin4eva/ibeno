@@ -1,8 +1,1294 @@
+# Installation
+
+::callout
+---
+class: hidden
+icon: i-logos-vue
+to: https://ui.nuxt.com/docs/getting-started/installation/vue
+---
+Looking for the **Vue** version?
+::
+
+## Setup
+
+### Add to a Nuxt project
+
+::steps{level="4"}
+#### Install the Nuxt UI package
+
+  :::code-group{sync="pm"}
+  ```bash [pnpm]
+  pnpm add @nuxt/ui
+  ```
+
+  ```bash [yarn]
+  yarn add @nuxt/ui
+  ```
+
+  ```bash [npm]
+  npm install @nuxt/ui
+  ```
+
+  ```bash [bun]
+  bun add @nuxt/ui
+  ```
+  :::
+
+  :::warning
+  If you're using **pnpm**, ensure that you either set [`shamefully-hoist=true`](https://pnpm.io/npmrc#shamefully-hoist){rel=""nofollow""} in your `.npmrc` file or install `tailwindcss` in your project's root directory.
+  :::
+
+#### Add the Nuxt UI module in your `nuxt.config.ts`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui']
+})
+```
+
+#### Import Tailwind CSS and Nuxt UI in your CSS
+
+  :::code-group
+  ```css [app/assets/css/main.css]
+  @import "tailwindcss";
+  @import "@nuxt/ui";
+  ```
+
+  ```ts [nuxt.config.ts] {3}
+  export default defineNuxtConfig({
+    modules: ['@nuxt/ui'],
+    css: ['~/assets/css/main.css']
+  })
+  ```
+  :::
+
+  :::tip{target="_blank" to="https://nuxt.com/docs/getting-started/layers"}
+  When using [Nuxt Layers](https://nuxt.com/docs/getting-started/layers){rel=""nofollow""}, the module automatically generates [`@source`](https://tailwindcss.com/docs/functions-and-directives#source-directive){rel=""nofollow""} directives for each layer directory, ensuring Tailwind CSS scans all your layer source files for utility classes.
+  :::
+
+  :::callout{icon="i-simple-icons-visualstudiocode"}
+  It's recommended to install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss){rel=""nofollow""} extension for VSCode and add the following settings:
+
+  ```json [.vscode/settings.json]
+  {
+    "files.associations": {
+      "*.css": "tailwindcss"
+    },
+    "editor.quickSuggestions": {
+      "strings": "on"
+    },
+    "tailwindCSS.classAttributes": ["class", "ui"],
+    "tailwindCSS.experimental.classRegex": [
+      ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ]
+  }
+  ```
+  :::
+
+#### Wrap your app with App component
+
+```vue [app.vue]
+<template>
+  <UApp>
+    <NuxtPage />
+  </UApp>
+</template>
+```
+
+  :::note{to="https://ui.nuxt.com/docs/components/app"}
+  The `App` component provides global configurations and is required for **Toast**, **Tooltip** components to work as well as **Programmatic Overlays**.
+  :::
+::
+
+### Use a Nuxt template
+
+To quickly get started with Nuxt UI, you can use the [starter template](https://github.com/nuxt-ui-templates/starter){rel="&#x22;nofollow&#x22;"} by running:
+
+```bash [Terminal]
+npm create nuxt@latest -- -t ui
+```
+
+You can also get started with one of our [official templates](https://ui.nuxt.com/templates):
+
+::card-group
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Starter
+  to: https://github.com/nuxt-ui-templates/starter
+  ---
+  A minimal template to get started with Nuxt UI.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Landing
+  to: https://github.com/nuxt-ui-templates/landing
+  ---
+  A modern landing page template powered by Nuxt Content.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Docs
+  to: https://github.com/nuxt-ui-templates/docs
+  ---
+  A documentation template powered by Nuxt Content.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: SaaS
+  to: https://github.com/nuxt-ui-templates/saas
+  ---
+  A SaaS template with landing, pricing, docs and blog powered by Nuxt Content.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Dashboard
+  to: https://github.com/nuxt-ui-templates/dashboard
+  variant: subtle
+  ---
+  A dashboard template with multi-column layout for building sophisticated admin interfaces.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Chat
+  to: https://github.com/nuxt-ui-templates/chat
+  ---
+  An AI chatbot template to build your own chatbot powered by Nuxt MDC and Vercel AI SDK.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Portfolio
+  to: https://github.com/nuxt-ui-templates/portfolio
+  ---
+  A sleek portfolio template to showcase your work, skills and blog powered by Nuxt Content.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Changelog
+  to: https://github.com/nuxt-ui-templates/changelog
+  ---
+  A changelog template to display your repository releases notes from GitHub powered by Nuxt MDC.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Editor
+  to: https://github.com/nuxt-ui-templates/editor
+  ---
+  A rich text editor template powered by TipTap with support for markdown, HTML, and JSON content types.
+  :::
+::
+
+You can use the `Use this template` button on GitHub to create a new repository or use the CLI:
+
+::code-group
+```bash [Starter]
+npm create nuxt@latest -- -t ui
+```
+
+```bash [Landing]
+npm create nuxt@latest -- -t ui/landing
+```
+
+```bash [Docs]
+npm create nuxt@latest -- -t ui/docs
+```
+
+```bash [SaaS]
+npm create nuxt@latest -- -t ui/saas
+```
+
+```bash [Dashboard]
+npm create nuxt@latest -- -t ui/dashboard
+```
+
+```bash [Chat]
+npm create nuxt@latest -- -t ui/chat
+```
+
+```bash [Portfolio]
+npm create nuxt@latest -- -t ui/portfolio
+```
+
+```bash [Changelog]
+npm create nuxt@latest -- -t ui/changelog
+```
+
+```bash [Editor]
+npm create nuxt@latest -- -t ui/editor
+```
+::
+
+## Options
+
+You can customize Nuxt UI by providing options in your `nuxt.config.ts`.
+
+### `prefix`
+
+Use the `prefix` option to change the prefix of the components.
+
+- Default: `U`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-6}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    prefix: 'Nuxt'
+  }
+})
+```
+
+### `fonts`
+
+Use the `fonts` option to enable or disable the [`@nuxt/fonts`](https://github.com/nuxt/fonts){rel="&#x22;nofollow&#x22;"} module.
+
+- Default: `true`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-6}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    fonts: false
+  }
+})
+```
+
+### `colorMode`
+
+Use the `colorMode` option to enable or disable the [`@nuxt/color-mode`](https://github.com/nuxt-modules/color-mode){rel="&#x22;nofollow&#x22;"} module.
+
+- Default: `true`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-6}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    colorMode: false
+  }
+})
+```
+
+### `theme.colors`
+
+Use the `theme.colors` option to define the dynamic color aliases used to generate components theme.
+
+- Default: `['primary', 'secondary', 'success', 'info', 'warning', 'error']`{.inline,language-ts-type,shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-8}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    theme: {
+      colors: ['primary', 'error']
+    }
+  }
+})
+```
+
+::tip{to="https://ui.nuxt.com/docs/getting-started/theme/design-system#colors"}
+Learn more about color customization and theming in the Theme section.
+::
+
+### `theme.transitions`
+
+Use the `theme.transitions` option to enable or disable transitions on components.
+
+- Default: `true`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-8}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    theme: {
+      transitions: false
+    }
+  }
+})
+```
+
+::note
+This option adds the `transition-colors` class on components with hover or active states.
+::
+
+### `theme.defaultVariants`
+
+Use the `theme.defaultVariants` option to override the default `color` and `size` variants for components.
+
+- Default: `{ color: 'primary', size: 'md' }`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-11}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    theme: {
+      defaultVariants: {
+        color: 'neutral',
+        size: 'sm'
+      }
+    }
+  }
+})
+```
+
+### `theme.prefix` :badge{.align-text-top label="4.2+"}
+
+Use the `theme.prefix` option to configure the same prefix you set on your Tailwind CSS import. This ensures Nuxt UI components use the correct prefixed utility classes and CSS variables.
+
+::code-group
+```ts [nuxt.config.ts] {4-8}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    theme: {
+      prefix: 'tw'
+    }
+  }
+})
+```
+
+```css [app/assets/css/main.css] {1}
+@import "tailwindcss" prefix(tw);
+@import "@nuxt/ui";
+```
+::
+
+::warning
+---
+to: https://fonts.nuxt.com/get-started/configuration#processcssvariables
+---
+You might need to enable `fonts.processCSSVariables` to use the prefix option with the `@nuxt/fonts` module:
+
+```ts [nuxt.config.ts] {9-11}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    theme: {
+      prefix: 'tw'
+    }
+  },
+  fonts: {
+    processCSSVariables: true
+  }
+})
+```
+::
+
+This will automatically prefix all Tailwind utility classes and CSS variables in Nuxt UI component themes:
+
+```html
+<!-- Without prefix -->
+<button class="px-2 py-1 text-xs hover:bg-primary/75">Button</button>
+
+<!-- With prefix: tw -->
+<button class="tw:px-2 tw:py-1 tw:text-xs tw:hover:bg-primary/75">Button</button>
+```
+
+::note
+---
+target: _blank
+to: https://tailwindcss.com/docs/styling-with-utility-classes#using-the-prefix-option
+---
+Learn more about using a prefix in the Tailwind CSS documentation.
+::
+
+### `mdc`
+
+Use the `mdc` option to force the import of Nuxt UI `<Prose>` components even if `@nuxtjs/mdc` or `@nuxt/content` is not installed.
+
+- Default: `false`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-6}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    mdc: true
+  }
+})
+```
+
+### `content`
+
+Use the `content` option to force the import of Nuxt UI `<Prose>` and `<UContent>` components even if `@nuxt/content` is not installed (`@nuxtjs/mdc` is installed by `@nuxt/content`).
+
+- Default: `false`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [nuxt.config.ts] {4-6}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    content: true
+  }
+})
+```
+
+### `experimental.componentDetection` :badge{.align-text-top label="4.1+"}
+
+Use the `experimental.componentDetection` option to enable automatic component detection for tree-shaking. This feature scans your source code to detect which components are actually used and only generates the necessary CSS for those components (including their dependencies).
+
+- Default: `false`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+- Type: `boolean | string[]`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+**Enable automatic detection:**
+
+```ts [nuxt.config.ts] {4-8}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    experimental: {
+      componentDetection: true
+    }
+  }
+})
+```
+
+**Include additional components for dynamic usage:**
+
+```ts [nuxt.config.ts] {4-8}
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    experimental: {
+      componentDetection: ['Modal', 'Dropdown', 'Popover']
+    }
+  }
+})
+```
+
+::note
+When providing an array of component names, automatic detection is enabled and these components (along with their dependencies) are guaranteed to be included. This is useful for dynamic components like `<component :is="..." />` that can't be statically analyzed.
+::
+
+## Continuous releases
+
+Nuxt UI uses [pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new){rel="&#x22;nofollow&#x22;"} for continuous preview releases, providing developers with instant access to the latest features and bug fixes without waiting for official releases.
+
+Automatic preview releases are created for all commits and PRs to the `v4` branch. Use them by replacing your package version with the specific commit hash or PR number.
+
+```diff [package.json]
+{
+  "dependencies": {
+-   "@nuxt/ui": "^4.0.0",
++   "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@4c96909",
+  }
+}
+```
+
+::note
+**pkg.pr.new** will automatically comment on PRs with the installation URL, making it easy to test changes.
+::
+
+
+# Installation
+
+::callout
+---
+class: hidden
+icon: i-logos-nuxt-icon
+to: https://ui.nuxt.com/docs/getting-started/installation/nuxt
+---
+Looking for the **Nuxt** version?
+::
+
+## Setup
+
+### Add to a Vue project
+
+::steps{level="4"}
+#### Install the Nuxt UI package
+
+  :::code-group{sync="pm"}
+  ```bash [pnpm]
+  pnpm add @nuxt/ui
+  ```
+
+  ```bash [yarn]
+  yarn add @nuxt/ui
+  ```
+
+  ```bash [npm]
+  npm install @nuxt/ui
+  ```
+
+  ```bash [bun]
+  bun add @nuxt/ui
+  ```
+  :::
+
+  :::warning
+  If you're using **pnpm**, ensure that you either set [`shamefully-hoist=true`](https://pnpm.io/npmrc#shamefully-hoist){rel=""nofollow""} in your `.npmrc` file or install `tailwindcss`, `vue-router` and `@unhead/vue` in your project's root directory.
+  :::
+
+#### Add the Nuxt UI Vite plugin in your `vite.config.ts`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+  :::code-group{sync="vite"}
+  ```ts [vite.config.ts (Vite)] {3,8}
+  import { defineConfig } from 'vite'
+  import vue from '@vitejs/plugin-vue'
+  import ui from '@nuxt/ui/vite'
+
+  export default defineConfig({
+    plugins: [
+      vue(),
+      ui()
+    ]
+  })
+  ```
+
+  ```ts [vite.config.ts (Laravel Inertia)] {3,20-22}
+  import { defineConfig } from 'vite'
+  import vue from '@vitejs/plugin-vue'
+  import ui from '@nuxt/ui/vite'
+  import laravel from 'laravel-vite-plugin'
+
+  export default defineConfig({
+    plugins: [
+      laravel({
+        input: ['resources/js/app.ts'],
+        refresh: true
+      }),
+      vue({
+        template: {
+          transformAssetUrls: {
+            base: null,
+            includeAbsolute: false
+          }
+        }
+      }),
+      ui({
+        router: 'inertia'
+      })
+    ]
+  })
+  ```
+
+  ```ts [vite.config.ts (AdonisJS Inertia)] {3,15-17}
+  import { defineConfig } from 'vite'
+  import vue from '@vitejs/plugin-vue'
+  import ui from '@nuxt/ui/vite'
+  import adonisjs from '@adonisjs/vite/client'
+  import inertia from '@adonisjs/inertia/client'
+
+  export default defineConfig({
+    plugins: [
+      adonisjs({
+        entrypoints: ['inertia/app/app.ts'],
+        reload: ['resources/views/**/*.edge']
+      }),
+      inertia(),
+      vue(),
+      ui({
+        router: 'inertia'
+      })
+    ]
+  })
+  ```
+  :::
+
+  :::tip
+  Nuxt UI registers `unplugin-auto-import` and `unplugin-vue-components`, which will generate `auto-imports.d.ts` and `components.d.ts` type declaration files. You will likely want to gitignore these, and add them to your `tsconfig`.
+
+  ```json [tsconfig.app.json]
+  {
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"]
+  }
+  ```
+
+  ```bash [.gitignore]
+  # Auto-generated type declarations
+  auto-imports.d.ts
+  components.d.ts
+  ```
+  :::
+
+  :::tip
+  Internally, Nuxt UI relies on custom alias to resolve the theme types. If you're using TypeScript, you should add an alias to your `tsconfig` to enable auto-completion in your `vite.config.ts`.
+
+  ```json [tsconfig.node.json]
+  {
+    "compilerOptions": {
+      "paths": {
+        "#build/ui": [
+          "./node_modules/.nuxt-ui/ui"
+        ]
+      }
+    }
+  }
+  ```
+  :::
+
+#### Use the Nuxt UI Vue plugin
+
+  :::code-group{sync="vite"}
+  ```ts [src/main.ts (Vite)] {3,14}
+  import { createApp } from 'vue'
+  import { createRouter, createWebHistory } from 'vue-router'
+  import ui from '@nuxt/ui/vue-plugin'
+  import App from './App.vue'
+
+  const app = createApp(App)
+
+  const router = createRouter({
+    routes: [],
+    history: createWebHistory()
+  })
+
+  app.use(router)
+  app.use(ui)
+
+  app.mount('#app')
+  ```
+
+  ```ts [resources/js/app.ts (Laravel Inertia)] {3,19}
+  import type { DefineComponent } from 'vue'
+  import { createInertiaApp } from '@inertiajs/vue3'
+  import ui from '@nuxt/ui/vue-plugin'
+  import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+  import { createApp, h } from 'vue'
+
+  const appName = import.meta.env.VITE_APP_NAME || 'Laravel x Nuxt UI'
+
+  createInertiaApp({
+    title: title => (title ? `${title} - ${appName}` : appName),
+    resolve: name =>
+      resolvePageComponent(
+        `./pages/${name}.vue`,
+        import.meta.glob<DefineComponent>('./pages/**/*.vue')
+      ),
+    setup({ el, App, props, plugin }) {
+      createApp({ render: () => h(App, props) })
+        .use(plugin)
+        .use(ui)
+        .mount(el)
+    }
+  })
+  ```
+
+  ```ts [inertia/app/app.ts (AdonisJS Inertia)] {3,19}
+  import type { DefineComponent } from 'vue'
+  import { createInertiaApp } from '@inertiajs/vue3'
+  import ui from '@nuxt/ui/vue-plugin'
+  import { resolvePageComponent } from '@adonisjs/inertia/helpers'
+  import { createApp, h } from 'vue'
+
+  const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS x Nuxt UI'
+
+  createInertiaApp({
+    title: title => (title ? `${title} - ${appName}` : appName),
+    resolve: name =>
+      resolvePageComponent(
+        `../pages/${name}.vue`,
+        import.meta.glob<DefineComponent>('../pages/**/*.vue')
+      ),
+    setup({ el, App, props, plugin }) {
+      createApp({ render: () => h(App, props) })
+        .use(plugin)
+        .use(ui)
+        .mount(el)
+    }
+  })
+  ```
+  :::
+
+#### Import Tailwind CSS and Nuxt UI in your CSS
+
+  :::code-group{sync="vite"}
+  ```css [assets/main.css (Vite)]
+  @import "tailwindcss";
+  @import "@nuxt/ui";
+  ```
+
+  ```css [resources/css/app.css (Laravel Inertia)]
+  @import "tailwindcss";
+  @import "@nuxt/ui";
+  ```
+
+  ```css [inertia/css/app.css (AdonisJS Inertia)]
+  @import "tailwindcss";
+  @import "@nuxt/ui";
+  ```
+  :::
+
+  :::tip
+  Import the CSS file in your entrypoint.
+
+    ::::code-group{sync="vite"}
+    ```ts [src/main.ts] {1}
+    import './assets/main.css'
+
+    import { createApp } from 'vue'
+    import { createRouter, createWebHistory } from 'vue-router'
+    import ui from '@nuxt/ui/vue-plugin'
+    import App from './App.vue'
+
+    const app = createApp(App)
+
+    const router = createRouter({
+      routes: [],
+      history: createWebHistory()
+    })
+
+    app.use(router)
+    app.use(ui)
+
+    app.mount('#app')
+    ```
+
+    ```ts [resources/js/app.ts (Laravel Inertia)] {1}
+    import '../css/app.css'
+    import type { DefineComponent } from 'vue'
+    import { createInertiaApp } from '@inertiajs/vue3'
+    import ui from '@nuxt/ui/vue-plugin'
+    import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+    import { createApp, h } from 'vue'
+
+    const appName = import.meta.env.VITE_APP_NAME || 'Laravel x Nuxt UI'
+
+    createInertiaApp({
+      title: title => (title ? `${title} - ${appName}` : appName),
+      resolve: name =>
+        resolvePageComponent(
+          `./pages/${name}.vue`,
+          import.meta.glob<DefineComponent>('./pages/**/*.vue')
+        ),
+      setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) })
+          .use(plugin)
+          .use(ui)
+          .mount(el)
+      }
+    })
+    ```
+
+    ```ts [inertia/app/app.ts (AdonisJS Inertia)] {1}
+    import '../css/app.css'
+    import type { DefineComponent } from 'vue'
+    import { createInertiaApp } from '@inertiajs/vue3'
+    import ui from '@nuxt/ui/vue-plugin'
+    import { resolvePageComponent } from '@adonisjs/inertia/helpers'
+    import { createApp, h } from 'vue'
+
+    const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS x Nuxt UI'
+
+    createInertiaApp({
+      title: title => (title ? `${title} - ${appName}` : appName),
+      resolve: name =>
+        resolvePageComponent(
+          `../pages/${name}.vue`,
+          import.meta.glob<DefineComponent>('../pages/**/*.vue')
+        ),
+      setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) })
+          .use(plugin)
+          .use(ui)
+          .mount(el)
+      }
+    })
+    ```
+    ::::
+  :::
+::
+
+\::
+
+::callout{icon="i-simple-icons-visualstudiocode"}
+It's recommended to install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss){rel=""nofollow""} extension for VSCode and add the following settings:
+
+```json [.vscode/settings.json]
+{
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.experimental.classRegex": [
+    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
+}
+```
+::
+
+#### Wrap your app with App component
+
+::code-group{sync="vite"}
+```vue [src/App.vue (Vite)]
+<template>
+  <UApp>
+    <RouterView />
+  </UApp>
+</template>
+```
+
+```vue [resources/js/pages/index.vue (Laravel Inertia)]
+<template>
+  <UApp>
+    <!-- Your content goes here -->
+  </UApp>
+</template>
+```
+
+```vue [inertia/pages/index.vue (AdonisJS Inertia)]
+<template>
+  <UApp>
+    <!-- Your content goes here -->
+  </UApp>
+</template>
+```
+::
+
+::note{to="https://ui.nuxt.com/docs/components/app"}
+The `App` component sets up global config and is required for **Toast**, **Tooltip** and **programmatic overlays**.
+::
+
+#### Add the `isolate` class to your root container
+
+::code-group{sync="vite"}
+```html [index.html (Vite)] {9}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuxt UI</title>
+  </head>
+  <body>
+    <div id="app" class="isolate"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+```
+
+```blade [resources/views/app.blade.php (Laravel Inertia)] {10}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @inertiaHead
+    @vite('resources/js/app.ts')
+  </head>
+  <body>
+    <div class="isolate">
+        @inertia
+    </div>
+  </body>
+</html>
+```
+
+```edge [resources/views/inertia_layout.edge (AdonisJS Inertia)] {10}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @inertiaHead()
+    @vite(['inertia/app/app.ts', `inertia/pages/${page.component}.vue`])
+  </head>
+  <body>
+    @inertia({ class: 'isolate' })
+  </body>
+</html>
+```
+::
+
+::note
+This ensures styles are scoped to your app and prevents issues with overlays and stacking contexts.
+::
+
+\::
+
+### Use a Vue template
+
+To quickly get started with Nuxt UI, you can use the [starter template](https://github.com/nuxt-ui-templates/starter-vue){rel="&#x22;nofollow&#x22;"} by running:
+
+```bash [Terminal]
+npm create nuxt@latest -- --no-modules -t ui-vue
+```
+
+You can also get started with one of our [official templates](https://ui.nuxt.com/templates):
+
+::card-group
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Starter
+  to: https://github.com/nuxt-ui-templates/starter-vue
+  ---
+  A minimal template to get started with Nuxt UI.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Dashboard
+  to: https://github.com/nuxt-ui-templates/dashboard-vue
+  variant: subtle
+  ---
+  A dashboard template with multi-column layout for building sophisticated admin interfaces.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Starter Adonis
+  to: https://github.com/nuxt-ui-templates/starter-adonis
+  ---
+  A minimal Nuxt UI template for AdonisJS using Inertia.js.
+  :::
+
+  :::card
+  ---
+  color: neutral
+  icon: i-simple-icons-github
+  target: _blank
+  title: Starter Laravel
+  to: https://github.com/nuxt-ui-templates/starter-laravel
+  ---
+  A minimal Nuxt UI template for Laravel using Inertia.js.
+  :::
+::
+
+You can use the `Use this template` button on GitHub to create a new repository or use the CLI:
+
+::code-group
+```bash [Starter]
+npm create nuxt@latest -- --no-modules -t ui-vue
+```
+
+```bash [Dashboard]
+npm create nuxt@latest -- --no-modules -t ui-vue/dashboard
+```
+::
+
+## Options
+
+You can customize Nuxt UI by providing options in your `vite.config.ts`.
+
+### `prefix`
+
+Use the `prefix` option to change the prefix of the components.
+
+- Default: `U`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [vite.config.ts] {9}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      prefix: 'Nuxt'
+    })
+  ]
+})
+```
+
+### `ui`
+
+Use the `ui` option to provide configuration for Nuxt UI.
+
+```ts [vite.config.ts] {9-14}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      ui: {
+        colors: {
+          primary: 'green',
+          neutral: 'slate'
+        }
+      }
+    })
+  ]
+})
+```
+
+### `colorMode`
+
+Use the `colorMode` option to enable or disable the color mode integration from `@vueuse/core`.
+
+- Default: `true`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [vite.config.ts] {9}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      colorMode: false
+    })
+  ]
+})
+```
+
+### `theme.colors`
+
+Use the `theme.colors` option to define the dynamic color aliases used to generate components theme.
+
+- Default: `['primary', 'secondary', 'success', 'info', 'warning', 'error']`{.inline,language-ts-type,shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [vite.config.ts] {9-11}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      theme: {
+        colors: ['primary', 'error']
+      }
+    })
+  ]
+})
+```
+
+::tip{to="https://ui.nuxt.com/docs/getting-started/theme/design-system#colors"}
+Learn more about color customization and theming in the Theme section.
+::
+
+### `theme.transitions`
+
+Use the `theme.transitions` option to enable or disable transitions on components.
+
+- Default: `true`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [vite.config.ts] {9-11}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      theme: {
+        transitions: false
+      }
+    })
+  ]
+})
+```
+
+::note
+This option adds the `transition-colors` class on components with hover or active states.
+::
+
+### `theme.defaultVariants`
+
+Use the `theme.defaultVariants` option to override the default `color` and `size` variants for components.
+
+- Default: `{ color: 'primary', size: 'md' }`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+```ts [vite.config.ts] {9-14}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      theme: {
+        defaultVariants: {
+          color: 'neutral',
+          size: 'sm'
+        }
+      }
+    })
+  ]
+})
+```
+
+### `theme.prefix` :badge{.align-text-top label="4.2+"}
+
+Use the `theme.prefix` option to configure the same prefix you set on your Tailwind CSS import. This ensures Nuxt UI components use the correct prefixed utility classes and CSS variables.
+
+::code-group
+```ts [vite.config.ts] {9-11}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      theme: {
+        prefix: 'tw'
+      }
+    })
+  ]
+})
+```
+
+```css [assets/main.css] {1}
+@import "tailwindcss" prefix(tw);
+@import "@nuxt/ui";
+```
+::
+
+This will automatically prefix all Tailwind utility classes and CSS variables in Nuxt UI component themes:
+
+```html
+<!-- Without prefix -->
+<button class="px-2 py-1 text-xs hover:bg-primary/75">Button</button>
+
+<!-- With prefix: tw -->
+<button class="tw:px-2 tw:py-1 tw:text-xs tw:hover:bg-primary/75">Button</button>
+```
+
+::note
+---
+target: _blank
+to: https://tailwindcss.com/docs/styling-with-utility-classes#using-the-prefix-option
+---
+Learn more about using a prefix in the Tailwind CSS documentation.
+::
+
+### `router` :badge{.align-text-top label="4.3+"}
+
+Use the `router` option to configure routing integration. This is useful for applications that don't use `vue-router`, such as Electron apps, MPAs, or frameworks like [Inertia.js](https://inertiajs.com/){rel="&#x22;nofollow&#x22;"} or [Hybridly](https://hybridly.dev/){rel="&#x22;nofollow&#x22;"}.
+
+- Default: `true`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
+
+| Value                                                                                                                           | Description                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `true`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}      | Uses `vue-router` for navigation with `RouterLink` component.   |
+| `false`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}     | Disables routing integration, links render as plain `<a>` tags. |
+| `'inertia'`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | Uses Inertia.js for navigation with its `Link` component.       |
+
+```ts [vite.config.ts] {9}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      router: false
+    })
+  ]
+})
+```
+
+::note
+When set to `false` or `'inertia'`, `vue-router` is not required as a dependency.
+::
+
+### `scanPackages` :badge{.align-text-top label="4.3+"}
+
+Use the `scanPackages` option to specify additional npm packages that should be scanned for components using Nuxt UI. This is useful when you have a shared component library that uses Nuxt UI components internally.
+
+```ts [vite.config.ts] {9}
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      scanPackages: ['@my-org/ui-components']
+    })
+  ]
+})
+```
+
+::note
+By default, only `@nuxt/ui` is scanned. Use this option when your external packages contain Vue components that use Nuxt UI.
+::
+
+## Continuous releases
+
+Nuxt UI uses [pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new){rel="&#x22;nofollow&#x22;"} for continuous preview releases, providing developers with instant access to the latest features and bug fixes without waiting for official releases.
+
+Automatic preview releases are created for all commits and PRs to the `v4` branch. Use them by replacing your package version with the specific commit hash or PR number.
+
+```diff [package.json]
+{
+  "dependencies": {
+-   "@nuxt/ui": "^4.0.0",
++   "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@4c96909",
+  }
+}
+```
+
+::note
+**pkg.pr.new** will automatically comment on PRs with the installation URL, making it easy to test changes.
+::
+
+
 # Introduction
 
 ## What is Nuxt UI?
 
-A modern UI library built on [Reka UI](https://reka-ui.com/){rel="&#x22;nofollow&#x22;"}, [Tailwind CSS](https://tailwindcss.com/){rel="&#x22;nofollow&#x22;"}, and [Tailwind Variants](https://www.tailwind-variants.org/){rel="&#x22;nofollow&#x22;"} to ship beautiful and accessible applications with 100+ production-ready components.
+A modern Vue UI component library built on [Reka UI](https://reka-ui.com/){rel="&#x22;nofollow&#x22;"}, [Tailwind CSS](https://tailwindcss.com/){rel="&#x22;nofollow&#x22;"}, and [Tailwind Variants](https://www.tailwind-variants.org/){rel="&#x22;nofollow&#x22;"} to ship beautiful and accessible applications with 125+ production-ready components. Works with Nuxt and plain Vue apps (Vite, Inertia, SSR).
+
+If you're building a Vue project with Tailwind CSS, Nuxt UI is a great default choice. It provides high-level, ready-to-use components (data tables, forms, overlays, navigation) while still allowing advanced customization when needed.
 
 ::card-group
   :::card{icon="i-lucide-sparkles" title="Developer Experience First"}
@@ -18,13 +1304,13 @@ A modern UI library built on [Reka UI](https://reka-ui.com/){rel="&#x22;nofollow
   :::
 
   :::card{icon="i-lucide-blocks" title="Production Ready"}
-  100+ battle-tested components used by thousands of applications in production.
+  125+ battle-tested components including data tables, forms, overlays, and navigation used by thousands of applications in production.
   :::
 ::
 
 ## What's new in v4?
 
-Nuxt UI v4 marks a major milestone: Nuxt UI and Nuxt UI Pro are now unified into a single, fully open-source and free library of 100+ production-ready components and a complete Figma Kit.
+Nuxt UI v4 marks a major milestone: Nuxt UI and Nuxt UI Pro are now unified into a single, fully open-source and free library of 125+ production-ready components and a complete Figma Kit.
 
 The migration from v3 to v4 will be much smoother than from v2 to v3. Read more in the [migration guide](https://ui.nuxt.com/docs/getting-started/migration/v4).
 
@@ -45,7 +1331,7 @@ Nuxt UI is built on top of [Reka UI](https://reka-ui.com/){rel="&#x22;nofollow&#
 
 ### Tailwind CSS
 
-Nuxt UI integrates the latest [Tailwind CSS](https://tailwindcss.com/){rel="&#x22;nofollow&#x22;"} v4, bringing significant improvements:
+Nuxt UI integrates the latest [Tailwind CSS](https://tailwindcss.com/){rel="&#x22;nofollow&#x22;"}, bringing significant improvements:
 
 - **5x Faster Builds**: Full builds up to 5x faster, incremental builds over 100x faster
 - **Unified Toolchain**: Built-in import handling, vendor prefixing, and syntax transforms
@@ -54,7 +1340,7 @@ Nuxt UI integrates the latest [Tailwind CSS](https://tailwindcss.com/){rel="&#x2
 
 ### Tailwind Variants
 
-Nuxt UI takes advantage of [Tailwind Variants](https://www.tailwind-variants.org/){rel="&#x22;nofollow&#x22;"} to provide a powerful theming system:
+Nuxt UI takes advantage of [Tailwind Variants](https://www.tailwind-variants.org/){rel="&#x22;nofollow&#x22;"} to provide a powerful design system:
 
 - **Dynamic Styling**: Flexible component variants with a powerful API
 - **Type Safety**: Full TypeScript support with auto-completion
@@ -64,7 +1350,7 @@ Nuxt UI takes advantage of [Tailwind Variants](https://www.tailwind-variants.org
 
 ### Ecosystem integration
 
-Nuxt UI integrates with the Nuxt ecosystem to provide a seamless development experience:
+Nuxt UI is SSR compatible and integrates seamlessly with the Nuxt ecosystem (these features also work in Vue with additional configuration):
 
 - [**Icons**](https://ui.nuxt.com/docs/getting-started/integrations/icons): Access 200,000+ icons from Iconify
 - [**Fonts**](https://ui.nuxt.com/docs/getting-started/integrations/fonts): Plug-and-play web font optimization and configuration
@@ -72,12 +1358,12 @@ Nuxt UI integrates with the Nuxt ecosystem to provide a seamless development exp
 - [**i18n**](https://ui.nuxt.com/docs/getting-started/integrations/i18n): Internationalize your components with 50+ languages
 - [**Content**](https://ui.nuxt.com/docs/getting-started/integrations/content): Beautiful typography out of the box
 
-### Vue Compatibility
+### Vue compatibility (Nuxt optional)
 
-Nuxt UI works with any Vue project. Simply add the Vite and Vue plugins to your configuration:
+Nuxt UI works with any Vue project, not just Nuxt. Simply add the Vite and Vue plugins to your configuration:
 
 - **Auto-imports**: Components and composables are automatically imported and available globally
-- **Theming System**: Full theming support with customizable colors, sizes, variants, and more
+- **Design System**: Full theming support with customizable colors, sizes, variants, and more
 - **Developer Experience**: Complete TypeScript support with IntelliSense and auto-completion
 
 ::tip
@@ -97,34 +1383,46 @@ Nuxt UI provides comprehensive TypeScript integration for a superior developer e
 - **Type-safe Theming**: In `app.config.ts`
 - **IntelliSense**: Throughout your entire codebase
 
+### Templates
+
+Nuxt UI provides production-ready templates for both Nuxt and Vue to help you get started quickly:
+
+- **Nuxt templates**: Dashboard, SaaS, Landing, Docs, Portfolio, Chat, Editor, Changelog, and Starter
+- **Vue templates**: Dashboard and Starter
+
+::tip{ariaLabel="Explore templates" to="https://ui.nuxt.com/templates"}
+Explore all available **templates** to kickstart your next project.
+::
+
 ## FAQ
 
 ::accordion
   :::accordion-item{label="Is Nuxt UI free to use?"}
-  Yes! Nuxt UI is completely free and open source under the MIT license. All 100+ components are available to everyone.
+  Yes! Nuxt UI is completely free and open source under the MIT license. All 125+ components are available to everyone.
   :::
 
   :::accordion-item{label="Can I use Nuxt UI with Vue without Nuxt?"}
   Yes! While optimized for Nuxt, Nuxt UI works perfectly with standalone Vue projects via our Vite plugin. You can follow the [installation guide](https://ui.nuxt.com/docs/getting-started/installation/vue) to get started.
   :::
 
-  :::accordion-item
-  ---
-  label: Will Nuxt UI work with other CSS frameworks like UnoCSS?
-  ---
-  No. Nuxt UI is designed exclusively for Tailwind CSS. UnoCSS support would require significant architecture changes due to different class naming conventions.
+  :::accordion-item{label="Does Nuxt UI include a Figma Kit?"}
+  Yes! Nuxt UI includes a [complete Figma Kit](https://go.nuxt.com/figma-ui){rel=""nofollow""} with all components, making it easy for designers and developers to collaborate.
   :::
 
   :::accordion-item{label="How does Nuxt UI handle accessibility?"}
   Through [Reka UI](https://reka-ui.com/docs/overview/accessibility){rel=""nofollow""} integration, Nuxt UI provides automatic ARIA attributes, keyboard navigation, focus management, and screen reader support. While offering a strong foundation, testing in your specific use case remains important.
   :::
 
-  :::accordion-item{label="How is Nuxt UI tested?"}
-  Nuxt UI ensures reliability with 1000+ Vitest tests covering core functionality and accessibility.
+  :::accordion-item{label="Is Nuxt UI production-ready?"}
+  Yes! Nuxt UI is used in production by thousands of applications with 1000+ Vitest tests, regular updates, and active maintenance.
   :::
 
-  :::accordion-item{label="Is Nuxt UI production-ready?"}
-  Yes! Nuxt UI is used in production by thousands of applications with extensive tests, regular updates, and active maintenance.
+  :::accordion-item{label="When should I consider alternatives?"}
+  Consider **Vuetify** if you want Material Design styling, **ant-design-vue** for Ant Design styling, **PrimeVue** or **Element Plus** if you don't want Tailwind CSS, **shadcn-vue** if you prefer copying components into your repo, **Quasar** for cross-platform apps (web, mobile, desktop), or **Reka UI** / **Headless UI** if you only need unstyled primitives.
+  :::
+
+  :::accordion-item{label="Where can I get help?"}
+  Join our [Discord community](https://go.nuxt.com/discord){rel=""nofollow""} for discussions or report issues on [GitHub](https://github.com/nuxt/ui/issues){rel=""nofollow""}.
   :::
 ::
 
@@ -962,113 +2260,117 @@ Looking for the **Nuxt** version?
     ```
     ::::
   :::
+::
 
-  :::callout{icon="i-simple-icons-visualstudiocode"}
-  It's recommended to install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss){rel=""nofollow""} extension for VSCode and add the following settings:
+\::
 
-  ```json [.vscode/settings.json]
-  {
-    "files.associations": {
-      "*.css": "tailwindcss"
-    },
-    "editor.quickSuggestions": {
-      "strings": "on"
-    },
-    "tailwindCSS.classAttributes": ["class", "ui"],
-    "tailwindCSS.experimental.classRegex": [
-      ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-    ]
-  }
-  ```
-  :::
+::callout{icon="i-simple-icons-visualstudiocode"}
+It's recommended to install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss){rel=""nofollow""} extension for VSCode and add the following settings:
+
+```json [.vscode/settings.json]
+{
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.experimental.classRegex": [
+    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
+}
+```
+::
 
 #### Wrap your app with App component
 
-  :::code-group{sync="vite"}
-  ```vue [src/App.vue (Vite)]
-  <template>
-    <UApp>
-      <RouterView />
-    </UApp>
-  </template>
-  ```
+::code-group{sync="vite"}
+```vue [src/App.vue (Vite)]
+<template>
+  <UApp>
+    <RouterView />
+  </UApp>
+</template>
+```
 
-  ```vue [resources/js/pages/index.vue (Laravel Inertia)]
-  <template>
-    <UApp>
-      <!-- Your content goes here -->
-    </UApp>
-  </template>
-  ```
+```vue [resources/js/pages/index.vue (Laravel Inertia)]
+<template>
+  <UApp>
+    <!-- Your content goes here -->
+  </UApp>
+</template>
+```
 
-  ```vue [inertia/pages/index.vue (AdonisJS Inertia)]
-  <template>
-    <UApp>
-      <!-- Your content goes here -->
-    </UApp>
-  </template>
-  ```
-  :::
+```vue [inertia/pages/index.vue (AdonisJS Inertia)]
+<template>
+  <UApp>
+    <!-- Your content goes here -->
+  </UApp>
+</template>
+```
+::
 
-  :::note{to="https://ui.nuxt.com/docs/components/app"}
-  The `App` component sets up global config and is required for **Toast**, **Tooltip** and **programmatic overlays**.
-  :::
+::note{to="https://ui.nuxt.com/docs/components/app"}
+The `App` component sets up global config and is required for **Toast**, **Tooltip** and **programmatic overlays**.
+::
 
 #### Add the `isolate` class to your root container
 
-  :::code-group{sync="vite"}
-  ```html [index.html (Vite)] {9}
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Nuxt UI</title>
-    </head>
-    <body>
-      <div id="app" class="isolate"></div>
-      <script type="module" src="/src/main.ts"></script>
-    </body>
-  </html>
-  ```
+::code-group{sync="vite"}
+```html [index.html (Vite)] {9}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuxt UI</title>
+  </head>
+  <body>
+    <div id="app" class="isolate"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+```
 
-  ```blade [resources/views/app.blade.php (Laravel Inertia)] {10}
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      @inertiaHead
-      @vite('resources/js/app.ts')
-    </head>
-    <body>
-      <div class="isolate">
-          @inertia
-      </div>
-    </body>
-  </html>
-  ```
+```blade [resources/views/app.blade.php (Laravel Inertia)] {10}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @inertiaHead
+    @vite('resources/js/app.ts')
+  </head>
+  <body>
+    <div class="isolate">
+        @inertia
+    </div>
+  </body>
+</html>
+```
 
-  ```edge [resources/views/inertia_layout.edge (AdonisJS Inertia)] {10}
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      @inertiaHead()
-      @vite(['inertia/app/app.ts', `inertia/pages/${page.component}.vue`])
-    </head>
-    <body>
-      @inertia({ class: 'isolate' })
-    </body>
-  </html>
-  ```
-  :::
-
-  :::note
-  This ensures styles are scoped to your app and prevents issues with overlays and stacking contexts.
-  :::
+```edge [resources/views/inertia_layout.edge (AdonisJS Inertia)] {10}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @inertiaHead()
+    @vite(['inertia/app/app.ts', `inertia/pages/${page.component}.vue`])
+  </head>
+  <body>
+    @inertia({ class: 'isolate' })
+  </body>
+</html>
+```
 ::
+
+::note
+This ensures styles are scoped to your app and prevents issues with overlays and stacking contexts.
+::
+
+\::
 
 ### Use a Vue template
 
@@ -1411,7 +2713,7 @@ Automatic preview releases are created for all commits and PRs to the `v4` branc
 
 # Migration to v4
 
-Nuxt UI v4 marks a major milestone: **Nuxt UI and Nuxt UI Pro are now unified into a single, fully open-source and free library**. You now have access to 100+ production-ready components, all available in the `@nuxt/ui` package.
+Nuxt UI v4 marks a major milestone: **Nuxt UI and Nuxt UI Pro are now unified into a single, fully open-source and free library**. You now have access to 125+ production-ready components, all available in the `@nuxt/ui` package.
 
 ::note
 Nuxt UI v4 requires **Nuxt 4** due to some dependencies. Make sure to upgrade to Nuxt 4 before migrating to Nuxt UI v4.
@@ -3690,6 +4992,8 @@ Read more about this in the `@nuxt/icon` documentation.
 
 You can change the default icons used by components in your `app.config.ts`:
 
+:icons-theme-select
+
 :icons-theme
 
 
@@ -3741,6 +5045,8 @@ Some components also have an `icon` prop to display an icon, like the [Button](h
 ## Theme
 
 You can change the default icons used by Nuxt UI components in your `vite.config.ts`:
+
+:icons-theme-select
 
 :icons-theme
 
@@ -4445,11 +5751,11 @@ const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(naviga
 
 ## Usage
 
-When using Nuxt UI with Nuxt.js framework, SSR server will fully work out of the box. However, when using it with pure Vue.js, you will need to pay attention to some details to make it function as expected.
+When using Nuxt UI with Nuxt framework, SSR server will fully work out of the box. However, when using it with pure Vue, you will need to pay attention to some details to make it function as expected.
 
 ### Color Variables Injection
 
-Nuxt UI, by default, injects to the `<head>` of the document color variables that are used across all components. Since the document is not managed by the UI library in the Vue.js SSR, you will need to inject that manually.
+Nuxt UI, by default, injects to the `<head>` of the document color variables that are used across all components. Since the document is not managed by the UI library in the Vue SSR, you will need to inject that manually.
 
 You can do that by using `@unhead` in the following way:
 
@@ -4613,7 +5919,7 @@ if (theme === 'dark' || (theme === null && window.matchMedia('(prefers-color-sch
 
 ### Icons Display
 
-Unfortunately displaying icons with the SSR server of the Vue.js version is currently not supported. The icons will only be displayed after the application is initialized at the user's end.
+Unfortunately displaying icons with the SSR server of the Vue version is currently not supported. The icons will only be displayed after the application is initialized at the user's end.
 
 
 # MCP Server
@@ -5015,7 +6321,7 @@ Use the Accordion component to display a list of collapsible items.
 const items = ref<undefined>([
   {
     label: 'Is Nuxt UI free to use?',
-    content: 'Yes! Nuxt UI is completely free and open source under the MIT license. All 100+ components are available to everyone.',
+    content: 'Yes! Nuxt UI is completely free and open source under the MIT license. All 125+ components are available to everyone.',
   },
   {
     label: 'Can I use Nuxt UI with Vue without Nuxt?',
@@ -5477,7 +6783,7 @@ const items = [
   {
     label: 'Is Nuxt UI free to use?',
     icon: 'i-lucide-circle-help',
-    content: 'Yes! Nuxt UI is completely free and open source under the MIT license. All 100+ components are available to everyone.'
+    content: 'Yes! Nuxt UI is completely free and open source under the MIT license. All 125+ components are available to everyone.'
   },
   {
     label: 'Can I use Nuxt UI with Vue without Nuxt?',
@@ -5819,7 +7125,7 @@ interface AlertProps {
   description?: string | undefined;
   icon?: any;
   avatar?: AvatarProps | undefined;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   variant?: "solid" | "outline" | "soft" | "subtle" | undefined;
   /**
    * The orientation between the content and the actions.
@@ -6669,6 +7975,10 @@ The Avatar uses the `<NuxtImg>` component when [`@nuxt/image`](https://github.co
 You can pass any property from the HTML `<img>` element such as `alt`, `loading`, etc.
 ::
 
+::tip
+To opt-out of `@nuxt/image`, use the `as` prop: `:as="{ img: 'img' }"`.
+::
+
 ### Src
 
 Use the `src` prop to set the image URL.
@@ -7272,7 +8582,7 @@ interface BadgeProps {
    */
   as?: any;
   label?: string | number | undefined;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   variant?: "solid" | "outline" | "soft" | "subtle" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   /**
@@ -7794,7 +9104,7 @@ interface BannerProps {
   actions?: ButtonProps[] | undefined;
   to?: string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric | undefined;
   target?: "_blank" | "_parent" | "_self" | "_top" | (string & {}) | null | undefined;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   /**
    * Display a close button to dismiss the banner.
    * `{ size: 'md', color: 'neutral', variant: 'ghost' }`{lang="ts-type"}
@@ -9084,8 +10394,8 @@ Use the `ui` prop to override the slots styles of the Button.
  */
 interface ButtonProps {
   label?: string | undefined;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
-  activeColor?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
+  activeColor?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   variant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
   activeVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
@@ -9171,7 +10481,7 @@ interface ButtonProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   download?: any;
   /**
    * An alias for `to`. If used with `to`, `href` will be ignored
@@ -9241,7 +10551,7 @@ interface ButtonProps {
    * An option to either add or remove trailing slashes in the `href` for this specific link.
    * Overrides the global `trailingSlash` option if provided.
    */
-  trailingSlash?: "remove" | "append" | undefined;
+  trailingSlash?: "append" | "remove" | undefined;
 }
 ```
 
@@ -11437,7 +12747,7 @@ The ChangelogVersion component provides a flexible way to display an `<article>`
   class: w-full
   date: 2025-03-12
   description: Nuxt UI v3 is out! After 1500+ commits, this major redesign brings
-    improved accessibility, Tailwind CSS v4 support, and full Vue compatibility.
+    improved accessibility, Tailwind CSS support, and full Vue compatibility.
   image: https://nuxt.com/assets/blog/nuxt-ui-v3.png
   target: _blank
   title: Introducing Nuxt UI v3
@@ -11466,7 +12776,7 @@ Use the `description` prop to display the description of the ChangelogVersion.
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." />
 </template>
 ```
 
@@ -11480,7 +12790,7 @@ The date is automatically formatted to the [current locale](https://ui.nuxt.com/
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" />
 </template>
 ```
 
@@ -11490,7 +12800,7 @@ Use the `badge` prop to display a [Badge](https://ui.nuxt.com/docs/components/ba
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" badge="Release" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" badge="Release" />
 </template>
 ```
 
@@ -11498,7 +12808,7 @@ You can pass any property from the [Badge](https://ui.nuxt.com/docs/components/b
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" />
 </template>
 ```
 
@@ -11512,7 +12822,7 @@ If [`@nuxt/image`](https://image.nuxt.com/get-started/installation){rel=""nofoll
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" />
 </template>
 ```
 
@@ -11531,7 +12841,7 @@ You can pass any property from the [Link](https://ui.nuxt.com/docs/components/li
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" />
 </template>
 ```
 
@@ -11541,7 +12851,7 @@ You can pass any property from the [`<NuxtLink>`](https://nuxt.com/docs/api/comp
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" to="https://nuxt.com/blog/nuxt-ui-v3" target="_blank" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" to="https://nuxt.com/blog/nuxt-ui-v3" target="_blank" />
 </template>
 ```
 
@@ -11551,7 +12861,7 @@ Use the `indicator` prop to hide the indicator dot on the left. Defaults to `tru
 
 ```vue
 <template>
-  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" :indicator="false" />
+  <UChangelogVersion title="Introducing Nuxt UI v3" description="Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility." date="2025-03-12" image="https://nuxt.com/assets/blog/nuxt-ui-v3.png" :indicator="false" />
 </template>
 ```
 
@@ -11588,9 +12898,9 @@ We've transitioned from [Headless UI](https://headlessui.com/) to [Reka UI](http
 - **Future-Proof Development**: Benefit from Reka UI's growing popularity and continuous improvements
 - **First-Class Accessibility**: Built-in accessibility features aligned with our commitment to inclusive design
 
-### 🚀 Tailwind CSS v4 Integration
+### 🚀 Tailwind CSS Integration
 
-Nuxt UI now leverages the latest [Tailwind CSS v4](https://tailwindcss.com), delivering:
+Nuxt UI now leverages the latest [Tailwind CSS](https://tailwindcss.com), delivering:
 
 - **Exceptional Performance**: Full builds up to 5× faster, with incremental builds over 100× faster
 - **Streamlined Toolchain**: Built-in import handling, vendor prefixing, and syntax transforms with zero additional tooling
@@ -11621,7 +12931,7 @@ This release represents thousands of hours of work from our team and the communi
 
 const version = {
   title: 'Introducing Nuxt UI v3',
-  description: 'Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS v4 support, and full Vue compatibility.',
+  description: 'Nuxt UI v3 is out! After 1500+ commits, this major redesign brings improved accessibility, Tailwind CSS support, and full Vue compatibility.',
   date: '2025-03-12T00:00:00.000Z',
   badge: 'Release',
   to: 'https://nuxt.com/blog/nuxt-ui-v3',
@@ -12530,7 +13840,7 @@ export default defineEventHandler(async (event) => {
     model: gateway('openai/gpt-4o-mini'),
     maxOutputTokens: 10000,
     system: 'You are a helpful assistant.',
-    messages: convertToModelMessages(messages)
+    messages: await convertToModelMessages(messages)
   }).toUIMessageStreamResponse()
 })
 ```
@@ -12949,7 +14259,7 @@ You can enhance your chatbot with tool calling capabilities using the [Model Con
       model: gateway('anthropic/claude-sonnet-4.5'),
       maxOutputTokens: 10000,
       system: 'You are a helpful assistant. Use your tools to search for relevant information before answering questions.',
-      messages: convertToModelMessages(messages),
+      messages: await convertToModelMessages(messages),
       stopWhen: stepCountIs(6),
       tools,
       onFinish: async () => {
@@ -13253,8 +14563,8 @@ interface ChatPromptSlots {
  */
 interface ChatPromptEmits {
   close: (payload: [event: Event]) => void;
-  submit: (payload: [event: Event]) => void;
   update:modelValue: (payload: [value: string]) => void;
+  submit: (payload: [event: Event]) => void;
 }
 ```
 
@@ -13552,7 +14862,7 @@ interface ChatPromptSubmitProps {
   /**
    * The variant of the button when the status is `ready`.
    */
-  variant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
+  variant?: "solid" | "outline" | "soft" | "subtle" | "link" | "ghost" | undefined;
   /**
    * The icon displayed in the button when the status is `streaming`.
    */
@@ -13566,7 +14876,7 @@ interface ChatPromptSubmitProps {
    * The variant of the button when the status is `streaming`.
    * @default "\"subtle\""
    */
-  streamingVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
+  streamingVariant?: "solid" | "outline" | "soft" | "subtle" | "link" | "ghost" | undefined;
   /**
    * The icon displayed in the button when the status is `submitted`.
    */
@@ -13580,7 +14890,7 @@ interface ChatPromptSubmitProps {
    * The variant of the button when the status is `submitted`.
    * @default "\"subtle\""
    */
-  submittedVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
+  submittedVariant?: "solid" | "outline" | "soft" | "subtle" | "link" | "ghost" | undefined;
   /**
    * The icon displayed in the button when the status is `error`.
    */
@@ -13594,12 +14904,12 @@ interface ChatPromptSubmitProps {
    * The variant of the button when the status is `error`.
    * @default "\"soft\""
    */
-  errorVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
+  errorVariant?: "solid" | "outline" | "soft" | "subtle" | "link" | "ghost" | undefined;
   ui?: ({ base?: ClassNameValue; } & { base?: ClassNameValue; label?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailingIcon?: ClassNameValue; }) | undefined;
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   /**
    * Class to apply when the link is exact active
    */
@@ -13624,7 +14934,7 @@ interface ChatPromptSubmitProps {
   as?: any;
   label?: string | undefined;
   activeColor?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
-  activeVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
+  activeVariant?: "solid" | "outline" | "soft" | "subtle" | "link" | "ghost" | undefined;
   size?: "md" | "xs" | "sm" | "lg" | "xl" | undefined;
   /**
    * Render the button with equal padding on all sides.
@@ -13983,8 +15293,8 @@ interface CheckboxSlots {
  * Emitted events for the Checkbox component
  */
 interface CheckboxEmits {
-  change: (payload: [event: Event]) => void;
   update:modelValue: (payload: [value: boolean | "indeterminate"]) => void;
+  change: (payload: [event: Event]) => void;
 }
 ```
 
@@ -15241,7 +16551,7 @@ interface ColorModeAvatarProps {
   crossorigin?: "" | "anonymous" | "use-credentials" | undefined;
   decoding?: "async" | "auto" | "sync" | undefined;
   height?: Numberish | undefined;
-  loading?: "lazy" | "eager" | undefined;
+  loading?: "eager" | "lazy" | undefined;
   referrerpolicy?: HTMLAttributeReferrerPolicy | undefined;
   sizes?: string | undefined;
   srcset?: string | undefined;
@@ -15408,7 +16718,7 @@ interface ColorModeButtonProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   label?: string | undefined;
   activeColor?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   activeVariant?: "link" | "ghost" | "solid" | "outline" | "soft" | "subtle" | undefined;
@@ -15494,7 +16804,7 @@ interface ColorModeImageProps {
   crossorigin?: "" | "anonymous" | "use-credentials" | undefined;
   decoding?: "async" | "auto" | "sync" | undefined;
   height?: Numberish | undefined;
-  loading?: "lazy" | "eager" | undefined;
+  loading?: "eager" | "lazy" | undefined;
   referrerpolicy?: HTMLAttributeReferrerPolicy | undefined;
   sizes?: string | undefined;
   srcset?: string | undefined;
@@ -15603,7 +16913,7 @@ interface ColorModeSelectProps {
    * Highlight the ring color like a focus state.
    */
   highlight?: boolean | undefined;
-  ui?: { base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; value?: ClassNameValue; placeholder?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; input?: ClassNameValue; focusScope?: ClassNameValue; } | undefined;
+  ui?: { base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; value?: ClassNameValue; placeholder?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; input?: ClassNameValue; focusScope?: ClassNameValue; trailingClear?: ClassNameValue; } | undefined;
   /**
    * The name of the field. Submitted with its owning form as part of a name/value pair.
    */
@@ -15658,6 +16968,10 @@ interface ColorModeSelectProps {
    */
   resetSearchTermOnSelect?: boolean | undefined;
   /**
+   * When `true` the `modelValue` will be reset to `null` (or `[]` if `multiple`)
+   */
+  resetModelValueOnClear?: boolean | undefined;
+  /**
    * When `true`, hover over item will trigger highlight
    */
   highlightOnHover?: boolean | undefined;
@@ -15687,6 +17001,15 @@ interface ColorModeSelectProps {
    */
   selectedIcon?: any;
   /**
+   * Display a clear button to reset the model value.
+   * Can be an object to pass additional props to the Button.
+   */
+  clear?: boolean | Partial<Omit<ButtonProps, LinkPropsKeys>> | undefined;
+  /**
+   * The icon displayed in the clear button.
+   */
+  clearIcon?: any;
+  /**
    * Display an arrow alongside the menu.
    */
   arrow?: boolean | Omit<ComboboxArrowProps, "as" | "asChild"> | undefined;
@@ -15698,7 +17021,7 @@ interface ColorModeSelectProps {
    * Enable virtualization for large lists.
    * Note: when enabled, all groups are flattened into a single list due to a limitation of Reka UI (https://github.com/unovue/reka-ui/issues/1885).
    */
-  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | undefined; } | undefined;
+  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | ((index: number) => number) | undefined; } | undefined;
   /**
    * When `items` is an array of objects, select the field to use as the value instead of the object itself.
    */
@@ -16874,8 +18197,8 @@ const items = [
     level: 3
   },
   {
-    id: '/docs/getting-started#tailwind-css-v4',
-    label: 'Tailwind CSS v4',
+    id: '/docs/getting-started#tailwind-css',
+    label: 'Tailwind CSS',
     level: 3
   },
   {
@@ -17503,6 +18826,11 @@ interface CommandPaletteProps {
    * The icon displayed in the back button.
    */
   backIcon?: any;
+  /**
+   * Configure the input or hide it with `false`.
+   * @default "true"
+   */
+  input?: boolean | Omit<InputProps<AcceptableValue>, "modelValue" | "defaultValue"> | undefined;
   groups?: CommandPaletteGroup<CommandPaletteItem>[] | undefined;
   /**
    * Options for [useFuse](https://vueuse.org/integrations/useFuse).
@@ -17513,7 +18841,7 @@ interface CommandPaletteProps {
    * Note: when enabled, all groups are flattened into a single list due to a limitation of Reka UI (https://github.com/unovue/reka-ui/issues/1885).
    * @default "false"
    */
-  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | undefined; } | undefined;
+  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | ((index: number) => number) | undefined; } | undefined;
   /**
    * The key used to get the label from the item.
    * @default "\"label\""
@@ -18328,7 +19656,7 @@ Use the `files` and `navigation` props with the `files`{.shiki,shiki-themes,mate
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
 
-const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
+const { data: files } = useLazyAsyncData('content-search-example', () => queryCollectionSearchSections('docs'), {
   server: false
 })
 
@@ -18352,7 +19680,7 @@ const searchTerm = ref('')
 ```
 
 ::tip
-You can open the CommandPalette by pressing :kbd{value="meta"} :kbd{value="K"}, by using the [ContentSearchButton](https://ui.nuxt.com/docs/components/content-search-button) component or by using the `useContentSearch` composable: `const { open } = useContentSearch()`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts"}.
+You can open the CommandPalette by pressing :kbd{value="meta"} :kbd{.ms-px value="K"}, by using the [ContentSearchButton](https://ui.nuxt.com/docs/components/content-search-button) component or by using the `useContentSearch` composable: `const { open } = useContentSearch()`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts"}.
 ::
 
 ### Shortcut
@@ -18693,7 +20021,7 @@ interface ContentSearchButtonProps {
    * The color of the button.
    * @default "\"neutral\""
    */
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * The variant of the button.
    * Defaults to 'outline' when not collapsed, 'ghost' when collapsed.
@@ -18737,13 +20065,13 @@ interface ContentSearchButtonProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick?: ((event: MouseEvent) => void | Promise<void>) | ((event: MouseEvent) => void | Promise<void>)[] | undefined;
   /**
    * The element or component this component should render as when not a link.
    */
   as?: any;
-  activeColor?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  activeColor?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   activeVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   /**
@@ -19880,7 +21208,7 @@ defineShortcuts(extractShortcuts(items))
 ```
 
 ::note
-In this example, :kbd{value="meta"} :kbd{value="S"}, :kbd{value="shift"} :kbd{value="meta"} :kbd{value="D"}, :kbd{value="option"} :kbd{value="meta"} :kbd{value="U"}, :kbd{value="option"} :kbd{value="meta"} :kbd{value="I"}, :kbd{value="option"} :kbd{value="meta"} :kbd{value="C"} and :kbd{value="option"} :kbd{value="meta"} :kbd{value="J"} would trigger the `select` function of the corresponding item.
+In this example, :kbd{value="meta"} :kbd{.ms-px value="S"}, :kbd{value="shift"} :kbd{.ms-px value="meta"} :kbd{.ms-px value="D"}, :kbd{value="option"} :kbd{.ms-px value="meta"} :kbd{.ms-px value="U"}, :kbd{value="option"} :kbd{.ms-px value="meta"} :kbd{.ms-px value="I"}, :kbd{value="option"} :kbd{.ms-px value="meta"} :kbd{.ms-px value="C"} and :kbd{value="option"} :kbd{.ms-px value="meta"} :kbd{.ms-px value="J"} would trigger the `select` function of the corresponding item.
 ::
 
 ## API
@@ -20764,7 +22092,7 @@ Use it inside the default slot of the [DashboardGroup](https://ui.nuxt.com/docs/
 ```
 
 ::tip
-You can open the CommandPalette by pressing :kbd{value="meta"} :kbd{value="K"}, by using the [DashboardSearchButton](https://ui.nuxt.com/docs/components/dashboard-search-button) component or by using a `v-model:open`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts"} directive.
+You can open the CommandPalette by pressing :kbd{value="meta"} :kbd{.ms-px value="K"}, by using the [DashboardSearchButton](https://ui.nuxt.com/docs/components/dashboard-search-button) component or by using a `v-model:open`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts"} directive.
 ::
 
 ### Shortcut
@@ -21041,7 +22369,7 @@ interface DashboardSearchButtonProps {
    * The color of the button.
    * @default "\"neutral\""
    */
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * The variant of the button.
    * Defaults to 'outline' when not collapsed, 'ghost' when collapsed.
@@ -21085,13 +22413,13 @@ interface DashboardSearchButtonProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick?: ((event: MouseEvent) => void | Promise<void>) | ((event: MouseEvent) => void | Promise<void>)[] | undefined;
   /**
    * The element or component this component should render as when not a link.
    */
   as?: any;
-  activeColor?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  activeColor?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   activeVariant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "link" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   /**
@@ -21853,11 +23181,11 @@ interface DashboardSidebarCollapseProps {
   /**
    * @default "\"neutral\""
    */
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * @default "\"ghost\""
    */
-  variant?: "link" | "ghost" | "solid" | "outline" | "soft" | "subtle" | undefined;
+  variant?: "ghost" | "solid" | "outline" | "soft" | "subtle" | "link" | undefined;
   /**
    * The side of the sidebar to collapse.
    * @default "\"left\""
@@ -21884,15 +23212,15 @@ interface DashboardSidebarCollapseProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick?: ((event: MouseEvent) => void | Promise<void>) | ((event: MouseEvent) => void | Promise<void>)[] | undefined;
   /**
    * The element or component this component should render as when not a link.
    */
   as?: any;
   label?: string | undefined;
-  activeColor?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
-  activeVariant?: "link" | "ghost" | "solid" | "outline" | "soft" | "subtle" | undefined;
+  activeColor?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
+  activeVariant?: "ghost" | "solid" | "outline" | "soft" | "subtle" | "link" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   /**
    * Render the button with equal padding on all sides.
@@ -22057,11 +23385,11 @@ interface DashboardSidebarToggleProps {
   /**
    * @default "\"neutral\""
    */
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * @default "\"ghost\""
    */
-  variant?: "link" | "ghost" | "solid" | "outline" | "soft" | "subtle" | undefined;
+  variant?: "ghost" | "solid" | "outline" | "soft" | "subtle" | "link" | undefined;
   /**
    * The side of the sidebar to toggle.
    * @default "\"left\""
@@ -22088,15 +23416,15 @@ interface DashboardSidebarToggleProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick?: ((event: MouseEvent) => void | Promise<void>) | ((event: MouseEvent) => void | Promise<void>)[] | undefined;
   /**
    * The element or component this component should render as when not a link.
    */
   as?: any;
   label?: string | undefined;
-  activeColor?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
-  activeVariant?: "link" | "ghost" | "solid" | "outline" | "soft" | "subtle" | undefined;
+  activeColor?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
+  activeVariant?: "ghost" | "solid" | "outline" | "soft" | "subtle" | "link" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   /**
    * Render the button with equal padding on all sides.
@@ -22822,8 +24150,8 @@ interface DrawerSlots {
 interface DrawerEmits {
   update:open: (payload: [open: boolean]) => void;
   close: (payload: []) => void;
-  drag: (payload: [percentageDragged: number]) => void;
   close:prevent: (payload: []) => void;
+  drag: (payload: [percentageDragged: number]) => void;
   release: (payload: [open: boolean]) => void;
   update:activeSnapPoint: (payload: [val: string | number]) => void;
   animationEnd: (payload: [open: boolean]) => void;
@@ -23690,7 +25018,7 @@ defineShortcuts(extractShortcuts(items))
 ```
 
 ::note
-In this example, :kbd{value="meta"} :kbd{value="E"}, :kbd{value="meta"} :kbd{value="I"} and :kbd{value="meta"} :kbd{value="N"} would trigger the `select` function of the corresponding item.
+In this example, :kbd{value="meta"} :kbd{.ms-px value="E"}, :kbd{value="meta"} :kbd{.ms-px value="I"} and :kbd{value="meta"} :kbd{.ms-px value="N"} would trigger the `select` function of the corresponding item.
 ::
 
 ## API
@@ -24020,7 +25348,8 @@ import { upperFirst } from 'scule'
 import { mapEditorItems } from '@nuxt/ui/utils/editor'
 import { Emoji, gitHubEmojis } from '@tiptap/extension-emoji'
 import { TextAlign } from '@tiptap/extension-text-align'
-import { ImageUpload } from './EditorImageUpload'
+import { CodeBlockShiki } from 'tiptap-extension-code-block-shiki'
+import { ImageUpload } from './EditorImageUploadExtension'
 import { useEditorCompletion } from './EditorUseCompletion'
 import EditorLinkPopover from './EditorLinkPopover.vue'
 
@@ -24059,7 +25388,7 @@ Try out these powerful capabilities:
 
 Perfect for technical documentation:
 
-\`\`\`
+\`\`\`vue
 <template>
   <UEditor v-model="value" content-type="markdown" />
 </template>
@@ -24588,6 +25917,13 @@ const emojiItems: EditorEmojiMenuItem[] = gitHubEmojis.filter(emoji => !emoji.na
       Emoji,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       ImageUpload,
+      CodeBlockShiki.configure({
+        defaultTheme: 'material-theme',
+        themes: {
+          light: 'material-theme-lighter',
+          dark: 'material-theme-palenight'
+        }
+      }),
       completionExtension
     ]"
     :handlers="customHandlers"
@@ -24667,6 +26003,14 @@ const emojiItems: EditorEmojiMenuItem[] = gitHubEmojis.filter(emoji => !emoji.na
     <UEditorEmojiMenu :editor="editor" :items="emojiItems" />
   </UEditor>
 </template>
+
+<style>
+html.dark .tiptap .shiki,
+html.dark .tiptap .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--ui-bg-muted) !important;
+}
+</style>
 ```
 
 ::callout
@@ -24676,6 +26020,26 @@ icon: i-simple-icons-github
 to: https://github.com/nuxt/ui/blob/v4/docs/app/components/content/examples/editor/EditorExample.vue
 ---
 This example demonstrates a production-ready Editor component. Check out the source code on GitHub.
+::
+
+::warning
+If you encounter prosemirror-related errors such as `Adding different instances of a keyed plugin` when using the Editor component or its extensions, you may need to add prosemirror packages to the `vite.optimizeDeps.include` list in your `nuxt.config.ts` file. This ensures Vite pre-bundles these dependencies to avoid loading multiple instances.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  vite: {
+    optimizeDeps: {
+      include: [
+        'prosemirror-state',
+        'prosemirror-transform',
+        'prosemirror-model',
+        'prosemirror-view',
+        'prosemirror-gapcursor'
+      ]
+    }
+  }
+})
+```
 ::
 
 ### Content
@@ -24749,11 +26113,32 @@ Use the `placeholder` prop to set a placeholder text that shows in empty paragra
 
 ```vue
 <template>
-  <UEditor model-value="<h1>Hello World</h1>
-<p></p>
-" placeholder="Start writing..." class="w-full min-h-21" />
+  <UEditor model-value="" placeholder="Start writing..." class="w-full min-h-7" />
 </template>
 ```
+
+::note
+The `placeholder` prop accepts a string or an object with [PlaceholderOptions](https://tiptap.dev/docs/editor/extensions/functionality/placeholder){rel=""nofollow""} and an additional `mode` property:
+
+- `everyLine`: Display placeholder on every empty line when focused (default).
+- `firstLine`: Display placeholder only on the first line when the editor is empty.
+
+```vue
+<template>
+  <UEditor :placeholder="{ placeholder: 'Start writing...', mode: 'firstLine' }" />
+</template>
+```
+::
+
+::tip
+By default, placeholders only appear on top-level empty nodes. To show placeholders in nested elements like list items, set `includeChildren` to `true`:
+
+```vue
+<template>
+  <UEditor :placeholder="{ placeholder: 'Start writing...', includeChildren: true }" />
+</template>
+```
+::
 
 ::callout
 ---
@@ -24820,6 +26205,7 @@ The Editor component provides these default handlers, which you can reference in
 | `blockquote`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}      | Toggle blockquotes                                        |                                   |
 | `bulletList`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}      | Toggle bullet lists                                       | Handles list conversions          |
 | `orderedList`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}     | Toggle ordered lists                                      | Handles list conversions          |
+| `taskList`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}        | Toggle task lists                                         | Handles list conversions          |
 | `codeBlock`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}       | Toggle code blocks                                        |                                   |
 | `horizontalRule`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}  | Insert horizontal rules                                   |                                   |
 | `paragraph`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}       | Set paragraph format                                      |                                   |
@@ -24833,6 +26219,10 @@ The Editor component provides these default handlers, which you can reference in
 | `suggestion`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}      | Trigger suggestion menu                                   | Inserts `/` character             |
 | `mention`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}         | Trigger mention menu                                      | Inserts `@` character             |
 | `emoji`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}           | Trigger emoji picker                                      | Inserts `:` character             |
+
+::warning
+The `taskList` and `textAlign` handlers only work when their respective extensions are installed, as they are not included in the Editor by default.
+::
 
 Here's how to use default handlers in toolbar or suggestion menu items:
 
@@ -25270,7 +26660,7 @@ watch(file, async (newFile) => {
 
 2. Create a custom TipTap extension to register the node:
 
-```vue [EditorImageUpload.vue]
+```vue [EditorImageUploadExtension.vue]
 import { Node, mergeAttributes } from '@tiptap/core'
 import type { CommandProps, NodeViewRenderer } from '@tiptap/core'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
@@ -25315,27 +26705,13 @@ export const ImageUpload = Node.create({
 export default ImageUpload
 ```
 
-::warning
-If you encounter a `Adding different instances of a keyed plugin` error when creating a custom extension, you may need to add `prosemirror-state` to the vite `optimizeDeps` include list in your `nuxt.config.ts` file.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  vite: {
-    optimizeDeps: {
-      include: ['prosemirror-state']
-    }
-  }
-})
-```
-::
-
 3. Use the custom extension in the Editor:
 
 ```vue [EditorImageUploadExample.vue]
 <script setup lang="ts">
 import type { EditorCustomHandlers, EditorToolbarItem } from '@nuxt/ui'
 import type { Editor } from '@tiptap/vue-3'
-import { ImageUpload } from './EditorImageUpload'
+import { ImageUpload } from './EditorImageUploadExtension'
 
 const value = ref(`# Image Upload
 
@@ -25474,14 +26850,19 @@ export interface CompletionOptions {
    */
   debounce?: number
   /**
+   * Whether to automatically trigger completion while typing
+   * @defaultValue false
+   */
+  autoTrigger?: boolean
+  /**
    * Characters that should prevent completion from triggering
    * @defaultValue ['/', ':', '@']
    */
   triggerCharacters?: string[]
   /**
-   * Called when completion should be triggered, receives the text before cursor
+   * Called when completion should be triggered, receives the editor instance
    */
-  onTrigger?: (textBefore: string) => void
+  onTrigger?: (editor: Editor) => void
   /**
    * Called when suggestion is accepted
    */
@@ -25509,6 +26890,7 @@ export const Completion = Extension.create<CompletionOptions, CompletionStorage>
   addOptions() {
     return {
       debounce: 250,
+      autoTrigger: false,
       triggerCharacters: ['/', ':', '@'],
       onTrigger: undefined,
       onAccept: undefined,
@@ -25562,7 +26944,17 @@ export const Completion = Extension.create<CompletionOptions, CompletionStorage>
 
   addKeyboardShortcuts() {
     return {
-      Tab: ({ editor }) => {
+      'Mod-j': ({ editor }) => {
+        // Clear any existing suggestion first to avoid flickering
+        if (this.storage.visible) {
+          this.storage.clearSuggestion()
+          this.options.onDismiss?.()
+        }
+        // Manually trigger completion
+        this.storage.debouncedTrigger?.(editor as Editor)
+        return true
+      },
+      'Tab': ({ editor }) => {
         if (!this.storage.visible || !this.storage.suggestion || this.storage.position === undefined) {
           return false
         }
@@ -25583,7 +26975,7 @@ export const Completion = Extension.create<CompletionOptions, CompletionStorage>
         this.options.onAccept?.()
         return true
       },
-      Escape: ({ editor }) => {
+      'Escape': ({ editor }) => {
         if (this.storage.visible) {
           this.storage.clearSuggestion()
           // Force decoration update
@@ -25600,16 +26992,22 @@ export const Completion = Extension.create<CompletionOptions, CompletionStorage>
     // Clear suggestion on any edit
     if (this.storage.visible) {
       this.storage.clearSuggestion()
+      // Force decoration update
+      editor.view.dispatch(editor.state.tr.setMeta('completionUpdate', true))
       this.options.onDismiss?.()
     }
 
-    // Debounced trigger check
-    this.storage.debouncedTrigger?.(editor as unknown as Editor)
+    // Debounced trigger check (only if autoTrigger is enabled)
+    if (this.options.autoTrigger) {
+      this.storage.debouncedTrigger?.(editor as Editor)
+    }
   },
 
-  onSelectionUpdate() {
+  onSelectionUpdate({ editor }) {
     if (this.storage.visible) {
       this.storage.clearSuggestion()
+      // Force decoration update
+      editor.view.dispatch(editor.state.tr.setMeta('completionUpdate', true))
       this.options.onDismiss?.()
     }
   },
@@ -25646,9 +27044,8 @@ export const Completion = Extension.create<CompletionOptions, CompletionStorage>
       storage.position = selection.from
       storage.visible = true
 
-      // Get text before cursor as context
-      const textBefore = state.doc.textBetween(0, selection.from, '\n')
-      options.onTrigger(textBefore)
+      // Pass editor to let the handler extract content (e.g., as markdown)
+      options.onTrigger(editor)
     }, options.debounce || 250)
   },
 
@@ -25696,12 +27093,34 @@ export function useEditorCompletion(editorRef: Ref<{ editor: Editor | undefined 
       mode: mode.value,
       language: language.value
     })),
-    onFinish: () => {
+    onFinish: (_prompt, completionText) => {
       // For inline suggestion mode, don't clear - let user accept with Tab
       const storage = getCompletionStorage()
       if (mode.value === 'continue' && storage?.visible) {
         return
       }
+
+      // For transform modes, insert the full completion with markdown parsing
+      const transformModes = ['fix', 'extend', 'reduce', 'simplify', 'summarize', 'translate']
+      if (transformModes.includes(mode.value) && insertState.value && completionText) {
+        const editor = editorRef.value?.editor
+        if (editor) {
+          // Delete the original selection if not already done
+          if (insertState.value.deleteRange) {
+            editor.chain()
+              .focus()
+              .deleteRange(insertState.value.deleteRange)
+              .run()
+          }
+
+          // Insert with markdown parsing
+          editor.chain()
+            .focus()
+            .insertContentAt(insertState.value.pos, completionText, { contentType: 'markdown' })
+            .run()
+        }
+      }
+
       insertState.value = undefined
     },
     onError: (error) => {
@@ -25731,6 +27150,13 @@ export function useEditorCompletion(editorRef: Ref<{ editor: Editor | undefined 
       editor.view.dispatch(editor.state.tr.setMeta('completionUpdate', true))
     } else if (insertState.value) {
       // Direct insertion/transform mode (from toolbar actions)
+
+      // Transform modes use markdown insertion - wait for full completion
+      const transformModes = ['fix', 'extend', 'reduce', 'simplify', 'summarize', 'translate']
+      if (transformModes.includes(mode.value)) {
+        // Don't stream - will be handled in onFinish
+        return
+      }
 
       // If this is the first chunk and we have a selection to replace, delete it first
       if (insertState.value.deleteRange && !oldCompletion) {
@@ -25785,6 +27211,17 @@ export function useEditorCompletion(editorRef: Ref<{ editor: Editor | undefined 
     complete(selectedText)
   }
 
+  function getMarkdownBefore(editor: Editor, pos: number): string {
+    const { state } = editor
+    const serializer = (editor.storage.markdown as { serializer?: { serialize: (content: unknown) => string } })?.serializer
+    if (serializer) {
+      const slice = state.doc.slice(0, pos)
+      return serializer.serialize(slice.content)
+    }
+    // Fallback to plain text
+    return state.doc.textBetween(0, pos, '\n')
+  }
+
   function triggerContinue(editor: Editor) {
     if (isLoading.value) return
 
@@ -25795,22 +27232,23 @@ export function useEditorCompletion(editorRef: Ref<{ editor: Editor | undefined 
 
     if (selection.empty) {
       // No selection: continue from cursor position
-      const textBefore = state.doc.textBetween(0, selection.from, '\n')
+      const textBefore = getMarkdownBefore(editor, selection.from)
       insertState.value = { pos: selection.from }
       complete(textBefore)
     } else {
       // Text selected: append completion after the selection
-      const selectedText = state.doc.textBetween(selection.from, selection.to)
+      const textBefore = getMarkdownBefore(editor, selection.to)
       insertState.value = { pos: selection.to }
-      complete(selectedText)
+      complete(textBefore)
     }
   }
 
   // Configure Completion extension
   const extension = Completion.configure({
-    onTrigger: (textBefore) => {
+    onTrigger: (editor) => {
       if (isLoading.value) return
       mode.value = 'continue'
+      const textBefore = getMarkdownBefore(editor, editor.state.selection.from)
       complete(textBefore)
     },
     onAccept: () => {
@@ -26090,6 +27528,10 @@ const items = computed(() => [[{
 </template>
 ```
 
+::note
+The completion extension can be configured with `autoTrigger: true` to automatically suggest completions while typing (disabled by default). You can also manually trigger it with :kbd{value="meta"} :kbd{.ms-px value="j"}.
+::
+
 ::callout{icon="i-simple-icons-vercel" target="_blank" to="https://ai-sdk.dev/"}
 Learn more about the Vercel AI SDK and available providers.
 ::
@@ -26118,23 +27560,23 @@ interface EditorProps {
    */
   starterKit?: Partial<StarterKitOptions> | undefined;
   /**
-   * The placeholder text to show in empty paragraphs.
-   * `{ showOnlyWhenEditable: false, showOnlyCurrent: true }`{lang="ts-type"}
-   * Can be a string or PlaceholderOptions from `@tiptap/extension-placeholder`.
+   * The placeholder text to show in empty paragraphs. Can be a string or PlaceholderOptions from `@tiptap/extension-placeholder`.
    */
-  placeholder?: string | Partial<PlaceholderOptions> | undefined;
+  placeholder?: string | (Partial<PlaceholderOptions> & { mode?: "firstLine" | "everyLine" | undefined; }) | undefined;
   /**
    * The markdown extension options to configure markdown parsing and serialization.
    */
   markdown?: Partial<MarkdownExtensionOptions> | undefined;
   /**
-   * The image extension options to configure image handling.
+   * The image extension options to configure image handling. Set to `false` to disable the extension.
+   * @default "true"
    */
-  image?: Partial<ImageOptions> | undefined;
+  image?: boolean | Partial<ImageOptions> | undefined;
   /**
-   * The mention extension options to configure mention handling.
+   * The mention extension options to configure mention handling. Set to `false` to disable the extension.
+   * @default "true"
    */
-  mention?: Partial<MentionOptions<any, MentionNodeAttrs>> | undefined;
+  mention?: boolean | Partial<MentionOptions<any, MentionNodeAttrs>> | undefined;
   /**
    * Custom item handlers to override or extend the default handlers.
    * These handlers are provided to all child components (toolbar, suggestion menu, etc.).
@@ -26263,6 +27705,11 @@ interface EditorProps {
    * Called when content is deleted from the editor.
    */
   onDelete?: ((props: { editor: Editor; deletedRange: Range; newRange: Range; transaction: Transaction; combinedTransform: Transform; partial: boolean; from: number; to: number; } & ({ type: "node"; node: Node; newFrom: number; newTo: number; } | { type: "mark"; mark: Mark; })) => void) | undefined;
+  /**
+   * Whether to enable extension-level dispatching of transactions.
+   * If `false`, extensions cannot define their own `dispatchTransaction` hook.
+   */
+  enableExtensionDispatchTransaction?: boolean | undefined;
 }
 ```
 
@@ -26316,11 +27763,11 @@ export default defineAppConfig({
         content: 'relative size-full flex-1',
         base: [
           'w-full outline-none *:my-5 *:first:mt-0 *:last:mb-0 sm:px-8 selection:bg-primary/20',
-          '[&_:is(p,h1,h2,h3,h4).is-empty]:before:content-[attr(data-placeholder)] [&_:is(p,h1,h2,h3,h4).is-empty]:before:text-dimmed [&_:is(p,h1,h2,h3,h4).is-empty]:before:float-left [&_:is(p,h1,h2,h3,h4).is-empty]:before:h-0 [&_:is(p,h1,h2,h3,h4).is-empty]:before:pointer-events-none',
-          '[&_li_.is-empty]:before:content-none',
           '[&_p]:leading-7',
           '[&_a]:text-primary [&_a]:border-b [&_a]:border-transparent [&_a]:hover:border-primary [&_a]:font-medium',
           '[&_a]:transition-colors',
+          '[&_a>code]:border-dashed [&_a:hover>code]:border-primary [&_a:hover>code]:text-primary',
+          '[&_a>code]:transition-colors',
           '[&_.mention]:text-primary [&_.mention]:font-medium',
           '[&_:is(h1,h2,h3,h4)]:text-highlighted [&_:is(h1,h2,h3,h4)]:font-bold',
           '[&_h1]:text-3xl',
@@ -26343,6 +27790,19 @@ export default defineAppConfig({
           '[&_img]:rounded-md [&_img]:block [&_img]:max-w-full [&_img.ProseMirror-selectednode]:outline-2 [&_img.ProseMirror-selectednode]:outline-primary',
           '[&_.ProseMirror-selectednode:not(img):not(pre):not([data-node-view-wrapper])]:bg-primary/20'
         ]
+      },
+      variants: {
+        placeholderMode: {
+          firstLine: {
+            base: '[&_:is(p,h1,h2,h3,h4).is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_:is(p,h1,h2,h3,h4).is-editor-empty:first-child]:before:text-dimmed [&_:is(p,h1,h2,h3,h4).is-editor-empty:first-child]:before:float-left [&_:is(p,h1,h2,h3,h4).is-editor-empty:first-child]:before:h-0 [&_:is(p,h1,h2,h3,h4).is-editor-empty:first-child]:before:pointer-events-none'
+          },
+          everyLine: {
+            base: '[&_:is(p,h1,h2,h3,h4).is-empty]:before:content-[attr(data-placeholder)] [&_:is(p,h1,h2,h3,h4).is-empty]:before:text-dimmed [&_:is(p,h1,h2,h3,h4).is-empty]:before:float-left [&_:is(p,h1,h2,h3,h4).is-empty]:before:h-0 [&_:is(p,h1,h2,h3,h4).is-empty]:before:pointer-events-none'
+          }
+        }
+      },
+      defaultVariants: {
+        placeholderMode: 'everyLine'
       }
     }
   }
@@ -26662,7 +28122,7 @@ interface EditorDragHandleProps {
   /**
    * @default "\"neutral\""
    */
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * @default "\"ghost\""
    */
@@ -26696,14 +28156,14 @@ interface EditorDragHandleProps {
   /**
    * The type of the button when not a link.
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick?: ((event: MouseEvent) => void | Promise<void>) | ((event: MouseEvent) => void | Promise<void>)[] | undefined;
   /**
    * The element or component this component should render as when not a link.
    */
   as?: any;
   label?: string | undefined;
-  activeColor?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  activeColor?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   activeVariant?: "ghost" | "solid" | "outline" | "soft" | "subtle" | "link" | undefined;
   /**
    * @default "\"sm\""
@@ -27400,7 +28860,7 @@ const appendToBody = false ? () => document.body : undefined
 
 Use the `items` prop as an array of objects with the following properties:
 
-- [`kind?: "textAlign" | "heading" | "link" | "image" | "blockquote" | "bulletList" | "orderedList" | "codeBlock" | "horizontalRule" | "paragraph" | "clearFormatting" | "duplicate" | "delete" | "moveUp" | "moveDown" | "suggestion" | "mention" | "emoji"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}](https://ui.nuxt.com/docs/components/editor#handlers)
+- [`kind?: "textAlign" | "heading" | "link" | "image" | "blockquote" | "bulletList" | "orderedList" | "taskList" | "codeBlock" | "horizontalRule" | "paragraph" | "clearFormatting" | "duplicate" | "delete" | "moveUp" | "moveDown" | "suggestion" | "mention" | "emoji"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}](https://ui.nuxt.com/docs/components/editor#handlers)
 - `label?: string`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
 - `description?: string`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
 - `icon?: string`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
@@ -27714,7 +29174,7 @@ Use the `items` prop as an array of objects with the following properties:
 - `variant?: "solid" | "outline" | "soft" | "ghost" | "link" | "subtle"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
 - `activeVariant?: "solid" | "outline" | "soft" | "ghost" | "link" | "subtle"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
 - `size?: "xs" | "sm" | "md" | "lg" | "xl"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
-- [`kind?: "mark" | "textAlign" | "heading" | "link" | "image" | "blockquote" | "bulletList" | "orderedList" | "codeBlock" | "horizontalRule" | "paragraph" | "undo" | "redo" | "clearFormatting" | "duplicate" | "delete" | "moveUp" | "moveDown" | "suggestion" | "mention" | "emoji"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}](https://ui.nuxt.com/docs/components/editor#handlers)
+- [`kind?: "mark" | "textAlign" | "heading" | "link" | "image" | "blockquote" | "bulletList" | "orderedList" | "taskList" | "codeBlock" | "horizontalRule" | "paragraph" | "undo" | "redo" | "clearFormatting" | "duplicate" | "delete" | "moveUp" | "moveDown" | "suggestion" | "mention" | "emoji"`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}](https://ui.nuxt.com/docs/components/editor#handlers)
 - `disabled?: boolean`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
 - `loading?: boolean`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
 - `active?: boolean`{.shiki,shiki-themes,material-theme-lighter,material-theme,material-theme-palenight lang="ts-type"}
@@ -28090,12 +29550,19 @@ function setLink() {
 
   const { selection } = props.editor.state
   const isEmpty = selection.empty
+  const hasCode = props.editor.isActive('code')
 
   let chain = props.editor.chain().focus()
-  chain = chain.extendMarkRange('link').setLink({ href: url.value })
 
-  if (isEmpty) {
-    chain = chain.insertContent({ type: 'text', text: url.value })
+  // When linking code, extend the code mark range first to select the full code
+  if (hasCode && !isEmpty) {
+    chain = chain.extendMarkRange('code').setLink({ href: url.value })
+  } else {
+    chain = chain.extendMarkRange('link').setLink({ href: url.value })
+
+    if (isEmpty) {
+      chain = chain.insertContent({ type: 'text', text: url.value })
+    }
   }
 
   chain.run()
@@ -28787,7 +30254,7 @@ interface ErrorProps {
    * The element or component this component should render as.
    */
   as?: any;
-  error?: Partial<NuxtError<unknown> & { message: string; }> | undefined;
+  error?: any;
   /**
    * The URL to redirect to when the error is cleared.
    * @default "\"/\""
@@ -34046,6 +35513,62 @@ const items = ref<undefined>([
   :::
 ::
 
+### Clear :badge{.align-text-top label="Soon"}
+
+Use the `clear` prop to display a clear button when a value is selected.
+
+```vue
+<script setup lang="ts">
+const items = ref<undefined>([
+  'Backlog',
+  'Todo',
+  'In Progress',
+  'Done',
+])
+</script>
+
+<template>
+  <UInputMenu model-value="Backlog" clear :items="items" />
+</template>
+```
+
+### Clear Icon :badge{.align-text-top label="Soon"}
+
+Use the `clear-icon` prop to customize the clear button [Icon](https://ui.nuxt.com/docs/components/icon). Defaults to `i-lucide-x`.
+
+```vue
+<script setup lang="ts">
+const items = ref<undefined>([
+  'Backlog',
+  'Todo',
+  'In Progress',
+  'Done',
+])
+</script>
+
+<template>
+  <UInputMenu model-value="Backlog" clear clear-icon="i-lucide-trash" :items="items" />
+</template>
+```
+
+::framework-only
+#nuxt
+  :::tip
+  ---
+  to: https://ui.nuxt.com/docs/getting-started/integrations/icons/nuxt#theme
+  ---
+  You can customize this icon globally in your `app.config.ts` under `ui.icons.close` key.
+  :::
+
+#vue
+  :::tip
+  ---
+  to: https://ui.nuxt.com/docs/getting-started/integrations/icons/vue#theme
+  ---
+  You can customize this icon globally in your `vite.config.ts` under `ui.icons.close` key.
+  :::
+::
+
 ### Avatar
 
 Use the `avatar` prop to show an [Avatar](https://ui.nuxt.com/docs/components/avatar) inside the InputMenu.
@@ -34613,6 +36136,70 @@ const items: InputMenuItem[] = Array(1000).fill(0).map((_, i) => ({
 </template>
 ```
 
+### With infinite scroll :badge{.align-text-top label="Soon"}
+
+You can use the [`useInfiniteScroll`](https://vueuse.org/core/useInfiniteScroll/){rel="&#x22;nofollow&#x22;"} composable to load more data as the user scrolls.
+
+```vue [InputMenuInfiniteScrollExample.vue]
+<script setup lang="ts">
+import { useInfiniteScroll } from '@vueuse/core'
+
+type User = {
+  firstName: string
+}
+
+type UserResponse = {
+  users: User[]
+  total: number
+  skip: number
+  limit: number
+}
+
+const skip = ref(0)
+
+const { data, status, execute } = await useFetch('https://dummyjson.com/users?limit=10&select=firstName', {
+  key: 'select-menu-users-infinite-scroll',
+  params: { skip },
+  transform: (data?: UserResponse) => {
+    return data?.users.map(user => user.firstName)
+  },
+  lazy: true,
+  immediate: false
+})
+
+const users = ref<string[]>([])
+
+watch(data, () => {
+  users.value = [
+    ...users.value,
+    ...(data.value || [])
+  ]
+})
+
+execute()
+
+const inputMenu = useTemplateRef('inputMenu')
+
+onMounted(() => {
+  useInfiniteScroll(() => inputMenu.value?.viewportRef, () => {
+    skip.value += 10
+  }, {
+    canLoadMore: () => {
+      return status.value !== 'pending'
+    }
+  })
+})
+</script>
+
+<template>
+  <UInputMenu
+    ref="inputMenu"
+    placeholder="Select user"
+    :items="users"
+  />
+</template>
+```
+
 ### With full content width
 
 You can expand the content to the full width of its items by adding the `min-w-fit` class on the `ui.content` slot.
@@ -34758,6 +36345,15 @@ interface InputMenuProps {
    */
   deleteIcon?: any;
   /**
+   * Display a clear button to reset the model value.
+   * Can be an object to pass additional props to the Button.
+   */
+  clear?: boolean | Partial<Omit<ButtonProps, LinkPropsKeys>> | undefined;
+  /**
+   * The icon displayed in the clear button.
+   */
+  clearIcon?: any;
+  /**
    * The content of the menu.
    */
   content?: (Omit<ComboboxContentProps, "asChild" | "as" | "forceMount"> & Partial<EmitsToProps<DismissableLayerEmits>>) | undefined;
@@ -34775,7 +36371,7 @@ interface InputMenuProps {
    * Note: when enabled, all groups are flattened into a single list due to a limitation of Reka UI (https://github.com/unovue/reka-ui/issues/1885).
    * @default "false"
    */
-  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | undefined; } | undefined;
+  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | ((index: number) => number) | undefined; } | undefined;
   /**
    * When `items` is an array of objects, select the field to use as the value instead of the object itself.
    */
@@ -34820,7 +36416,7 @@ interface InputMenuProps {
    * When `true`, disable the default filters, useful for custom filtering (useAsyncData, useFetch, etc.).
    */
   ignoreFilter?: boolean | undefined;
-  ui?: { root?: ClassNameValue; base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; tagsItem?: ClassNameValue; tagsItemText?: ClassNameValue; tagsItemDelete?: ClassNameValue; tagsItemDeleteIcon?: ClassNameValue; tagsInput?: ClassNameValue; } | undefined;
+  ui?: { root?: ClassNameValue; base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; trailingClear?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; tagsItem?: ClassNameValue; tagsItemText?: ClassNameValue; tagsItemDelete?: ClassNameValue; tagsItemDeleteIcon?: ClassNameValue; tagsInput?: ClassNameValue; } | undefined;
   /**
    * When `true`, prevents the user from interacting with listbox
    */
@@ -34847,6 +36443,11 @@ interface InputMenuProps {
    * @default "true"
    */
   resetSearchTermOnSelect?: boolean | undefined;
+  /**
+   * When `true` the `modelValue` will be reset to `null` (or `[]` if `multiple`)
+   * @default "true"
+   */
+  resetModelValueOnClear?: boolean | undefined;
   /**
    * When `true`, hover over item will trigger highlight
    */
@@ -34948,6 +36549,7 @@ interface InputMenuEmits {
   blur: (payload: [event: FocusEvent]) => void;
   focus: (payload: [event: FocusEvent]) => void;
   create: (payload: [item: string]) => void;
+  clear: (payload: []) => void;
   highlight: (payload: [payload: { ref: HTMLElement; value: any; } | undefined]) => void;
   remove-tag: (payload: [item: any]) => void;
   update:modelValue: (payload: [value: any]) => void;
@@ -34959,9 +36561,10 @@ interface InputMenuEmits {
 
 When accessing the component via a template ref, you can use the following:
 
-| Name                                                                                                                           | Type                                                                                                                                               |
-| ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `inputRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | `Ref<HTMLInputElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} |
+| Name                                                                                                                              | Type                                                                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inputRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}    | `Ref<HTMLInputElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} |
+| `viewportRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | `Ref<HTMLDivElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}   |
 
 ## Theme
 
@@ -34981,6 +36584,7 @@ export default defineAppConfig({
         leadingAvatarSize: '',
         trailing: 'group absolute inset-y-0 end-0 flex items-center disabled:cursor-not-allowed disabled:opacity-75',
         trailingIcon: 'shrink-0 text-dimmed',
+        trailingClear: 'p-0',
         arrow: 'fill-default',
         content: 'max-h-60 w-(--reka-combobox-trigger-width) bg-default shadow-lg rounded-md ring ring-default overflow-hidden data-[state=open]:animate-[scale-in_100ms_ease-out] data-[state=closed]:animate-[scale-out_100ms_ease-in] origin-(--reka-combobox-content-transform-origin) pointer-events-auto flex flex-col',
         viewport: 'relative scroll-py-1 overflow-y-auto flex-1',
@@ -36867,7 +38471,7 @@ interface InputTimeProps {
    * The element or component this component should render as.
    */
   as?: any;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   variant?: "outline" | "soft" | "subtle" | "ghost" | "none" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   /**
@@ -36977,8 +38581,8 @@ interface InputTimeSlots {
  * Emitted events for the InputTime component
  */
 interface InputTimeEmits {
-  blur: (payload: [event: FocusEvent]) => void;
   change: (payload: [event: Event]) => void;
+  blur: (payload: [event: FocusEvent]) => void;
   focus: (payload: [event: FocusEvent]) => void;
   update:modelValue: (payload: [date: TimeValue | undefined]) => void;
   update:placeholder: (payload: [date: TimeValue]) => void;
@@ -37406,7 +39010,7 @@ interface KbdProps {
    */
   as?: any;
   value?: string | undefined;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   variant?: "outline" | "soft" | "subtle" | "solid" | undefined;
   size?: "sm" | "md" | "lg" | undefined;
 }
@@ -37699,7 +39303,7 @@ interface LinkProps {
    * The type of the button when not a link.
    * @default "\"button\""
    */
-  type?: "reset" | "submit" | "button" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   disabled?: boolean | undefined;
   /**
    * Force the link to be active independent of the current route.
@@ -37775,7 +39379,7 @@ interface LinkProps {
    * An option to either add or remove trailing slashes in the `href` for this specific link.
    * Overrides the global `trailingSlash` option if provided.
    */
-  trailingSlash?: "remove" | "append" | undefined;
+  trailingSlash?: "append" | "remove" | undefined;
   /**
    * Class to apply when the link is active
    */
@@ -37988,7 +39592,7 @@ interface LocaleSelectProps {
    */
   avatar?: AvatarProps | undefined;
   size?: "md" | "xs" | "sm" | "lg" | "xl" | undefined;
-  ui?: { base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; value?: ClassNameValue; placeholder?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; input?: ClassNameValue; focusScope?: ClassNameValue; } | undefined;
+  ui?: { base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; value?: ClassNameValue; placeholder?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; input?: ClassNameValue; focusScope?: ClassNameValue; trailingClear?: ClassNameValue; } | undefined;
   /**
    * When `true`, the loading icon will be displayed.
    */
@@ -37997,7 +39601,7 @@ interface LocaleSelectProps {
    * Display an icon based on the `leading` and `trailing` props.
    */
   icon?: any;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   autofocus?: boolean | undefined;
   /**
    * When `true`, prevents the user from interacting with listbox
@@ -38025,6 +39629,10 @@ interface LocaleSelectProps {
    * Whether to reset the searchTerm when the Combobox value is selected
    */
   resetSearchTermOnSelect?: boolean | undefined;
+  /**
+   * When `true` the `modelValue` will be reset to `null` (or `[]` if `multiple`)
+   */
+  resetModelValueOnClear?: boolean | undefined;
   /**
    * When `true`, hover over item will trigger highlight
    */
@@ -38060,6 +39668,15 @@ interface LocaleSelectProps {
    */
   selectedIcon?: any;
   /**
+   * Display a clear button to reset the model value.
+   * Can be an object to pass additional props to the Button.
+   */
+  clear?: boolean | Partial<Omit<ButtonProps, LinkPropsKeys>> | undefined;
+  /**
+   * The icon displayed in the clear button.
+   */
+  clearIcon?: any;
+  /**
    * The content of the menu.
    */
   content?: (Omit<ComboboxContentProps, "as" | "asChild" | "forceMount"> & Partial<EmitsToProps<DismissableLayerEmits>>) | undefined;
@@ -38075,7 +39692,7 @@ interface LocaleSelectProps {
    * Enable virtualization for large lists.
    * Note: when enabled, all groups are flattened into a single list due to a limitation of Reka UI (https://github.com/unovue/reka-ui/issues/1885).
    */
-  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | undefined; } | undefined;
+  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | ((index: number) => number) | undefined; } | undefined;
   /**
    * When `items` is an array of objects, select the field to use as the value instead of the object itself.
    * @default "\"code\""
@@ -42324,8 +43941,7 @@ The PageCard component provides a flexible way to display content in a card with
   :::u-page-card
   ---
   class: w-96
-  description: Nuxt UI integrates with latest Tailwind CSS v4, bringing
-    significant improvements.
+  description: Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements.
   icon: i-simple-icons-tailwindcss
   title: Tailwind CSS
   ---
@@ -42353,7 +43969,7 @@ Use the `description` prop to set the description of the card.
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." />
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." />
 </template>
 ```
 
@@ -42363,7 +43979,7 @@ Use the `icon` prop to set the icon of the card.
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" />
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" />
 </template>
 ```
 
@@ -42373,7 +43989,7 @@ You can pass any property from the [`<NuxtLink>`](https://nuxt.com/docs/api/comp
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" to="https://tailwindcss.com/docs/v4-beta" target="_blank" />
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" to="https://tailwindcss.com/docs/v4-beta" target="_blank" />
 </template>
 ```
 
@@ -42383,7 +43999,7 @@ Use the `variant` prop to change the style of the card.
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" to="https://tailwindcss.com/docs/v4-beta" target="_blank" variant="soft" />
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" to="https://tailwindcss.com/docs/v4-beta" target="_blank" variant="soft" />
 </template>
 ```
 
@@ -42397,7 +44013,7 @@ Use the `orientation` prop to change the orientation with the default slot. Defa
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal">
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal">
     <img src="/tailwindcss-v4.svg" alt="Tailwind CSS" class="w-full" />
   </UPageCard>
 </template>
@@ -42409,7 +44025,7 @@ Use the `reverse` prop to reverse the orientation of the default slot.
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal" reverse>
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal" reverse>
     <img src="/tailwindcss-v4.svg" alt="Tailwind CSS" class="w-full" />
   </UPageCard>
 </template>
@@ -42421,7 +44037,7 @@ Use the `highlight` and `highlight-color` props to display a highlighted border 
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal" highlight highlight-color="primary">
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal" highlight highlight-color="primary">
     <img src="/tailwindcss-v4.svg" alt="Tailwind CSS" class="w-full" />
   </UPageCard>
 </template>
@@ -42437,7 +44053,7 @@ The spotlight effect will take over hover effects when using a `to` prop. It's b
 
 ```vue
 <template>
-  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal" spotlight spotlight-color="primary">
+  <UPageCard title="Tailwind CSS" description="Nuxt UI integrates with latest Tailwind CSS, bringing significant improvements." icon="i-simple-icons-tailwindcss" orientation="horizontal" spotlight spotlight-color="primary">
     <img src="/tailwindcss-v4.svg" alt="Tailwind CSS" class="w-full" />
   </UPageCard>
 </template>
@@ -42519,12 +44135,12 @@ interface PageCardProps {
    * Display a line around the page card.
    */
   highlight?: boolean | undefined;
-  highlightColor?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  highlightColor?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   /**
    * Display a spotlight effect that follows your mouse cursor and highlights borders on hover.
    */
   spotlight?: boolean | undefined;
-  spotlightColor?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  spotlightColor?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   variant?: "solid" | "outline" | "soft" | "subtle" | "ghost" | "naked" | undefined;
   to?: string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric | undefined;
   target?: "_blank" | "_parent" | "_self" | "_top" | (string & {}) | null | undefined;
@@ -43028,7 +44644,7 @@ The PageCTA component provides a flexible way to display a call to action in you
       color: neutral
       variant: subtle
       trailingIcon: i-lucide-arrow-right
-  description: Preview the latest Tailwind CSS v4 and get started with Nuxt UI.
+  description: Preview the latest Tailwind CSS and get started with Nuxt UI.
   orientation: horizontal
   title: Trusted and supported by our amazing community
   ---
@@ -43453,7 +45069,7 @@ You can also use it to display a list of cards in a bento style layout by using 
 const cards = ref([
   {
     title: 'Theme',
-    description: 'Learn how to customize Nuxt UI components using Tailwind CSS v4.',
+    description: 'Learn how to customize Nuxt UI components using Tailwind CSS.',
     icon: 'i-lucide-swatch-book',
     to: '/docs/getting-started/theme/design-system',
     class: 'lg:col-span-2',
@@ -45064,7 +46680,7 @@ interface PaginationProps {
    * The color of the pagination controls.
    * @default "\"neutral\""
    */
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * The variant of the pagination controls.
    * @default "\"outline\""
@@ -45074,7 +46690,7 @@ interface PaginationProps {
    * The color of the active pagination control.
    * @default "\"primary\""
    */
-  activeColor?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  activeColor?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   /**
    * The variant of the active pagination control.
    * @default "\"solid\""
@@ -49362,6 +50978,70 @@ function getUserAvatar(value: string) {
 </template>
 ```
 
+### With infinite scroll :badge{.align-text-top label="Soon"}
+
+You can use the [`useInfiniteScroll`](https://vueuse.org/core/useInfiniteScroll/){rel="&#x22;nofollow&#x22;"} composable to load more data as the user scrolls.
+
+```vue [SelectInfiniteScrollExample.vue]
+<script setup lang="ts">
+import { useInfiniteScroll } from '@vueuse/core'
+
+type User = {
+  firstName: string
+}
+
+type UserResponse = {
+  users: User[]
+  total: number
+  skip: number
+  limit: number
+}
+
+const skip = ref(0)
+
+const { data, status, execute } = await useFetch('https://dummyjson.com/users?limit=10&select=firstName', {
+  key: 'select-menu-users-infinite-scroll',
+  params: { skip },
+  transform: (data?: UserResponse) => {
+    return data?.users.map(user => user.firstName)
+  },
+  lazy: true,
+  immediate: false
+})
+
+const users = ref<string[]>([])
+
+watch(data, () => {
+  users.value = [
+    ...users.value,
+    ...(data.value || [])
+  ]
+})
+
+execute()
+
+const select = useTemplateRef('select')
+
+onMounted(() => {
+  useInfiniteScroll(() => select.value?.viewportRef, () => {
+    skip.value += 10
+  }, {
+    canLoadMore: () => {
+      return status.value !== 'pending'
+    }
+  })
+})
+</script>
+
+<template>
+  <USelect
+    ref="select"
+    placeholder="Select user"
+    :items="users"
+  />
+</template>
+```
+
 ### With full content width
 
 You can expand the content to the full width of its items by adding the `min-w-fit` class on the `ui.content` slot.
@@ -49606,9 +51286,10 @@ interface SelectEmits {
 
 When accessing the component via a template ref, you can use the following:
 
-| Name                                                                                                                             | Type                                                                                                                                                |
-| -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `triggerRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | `Ref<HTMLButtonElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} |
+| Name                                                                                                                              | Type                                                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `triggerRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}  | `Ref<HTMLButtonElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} |
+| `viewportRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | `Ref<HTMLDivElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}    |
 
 ## Theme
 
@@ -50368,6 +52049,62 @@ const items = ref<undefined>([
   :::
 ::
 
+### Clear :badge{.align-text-top label="Soon"}
+
+Use the `clear` prop to display a clear button when a value is selected.
+
+```vue
+<script setup lang="ts">
+const items = ref<undefined>([
+  'Backlog',
+  'Todo',
+  'In Progress',
+  'Done',
+])
+</script>
+
+<template>
+  <USelectMenu model-value="Backlog" clear class="w-48" :items="items" />
+</template>
+```
+
+### Clear Icon :badge{.align-text-top label="Soon"}
+
+Use the `clear-icon` prop to customize the clear button [Icon](https://ui.nuxt.com/docs/components/icon). Defaults to `i-lucide-x`.
+
+```vue
+<script setup lang="ts">
+const items = ref<undefined>([
+  'Backlog',
+  'Todo',
+  'In Progress',
+  'Done',
+])
+</script>
+
+<template>
+  <USelectMenu model-value="Backlog" clear clear-icon="i-lucide-trash" class="w-48" :items="items" />
+</template>
+```
+
+::framework-only
+#nuxt
+  :::tip
+  ---
+  to: https://ui.nuxt.com/docs/getting-started/integrations/icons/nuxt#theme
+  ---
+  You can customize this icon globally in your `app.config.ts` under `ui.icons.close` key.
+  :::
+
+#vue
+  :::tip
+  ---
+  to: https://ui.nuxt.com/docs/getting-started/integrations/icons/vue#theme
+  ---
+  You can customize this icon globally in your `vite.config.ts` under `ui.icons.close` key.
+  :::
+::
+
 ### Avatar
 
 Use the `avatar` prop to display an [Avatar](https://ui.nuxt.com/docs/components/avatar) inside the SelectMenu.
@@ -50919,6 +52656,70 @@ const items: SelectMenuItem[] = Array(1000).fill(0).map((_, i) => ({
 </template>
 ```
 
+### With infinite scroll :badge{.align-text-top label="Soon"}
+
+You can use the [`useInfiniteScroll`](https://vueuse.org/core/useInfiniteScroll/){rel="&#x22;nofollow&#x22;"} composable to load more data as the user scrolls.
+
+```vue [SelectMenuInfiniteScrollExample.vue]
+<script setup lang="ts">
+import { useInfiniteScroll } from '@vueuse/core'
+
+type User = {
+  firstName: string
+}
+
+type UserResponse = {
+  users: User[]
+  total: number
+  skip: number
+  limit: number
+}
+
+const skip = ref(0)
+
+const { data, status, execute } = await useFetch('https://dummyjson.com/users?limit=10&select=firstName', {
+  key: 'select-menu-users-infinite-scroll',
+  params: { skip },
+  transform: (data?: UserResponse) => {
+    return data?.users.map(user => user.firstName)
+  },
+  lazy: true,
+  immediate: false
+})
+
+const users = ref<string[]>([])
+
+watch(data, () => {
+  users.value = [
+    ...users.value,
+    ...(data.value || [])
+  ]
+})
+
+execute()
+
+const selectMenu = useTemplateRef('selectMenu')
+
+onMounted(() => {
+  useInfiniteScroll(() => selectMenu.value?.viewportRef, () => {
+    skip.value += 10
+  }, {
+    canLoadMore: () => {
+      return status.value !== 'pending'
+    }
+  })
+})
+</script>
+
+<template>
+  <USelectMenu
+    ref="selectMenu"
+    placeholder="Select user"
+    :items="users"
+  />
+</template>
+```
+
 ### With full content width
 
 You can expand the content to the full width of its items by adding the `min-w-fit` class on the `ui.content` slot.
@@ -51054,6 +52855,15 @@ interface SelectMenuProps {
    */
   selectedIcon?: any;
   /**
+   * Display a clear button to reset the model value.
+   * Can be an object to pass additional props to the Button.
+   */
+  clear?: boolean | Partial<Omit<ButtonProps, LinkPropsKeys>> | undefined;
+  /**
+   * The icon displayed in the clear button.
+   */
+  clearIcon?: any;
+  /**
    * The content of the menu.
    */
   content?: (Omit<ComboboxContentProps, "asChild" | "as" | "forceMount"> & Partial<EmitsToProps<DismissableLayerEmits>>) | undefined;
@@ -51071,7 +52881,7 @@ interface SelectMenuProps {
    * Note: when enabled, all groups are flattened into a single list due to a limitation of Reka UI (https://github.com/unovue/reka-ui/issues/1885).
    * @default "false"
    */
-  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | undefined; } | undefined;
+  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | ((index: number) => number) | undefined; } | undefined;
   /**
    * When `items` is an array of objects, select the field to use as the value instead of the object itself.
    */
@@ -51121,7 +52931,7 @@ interface SelectMenuProps {
    * @default "0"
    */
   autofocusDelay?: number | undefined;
-  ui?: { base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; value?: ClassNameValue; placeholder?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; input?: ClassNameValue; focusScope?: ClassNameValue; } | undefined;
+  ui?: { base?: ClassNameValue; leading?: ClassNameValue; leadingIcon?: ClassNameValue; leadingAvatar?: ClassNameValue; leadingAvatarSize?: ClassNameValue; trailing?: ClassNameValue; trailingIcon?: ClassNameValue; value?: ClassNameValue; placeholder?: ClassNameValue; arrow?: ClassNameValue; content?: ClassNameValue; viewport?: ClassNameValue; group?: ClassNameValue; empty?: ClassNameValue; label?: ClassNameValue; separator?: ClassNameValue; item?: ClassNameValue; itemLeadingIcon?: ClassNameValue; itemLeadingAvatar?: ClassNameValue; itemLeadingAvatarSize?: ClassNameValue; itemLeadingChip?: ClassNameValue; itemLeadingChipSize?: ClassNameValue; itemTrailing?: ClassNameValue; itemTrailingIcon?: ClassNameValue; itemWrapper?: ClassNameValue; itemLabel?: ClassNameValue; itemDescription?: ClassNameValue; input?: ClassNameValue; focusScope?: ClassNameValue; trailingClear?: ClassNameValue; } | undefined;
   /**
    * When `true`, prevents the user from interacting with listbox
    */
@@ -51148,6 +52958,11 @@ interface SelectMenuProps {
    * @default "true"
    */
   resetSearchTermOnSelect?: boolean | undefined;
+  /**
+   * When `true` the `modelValue` will be reset to `null` (or `[]` if `multiple`)
+   * @default "true"
+   */
+  resetModelValueOnClear?: boolean | undefined;
   /**
    * When `true`, hover over item will trigger highlight
    */
@@ -51236,6 +53051,7 @@ interface SelectMenuEmits {
   blur: (payload: [event: FocusEvent]) => void;
   focus: (payload: [event: FocusEvent]) => void;
   create: (payload: [item: string]) => void;
+  clear: (payload: []) => void;
   highlight: (payload: [payload: { ref: HTMLElement; value: any; } | undefined]) => void;
   update:modelValue: (payload: [value: any]) => void;
   update:searchTerm: (payload: [value: string]) => void;
@@ -51246,9 +53062,10 @@ interface SelectMenuEmits {
 
 When accessing the component via a template ref, you can use the following:
 
-| Name                                                                                                                             | Type                                                                                                                                                |
-| -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `triggerRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | `Ref<HTMLButtonElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} |
+| Name                                                                                                                              | Type                                                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `triggerRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}  | `Ref<HTMLButtonElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} |
+| `viewportRef`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"} | `Ref<HTMLDivElement | null>`{.language-ts-type.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts-type"}    |
 
 ## Theme
 
@@ -51297,7 +53114,8 @@ export default defineAppConfig({
         itemLabel: 'truncate',
         itemDescription: 'truncate text-muted',
         input: 'border-b border-default',
-        focusScope: 'flex flex-col min-h-0'
+        focusScope: 'flex flex-col min-h-0',
+        trailingClear: 'p-0'
       },
       variants: {
         fieldGroup: {
@@ -51706,7 +53524,7 @@ interface SeparatorProps {
    * Display an avatar in the middle.
    */
   avatar?: AvatarProps | undefined;
-  color?: "error" | "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | undefined;
+  color?: "neutral" | "primary" | "secondary" | "success" | "info" | "warning" | "error" | undefined;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
   type?: "solid" | "dashed" | "dotted" | undefined;
   /**
@@ -53986,7 +55804,7 @@ export default defineAppConfig({
 
 ## Usage
 
-The Table component is built on top of [TanStack Table](https://tanstack.com/table/latest){rel="&#x22;nofollow&#x22;"} and is powered by the [useVueTable](https://tanstack.com/table/latest/docs/framework/vue/vue-table#usevuetable){rel="&#x22;nofollow&#x22;"} composable to provide a flexible and fully type-safe API. &#x2A;Some features of TanStack Table are not supported yet, we'll add more over time.*
+The Table component is built on top of [TanStack Table](https://tanstack.com/table/latest){rel="&#x22;nofollow&#x22;"} and is powered by the [useVueTable](https://tanstack.com/table/latest/docs/framework/vue/vue-table#usevuetable){rel="&#x22;nofollow&#x22;"} composable to provide a flexible and fully type-safe API.
 
 ```vue [TableExample.vue]
 <script setup lang="ts">
@@ -54189,23 +56007,35 @@ const columns: TableColumn<Payment>[] = [{
       onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
     })
   },
-  cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('email'))
+  meta: {
+    class: {
+      td: 'lowercase'
+    }
+  }
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }, {
   id: 'actions',
   enableHiding: false,
+  meta: {
+    class: {
+      td: 'text-right'
+    }
+  },
   cell: ({ row }) => {
     const items = [{
       type: 'label',
@@ -54234,7 +56064,7 @@ const columns: TableColumn<Payment>[] = [{
       label: 'View payment details'
     }]
 
-    return h('div', { class: 'text-right' }, h(UDropdownMenu, {
+    return h(UDropdownMenu, {
       'content': {
         align: 'end'
       },
@@ -54244,9 +56074,8 @@ const columns: TableColumn<Payment>[] = [{
       'icon': 'i-lucide-ellipsis-vertical',
       'color': 'neutral',
       'variant': 'ghost',
-      'class': 'ml-auto',
       'aria-label': 'Actions dropdown'
-    })))
+    }))
   }
 }]
 
@@ -54435,16 +56264,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 </script>
@@ -54467,11 +56299,12 @@ Use the `meta` prop as an object ([TableMeta](https://tanstack.com/table/latest/
 - `style`:
   - `tr`: [The style to apply to the `tr` element.]{.text-muted}
 
-```vue [TableCustomMetaExample.vue]
+```vue [TableMetaExample.vue]
 <script setup lang="ts">
-import type { ColumnDef } from '@tanstack/vue-table'
+import type { TableColumn } from '@nuxt/ui'
+import type { TableMeta, Row } from '@tanstack/vue-table'
 
-interface Payment {
+type Payment = {
   id: string
   date: string
   status: 'paid' | 'failed' | 'refunded'
@@ -54479,124 +56312,122 @@ interface Payment {
   amount: number
 }
 
-const data: Payment[] = [
-  {
-    id: '4600',
-    date: '2024-03-11T15:30:00',
-    status: 'paid',
-    email: 'james.anderson@example.com',
-    amount: 594
-  },
-  {
-    id: '4599',
-    date: '2024-03-11T10:10:00',
-    status: 'failed',
-    email: 'mia.white@example.com',
-    amount: 276
-  },
-  {
-    id: '4598',
-    date: '2024-03-11T08:50:00',
-    status: 'refunded',
-    email: 'william.brown@example.com',
-    amount: 315
-  },
-  {
-    id: '4597',
-    date: '2024-03-10T19:45:00',
-    status: 'paid',
-    email: 'emma.davis@example.com',
-    amount: 529
-  },
-  {
-    id: '4596',
-    date: '2024-03-10T15:55:00',
-    status: 'paid',
-    email: 'ethan.harris@example.com',
-    amount: 639
-  }
-]
+const data = ref<Payment[]>([{
+  id: '4600',
+  date: '2024-03-11T15:30:00',
+  status: 'paid',
+  email: 'james.anderson@example.com',
+  amount: 594
+}, {
+  id: '4599',
+  date: '2024-03-11T10:10:00',
+  status: 'failed',
+  email: 'mia.white@example.com',
+  amount: 276
+}, {
+  id: '4598',
+  date: '2024-03-11T08:50:00',
+  status: 'refunded',
+  email: 'william.brown@example.com',
+  amount: 315
+}, {
+  id: '4597',
+  date: '2024-03-10T19:45:00',
+  status: 'paid',
+  email: 'emma.davis@example.com',
+  amount: 529
+}, {
+  id: '4596',
+  date: '2024-03-10T15:55:00',
+  status: 'paid',
+  email: 'ethan.harris@example.com',
+  amount: 639
+}])
 
-const columns: ColumnDef<Payment>[] = [
-  {
-    accessorKey: 'id',
-    header: 'ID',
-    meta: {
-      class: {
-        th: 'text-center font-semibold',
-        td: 'text-center font-mono'
-      }
-    }
-  },
-  {
-    accessorKey: 'date',
-    header: 'Date',
-    cell: ({ row }) => {
-      return new Date(row.getValue('date')).toLocaleString('en-US', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    }
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    meta: {
-      class: {
-        th: 'text-center',
-        td: 'text-center'
-      }
-    },
-    cell: ({ row }) => {
-      const status = row.getValue('status') as string
-      const colorMap = {
-        paid: 'text-success',
-        failed: 'text-error',
-        refunded: 'text-warning'
-      }
-      return h('span', {
-        class: `font-semibold capitalize ${colorMap[status as keyof typeof colorMap]}`
-      }, status)
-    }
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-    meta: {
-      class: {
-        th: 'text-left',
-        td: 'text-left'
-      }
-    }
-  },
-  {
-    accessorKey: 'amount',
-    header: 'Amount',
-    meta: {
-      class: {
-        th: 'text-right font-bold text-primary',
-        td: 'text-right font-mono'
-      }
-    },
-    cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue('amount'))
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-      }).format(amount)
-
-      return h('span', {
-        class: 'font-semibold text-success'
-      }, formatted)
+const columns: TableColumn<Payment>[] = [{
+  accessorKey: 'id',
+  header: 'ID',
+  meta: {
+    class: {
+      th: 'text-center font-semibold',
+      td: 'text-center font-mono'
     }
   }
-]
+}, {
+  accessorKey: 'date',
+  header: 'Date',
+  cell: ({ row }) => {
+    return new Date(row.getValue('date')).toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    })
+  }
+}, {
+  accessorKey: 'status',
+  header: 'Status',
+  meta: {
+    class: {
+      th: 'text-center',
+      td: 'text-center'
+    }
+  },
+  cell: ({ row }) => {
+    const status = row.getValue('status') as string
+    const colorMap = {
+      paid: 'text-success',
+      failed: 'text-error',
+      refunded: 'text-warning'
+    }
+    return h('span', { class: `font-semibold capitalize ${colorMap[status as keyof typeof colorMap]}` }, status)
+  }
+}, {
+  accessorKey: 'email',
+  header: 'Email',
+  meta: {
+    class: {
+      th: 'text-left',
+      td: 'text-left'
+    }
+  }
+}, {
+  accessorKey: 'amount',
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right font-bold text-primary',
+      td: 'text-right font-mono'
+    }
+  },
+  cell: ({ row }) => {
+    const amount = Number.parseFloat(row.getValue('amount'))
+    const formatted = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount)
+    return h('span', { class: 'font-semibold text-success' }, formatted)
+  }
+}]
+
+const meta: TableMeta<Payment> = {
+  class: {
+    tr: (row: Row<Payment>) => {
+      if (row.original.status === 'failed') {
+        return 'bg-error/10'
+      }
+      if (row.original.status === 'refunded') {
+        return 'bg-warning/10'
+      }
+      return ''
+    }
+  }
+}
 </script>
 
 <template>
-  <UTable :data="data" :columns="columns" class="w-full" />
+  <UTable :data="data" :columns="columns" :meta="meta" class="flex-1" />
 </template>
 ```
 
@@ -54713,21 +56544,29 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }, {
   id: 'actions',
+  meta: {
+    class: {
+      td: 'text-right'
+    }
+  },
   cell: ({ row }) => {
-    return h('div', { class: 'text-right' }, h(UDropdownMenu, {
+    return h(UDropdownMenu, {
       'content': {
         align: 'end'
       },
@@ -54737,9 +56576,8 @@ const columns: TableColumn<Payment>[] = [{
       'icon': 'i-lucide-ellipsis-vertical',
       'color': 'neutral',
       'variant': 'ghost',
-      'class': 'ml-auto',
       'aria-label': 'Actions dropdown'
-    })))
+    }))
   }
 }]
 
@@ -54875,16 +56713,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -54928,7 +56769,7 @@ You can group rows based on a given column value and show/hide sub rows via some
 
 ```vue [TableGroupedRowsExample.vue]
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
+import { resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import { getGroupedRowModel } from '@tanstack/vue-table'
 import type { GroupingOptions } from '@tanstack/vue-table'
@@ -55069,16 +56910,19 @@ const columns: TableColumn<Payment>[] = [
   },
   {
     accessorKey: 'amount',
-    header: () => h('div', { class: 'text-right' }, 'Amount'),
+    header: 'Amount',
+    meta: {
+      class: {
+        th: 'text-right',
+        td: 'text-right font-medium'
+      }
+    },
     cell: ({ row }) => {
       const amount = Number.parseFloat(row.getValue('amount'))
-
-      const formatted = new Intl.NumberFormat('en-US', {
+      return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'EUR'
       }).format(amount)
-
-      return h('div', { class: 'text-right font-medium' }, formatted)
     },
     aggregationFn: 'sum'
   }
@@ -55226,16 +57070,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -55362,16 +57209,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -55514,16 +57364,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -55680,16 +57533,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -55835,26 +57691,27 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   footer: ({ column }) => {
     const total = column.getFacetedRowModel().rows.reduce((acc: number, row: TableRow<Payment>) => acc + Number.parseFloat(row.getValue('amount')), 0)
-
     const formatted = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(total)
-
-    return h('div', { class: 'text-right font-medium' }, `Total: ${formatted}`)
+    return `Total: ${formatted}`
   },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 </script>
@@ -55960,16 +57817,19 @@ const columns: TableColumn<Payment>[] = [{
   }
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -56078,16 +57938,19 @@ const columns: TableColumn<Payment>[] = [{
   header: ({ column }) => getHeader(column, 'Email')
 }, {
   accessorKey: 'amount',
-  header: ({ column }) => h('div', { class: 'text-right' }, getHeader(column, 'Amount')),
+  header: ({ column }) => getHeader(column, 'Amount'),
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -56239,16 +58102,19 @@ const columns: TableColumn<Payment>[] = [{
   size: 232
 }, {
   accessorKey: 'amount',
-  header: ({ column }) => h('div', { class: 'text-right' }, getHeader(column, 'Amount', 'right')),
+  header: ({ column }) => getHeader(column, 'Amount', 'right'),
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   },
   size: 130
 }]
@@ -56373,16 +58239,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -56517,16 +58386,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -56647,16 +58519,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -56828,14 +58703,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -57104,14 +58984,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -57197,16 +59082,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 </script>
@@ -57365,16 +59253,19 @@ const columns: TableColumn<Payment>[] = [{
   header: 'Email'
 }, {
   accessorKey: 'amount',
-  header: () => h('div', { class: 'text-right' }, 'Amount'),
+  header: 'Amount',
+  meta: {
+    class: {
+      th: 'text-right',
+      td: 'text-right font-medium'
+    }
+  },
   cell: ({ row }) => {
     const amount = Number.parseFloat(row.getValue('amount'))
-
-    const formatted = new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR'
     }).format(amount)
-
-    return h('div', { class: 'text-right font-medium' }, formatted)
   }
 }]
 
@@ -60578,7 +62469,7 @@ interface ToastProps {
   description?: StringOrVNode | undefined;
   icon?: any;
   avatar?: AvatarProps | undefined;
-  color?: "error" | "primary" | "secondary" | "success" | "info" | "warning" | "neutral" | undefined;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "error" | "neutral" | undefined;
   /**
    * The orientation between the content and the actions.
    * @default "\"vertical\""
@@ -60652,8 +62543,8 @@ interface ToastSlots {
  * Emitted events for the Toast component
  */
 interface ToastEmits {
-  pause: (payload: []) => void;
   escapeKeyDown: (payload: [event: KeyboardEvent]) => void;
+  pause: (payload: []) => void;
   resume: (payload: []) => void;
   swipeStart: (payload: [event: SwipeEvent]) => void;
   swipeMove: (payload: [event: SwipeEvent]) => void;
@@ -62123,7 +64014,7 @@ interface TreeProps {
    * Note: when enabled, the tree structure is flattened like if `nested` was set to `false`.
    * @default "false"
    */
-  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | undefined; } | undefined;
+  virtualize?: boolean | { overscan?: number | undefined; estimateSize?: number | ((index: number) => number) | undefined; } | undefined;
   onSelect?: ((e: TreeItemSelectEvent<TreeItem>, item: TreeItem) => void) | undefined;
   onToggle?: ((e: TreeItemToggleEvent<TreeItem>, item: TreeItem) => void) | undefined;
   ui?: { root?: ClassNameValue; item?: ClassNameValue; listWithChildren?: ClassNameValue; itemWithChildren?: ClassNameValue; link?: ClassNameValue; linkLeadingIcon?: ClassNameValue; linkLabel?: ClassNameValue; linkTrailing?: ClassNameValue; linkTrailingIcon?: ClassNameValue; } | undefined;
@@ -62706,23 +64597,27 @@ Creates a new locale object with the provided options.
         ---
         The ISO code of the locale (e.g., `'en'`, `'fr'`, `'de-AT'`).
         ::::::
-
-        ::::::field{name="dir" type="'ltr' | 'rtl'"}
-        The text direction of the locale. Defaults to `'ltr'`.
-        ::::::
-
-        ::::::field
-        ---
-        required: true
-        name: messages
-        type: M
-        ---
-        The translation messages object. Use the `Messages` type from `@nuxt/ui` for type safety.
-        ::::::
       :::::
     ::::
+
+    ::::field{name="dir" type="'ltr' | 'rtl'"}
+    The text direction of the locale. Defaults to `'ltr'`.
+    ::::
+
+    ::::field
+    ---
+    required: true
+    name: messages
+    type: M
+    ---
+    The translation messages object. Use the `Messages` type from `@nuxt/ui` for type safety.
+    ::::
   :::
+
+\::
 ::
+
+\::
 
 **Returns:** A `Locale<M>` object that can be passed to the `locale` prop of the [App](https://ui.nuxt.com/docs/components/app) component.
 
@@ -62830,6 +64725,8 @@ Define keyboard shortcuts for your application.
     ::::
   :::
 ::
+
+\::
 
 #### Shortcut definition
 
@@ -62998,18 +64895,23 @@ Extends an existing locale with the provided options, deeply merging the message
         ::::::field{name="code" type="string"}
         Override the ISO code of the locale (e.g., `'en-GB'`, `'fr-CA'`).
         ::::::
-
-        ::::::field{name="dir" type="'ltr' | 'rtl'"}
-        Override the text direction of the locale.
-        ::::::
-
-        ::::::field{name="messages" type="DeepPartial<M>"}
-        Partial messages object to merge with the base locale. Only specify the messages you want to override.
-        ::::::
       :::::
     ::::
   :::
+
+  :::field{name="dir" type="'ltr' | 'rtl'"}
+  Override the text direction of the locale.
+  :::
+
+  :::field{name="messages" type="DeepPartial<M>"}
+  Partial messages object to merge with the base locale. Only specify the messages you want to override.
+  :::
+
+\::
 ::
+
+\::
+\::
 
 **Returns:** A new `Locale<M>` object with the merged properties.
 
@@ -63109,26 +65011,30 @@ Extracts keyboard shortcuts from an array of menu items and returns a configurat
         ::::::field{name="onSelect" type="() => void"}
         A callback function to execute when the shortcut is triggered.
         ::::::
-
-        ::::::field{name="onClick" type="() => void"}
-        An alternative callback function (used if `onSelect` is not defined).
-        ::::::
-
-        ::::::field{name="children" type="any[]"}
-        Nested menu items to recursively extract shortcuts from.
-        ::::::
-
-        ::::::field{name="items" type="any[]"}
-        Alternative property for nested menu items.
-        ::::::
       :::::
+    ::::
+
+    ::::field{name="onClick" type="() => void"}
+    An alternative callback function (used if `onSelect` is not defined).
+    ::::
+
+    ::::field{name="children" type="any[]"}
+    Nested menu items to recursively extract shortcuts from.
+    ::::
+
+    ::::field{name="items" type="any[]"}
+    Alternative property for nested menu items.
     ::::
   :::
 
-  :::field{name="separator" type="'_' | '-'"}
-  The separator used to join keyboard keys. Use `'_'` for key combinations (e.g., `meta_k`) or `'-'` for key sequences (e.g., `g-d`). Defaults to `'_'`.
-  :::
+\::
 ::
+
+::field{name="separator" type="'_' | '-'"}
+The separator used to join keyboard keys. Use `'_'` for key combinations (e.g., `meta_k`) or `'-'` for key sequences (e.g., `g-d`). Defaults to `'_'`.
+::
+
+\::
 
 **Returns:** A `ShortcutsConfig` object that can be passed directly to `defineShortcuts`.
 
@@ -63294,14 +65200,19 @@ Create an overlay, and return a factory instance.
         ::::::field{name="props" type="ComponentProps"}
         An optional object of props to pass to the rendered component.
         ::::::
-
-        ::::::field{name="destroyOnClose" type="boolean"}
-        Removes the overlay from memory when closed. Defaults to `false`.
-        ::::::
       :::::
     ::::
   :::
+
+  :::field{name="destroyOnClose" type="boolean"}
+  Removes the overlay from memory when closed. Defaults to `false`.
+  :::
+
+\::
 ::
+
+\::
+\::
 
 ### open()
 
@@ -63627,62 +65538,66 @@ Adds a new toast notification.
         ::::::field{name="open" type="boolean"}
         Whether the toast is open. Defaults to `true`.
         ::::::
-
-        ::::::field{name="title" type="string"}
-        The title displayed in the toast.
-        ::::::
-
-        ::::::field{name="description" type="string"}
-        The description displayed in the toast.
-        ::::::
-
-        ::::::field{name="icon" type="string"}
-        The icon displayed in the toast.
-        ::::::
-
-        ::::::field{name="avatar" type="AvatarProps"}
-        The avatar displayed in the toast. See [Avatar](https://ui.nuxt.com/docs/components/avatar#props).
-        ::::::
-
-        ::::::field{name="color" type="string"}
-        The color of the toast.
-        ::::::
-
-        ::::::field{name="orientation" type="'horizontal' | 'vertical'"}
-        The orientation between the content and the actions. Defaults to `vertical`.
-        ::::::
-
-        ::::::field{name="close" type="boolean | ButtonProps"}
-        Customize or hide the close button (with `false` value). Defaults to `true`.
-        ::::::
-
-        ::::::field{name="closeIcon" type="string"}
-        The icon displayed in the close button.
-        ::::::
-
-        ::::::field{name="actions" type="ButtonProps[]"}
-        The actions displayed in the toast. See [Button](https://ui.nuxt.com/docs/components/button#props).
-        ::::::
-
-        ::::::field{name="progress" type="boolean | ProgressProps"}
-        Customize or hide the progress bar (with `false` value). Defaults to `true`.
-        ::::::
-
-        ::::::field{name="duration" type="number"}
-        The duration in milliseconds before the toast auto-closes. Can also be set globally on the [`App`](https://ui.nuxt.com/docs/components/app) component.
-        ::::::
-
-        ::::::field{name="onClick" type="(toast: Toast) => void"}
-        A callback function invoked when the toast is clicked.
-        ::::::
-
-        ::::::field{name="onUpdateOpen" type="(open: boolean) => void"}
-        A callback function invoked when the toast open state changes. Useful to perform an action when the toast closes (expired or dismissed).
-        ::::::
       :::::
     ::::
+
+    ::::field{name="title" type="string"}
+    The title displayed in the toast.
+    ::::
+
+    ::::field{name="description" type="string"}
+    The description displayed in the toast.
+    ::::
+
+    ::::field{name="icon" type="string"}
+    The icon displayed in the toast.
+    ::::
+
+    ::::field{name="avatar" type="AvatarProps"}
+    The avatar displayed in the toast. See [Avatar](https://ui.nuxt.com/docs/components/avatar#props).
+    ::::
+
+    ::::field{name="color" type="string"}
+    The color of the toast.
+    ::::
+
+    ::::field{name="orientation" type="'horizontal' | 'vertical'"}
+    The orientation between the content and the actions. Defaults to `vertical`.
+    ::::
+
+    ::::field{name="close" type="boolean | ButtonProps"}
+    Customize or hide the close button (with `false` value). Defaults to `true`.
+    ::::
+
+    ::::field{name="closeIcon" type="string"}
+    The icon displayed in the close button.
+    ::::
+
+    ::::field{name="actions" type="ButtonProps[]"}
+    The actions displayed in the toast. See [Button](https://ui.nuxt.com/docs/components/button#props).
+    ::::
+
+    ::::field{name="progress" type="boolean | ProgressProps"}
+    Customize or hide the progress bar (with `false` value). Defaults to `true`.
+    ::::
+
+    ::::field{name="duration" type="number"}
+    The duration in milliseconds before the toast auto-closes. Can also be set globally on the [`App`](https://ui.nuxt.com/docs/components/app) component.
+    ::::
+
+    ::::field{name="onClick" type="(toast: Toast) => void"}
+    A callback function invoked when the toast is clicked.
+    ::::
+
+    ::::field{name="onUpdateOpen" type="(open: boolean) => void"}
+    A callback function invoked when the toast open state changes. Useful to perform an action when the toast closes (expired or dismissed).
+    ::::
   :::
+
+\::
 ::
+
+\::
 
 **Returns:** The complete `Toast` object that was added.
 

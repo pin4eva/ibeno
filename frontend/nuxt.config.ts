@@ -12,6 +12,17 @@ export default defineNuxtConfig({
     },
   },
   css: ['~/assets/css/main.css'],
+  vite: {
+    optimizeDeps: {
+      include: [
+        'prosemirror-state',
+        'prosemirror-transform',
+        'prosemirror-model',
+        'prosemirror-view',
+        'prosemirror-gapcursor'
+      ]
+    }
+  },
   ui: {
     fonts: false,
     theme: {

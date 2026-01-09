@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css'],
   ui: {
+    fonts: false,
     theme: {
       colors: [
         'primary',

@@ -1,24 +1,7 @@
 import { defineStore } from 'pinia';
 import type { Application, ApplicantLogin } from '~/interfaces/application.interface';
-import type { FetchError } from '~/interfaces/app.interface';
 import { apiFetch } from '~/utils/api-fetch';
-
-type ApiErrorData = {
-  message?: string;
-};
-
-type FetchErrorLike = {
-  data?: ApiErrorData;
-  message?: string;
-};
-
-function getErrorMessage(error: unknown, fallback: string): string {
-  if (typeof error === 'object' && error !== null) {
-    const err = error as FetchErrorLike;
-    return err.data?.message || err.message || fallback;
-  }
-  return fallback;
-}
+import { getErrorMessage } from '~/utils/error';
 
 /**
  * Applicant Store
@@ -71,15 +54,7 @@ export const useApplicantStore = defineStore('applicant', () => {
 
       return response;
     } catch (err) {
-      const e = err as FetchError;
-      let errMsg = 'Failed to login. Please check your credentials.';
-      if (e?.data?.message) {
-        if (Array.isArray(e?.data?.message)) {
-          errMsg = (e?.data?.message as string[]).join(', ');
-        } else {
-          errMsg = e.data.message as string;
-        }
-      }
+      const errMsg = getErrorMessage(err, 'Failed to login. Please check your credentials.');
 
       error.value = errMsg;
       toast.add({
@@ -117,8 +92,7 @@ export const useApplicantStore = defineStore('applicant', () => {
 
       return allApplications;
     } catch (err) {
-      const e = err as FetchError;
-      error.value = getErrorMessage(e?.data?.message, 'Failed to load applications');
+      error.value = getErrorMessage(err, 'Failed to load applications');
       return [];
     } finally {
       loading.value = false;
@@ -136,8 +110,7 @@ export const useApplicantStore = defineStore('applicant', () => {
       const response = await apiFetch<Application>(`/applications/single/${id}`);
       return response;
     } catch (err) {
-      const e = err as FetchError;
-      error.value = getErrorMessage(e?.data?.message, 'Failed to fetch application');
+      error.value = getErrorMessage(err, 'Failed to fetch application');
       return null;
     } finally {
       loading.value = false;

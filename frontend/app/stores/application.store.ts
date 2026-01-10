@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import type { FetchError } from '~/interfaces/app.interface';
 import {
   ApplicationStatusEnum,
   type ApplicantLogin,
@@ -9,23 +8,7 @@ import {
   type SchoolRecord,
 } from '~/interfaces/application.interface';
 import { apiFetch } from '~/utils/api-fetch';
-
-type ApiErrorData = {
-  message?: string;
-};
-
-type FetchErrorLike = {
-  data?: ApiErrorData;
-  message?: string;
-};
-
-function getErrorMessage(error: unknown, fallback: string): string {
-  if (typeof error === 'object' && error !== null) {
-    const err = error as FetchErrorLike;
-    return err.data?.message || err.message || fallback;
-  }
-  return fallback;
-}
+import { getErrorMessage } from '~/utils/error';
 
 export type StartApplicationInput = Pick<
   Application,
@@ -75,11 +58,7 @@ export const useApplicationStore = defineStore('application', () => {
       setApplication(response);
       return response;
     } catch (err) {
-      const e = err as FetchError;
-      let errMsg = 'Failed to login applicant';
-      if (e?.data?.message && Array.isArray(e?.data?.message)) {
-        errMsg = (e?.data?.message as string[]).join(', ');
-      }
+      const errMsg = getErrorMessage(err, 'Failed to login applicant');
 
       error.value = errMsg;
       toast.add({
@@ -182,8 +161,7 @@ export const useApplicationStore = defineStore('application', () => {
       application.value = response;
       return response;
     } catch (err) {
-      const e = err as FetchError;
-      error.value = getErrorMessage(e?.data?.message, 'Failed to fetch application');
+      error.value = getErrorMessage(err, 'Failed to fetch application');
       throw err;
     } finally {
       loading.value = false;
@@ -207,8 +185,7 @@ export const useApplicationStore = defineStore('application', () => {
       applicationsCookie.value = allApplications;
       return allApplications;
     } catch (err) {
-      const e = err as FetchError;
-      error.value = e?.data?.message || 'Failed to load applications';
+      error.value = getErrorMessage(err, 'Failed to load applications');
     } finally {
       loading.value = false;
     }

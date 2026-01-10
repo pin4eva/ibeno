@@ -375,7 +375,7 @@ const actionLabels = {
     <!-- Action Modal -->
     <UModal v-model:open="isActionModalOpen" :ui="{ content: 'w-full sm:max-w-lg' }">
       <template #header>
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between w-full">
           <div>
             <h3 class="text-lg font-semibold">
               {{ actionType ? actionLabels[actionType] : '' }}
@@ -418,7 +418,7 @@ const actionLabels = {
             <UButton
               type="submit"
               :color="
-                actionType === 'approve' ? 'success' : actionType === 'reject' ? 'error' : 'yellow'
+                actionType === 'approve' ? 'primary' : actionType === 'reject' ? 'error' : 'warning'
               "
               :loading="isSubmitting"
               :disabled="isSubmitting || (actionType === 'request-changes' && !actionComment)"

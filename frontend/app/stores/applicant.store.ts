@@ -140,13 +140,13 @@ export const useApplicantStore = defineStore('applicant', () => {
   /**
    * Initialize store from cookies on mount
    */
-  const initialize = () => {
+  const initialize = async () => {
     if (applicationsCookie.value) {
       applications.value = applicationsCookie.value;
     }
     // If we have a NIN but no applications, try to load them
     if (ninCookie.value && applications.value.length === 0) {
-      loadApplications(ninCookie.value);
+      await loadApplications(ninCookie.value);
     }
   };
 

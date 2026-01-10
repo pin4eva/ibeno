@@ -64,7 +64,7 @@ export const useApplicationStore = defineStore('application', () => {
       toast.add({
         color: 'error',
         title: 'Login Failed',
-        description: errMsg || 'An error occurred during login.',
+        description: errMsg,
       });
       throw err;
     } finally {

@@ -150,7 +150,6 @@
 </template>
 
 <script setup lang="ts">
-import { watch, nextTick } from 'vue';
 import QRCode from 'qrcode';
 import type { FetchError } from '~/interfaces/app.interface';
 import type { UpdateAssetDTO } from '~/interfaces/asset.interface';
@@ -346,13 +345,23 @@ const printLabel = () => {
     return;
   }
 
-  const qrDataUrl = qrCanvas.value?.toDataURL('image/png') || '';
-  
-  // Validate QR code was generated
-  if (!qrDataUrl) {
+  // Validate QR code canvas and convert to data URL
+  if (!qrCanvas.value) {
     toast.add({
       title: 'Error',
       description: 'QR code not generated. Please try again.',
+      color: 'error',
+    });
+    return;
+  }
+
+  const qrDataUrl = qrCanvas.value.toDataURL('image/png');
+  
+  // Validate QR code data URL is valid
+  if (!qrDataUrl || qrDataUrl === 'data:,') {
+    toast.add({
+      title: 'Error',
+      description: 'QR code generation failed. Please try again.',
       color: 'error',
     });
     return;
@@ -433,6 +442,7 @@ const printLabel = () => {
   printWindow.document.close();
   
   // Trigger print after content is loaded
+  // 250ms delay allows images to fully render before print dialog opens
   printWindow.onload = () => {
     setTimeout(() => {
       printWindow.print();

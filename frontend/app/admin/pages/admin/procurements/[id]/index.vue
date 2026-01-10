@@ -278,6 +278,103 @@
             </UCard>
           </div>
         </template>
+
+        <!-- Evaluation Tab -->
+        <template #evaluation>
+          <div class="py-4 space-y-4">
+            <UCard>
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-lg font-semibold">Bid Evaluation</h3>
+                    <p class="text-sm text-gray-500">Compare bids and award a winner</p>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <span class="font-semibold">Best Price:</span>
+                    <span>
+                      {{ bestBidDisplay }}
+                    </span>
+                  </div>
+                </div>
+              </template>
+
+              <UTable
+                v-if="procurement.bids && procurement.bids.length"
+                :data="evaluationRows"
+                :columns="evaluationColumns"
+              >
+                <template #contractor-cell="{ row }">
+                  <div>
+                    <p class="font-semibold">
+                      {{ row.original.contractor?.companyName || row.original.contractorNo }}
+                    </p>
+                    <p class="text-xs text-gray-500">{{ row.original.contractorNo }}</p>
+                  </div>
+                </template>
+
+                <template #amount-cell="{ row }">
+                  <span class="font-mono">{{
+                    formatCurrency(row.original.price || row.original.amount)
+                  }}</span>
+                </template>
+
+                <template #status-cell="{ row }">
+                  <UBadge :color="getBidStatusColor(row.original.status)" variant="subtle">
+                    {{ row.original.status.replace('_', ' ') }}
+                  </UBadge>
+                </template>
+
+                <template #proposal-cell="{ row }">
+                  <div class="flex gap-2">
+                    <UButton
+                      v-if="row.original.technicalProposalUrl"
+                      icon="i-lucide-download"
+                      color="primary"
+                      variant="ghost"
+                      size="xs"
+                      :href="row.original.technicalProposalUrl"
+                      target="_blank"
+                    />
+                    <UButton
+                      v-if="row.original.commercialProposalUrl"
+                      icon="i-lucide-file-text"
+                      color="blue"
+                      variant="ghost"
+                      size="xs"
+                      :href="row.original.commercialProposalUrl"
+                      target="_blank"
+                    />
+                  </div>
+                </template>
+
+                <template #actions-cell="{ row }">
+                  <div class="flex gap-2">
+                    <UButton
+                      color="primary"
+                      size="xs"
+                      variant="outline"
+                      icon="i-lucide-award"
+                      :loading="awardingBidId === row.original.id"
+                      :disabled="row.original.status === 'awarded'"
+                      @click="awardBid(row.original.id)"
+                    >
+                      Award
+                    </UButton>
+                    <UButton
+                      color="gray"
+                      size="xs"
+                      variant="ghost"
+                      icon="i-lucide-eye"
+                      @click="viewBid(row.original)"
+                    />
+                  </div>
+                </template>
+              </UTable>
+
+              <div v-else class="text-center py-10 text-gray-500">No bids to evaluate</div>
+            </UCard>
+          </div>
+        </template>
       </UTabs>
     </div>
 
@@ -345,7 +442,7 @@
             <UEditor
               v-slot="{ editor }"
               v-model="editForm.description"
-              :ui="{ base: 'min-h-[200px] prose prose-sm max-w-none' }"
+              :ui="{ base: 'min-h-50 prose prose-sm max-w-none' }"
             >
               <UEditorToolbar :editor="editor" :items="editorToolbarItems" layout="fixed" />
             </UEditor>
@@ -641,7 +738,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import type { TableColumn, TabsItem } from '@nuxt/ui';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
-import type { Bid } from '~/interfaces/procurement/bid.interface';
+import { BidStatus, type Bid } from '~/interfaces/procurement/bid.interface';
 import {
   ProcurementStatus,
   type UploadDocumentInput,
@@ -671,6 +768,7 @@ const tabs: TabsItem[] = [
   { label: 'Overview', value: 'overview', icon: 'i-lucide-info', slot: 'overview' },
   { label: 'Bids', value: 'bids', icon: 'i-lucide-users', slot: 'bids' },
   { label: 'Documents', value: 'documents', icon: 'i-lucide-file-text', slot: 'documents' },
+  { label: 'Evaluation', value: 'evaluation', icon: 'i-lucide-scale', slot: 'evaluation' },
 ];
 
 const bidColumns: TableColumn<Bid>[] = [
@@ -680,6 +778,14 @@ const bidColumns: TableColumn<Bid>[] = [
   { accessorKey: 'price', header: 'Price' },
   { accessorKey: 'status', header: 'Status' },
   { accessorKey: 'submittedAt', header: 'Submitted' },
+  { accessorKey: 'actions', header: 'Actions' },
+];
+
+const evaluationColumns: TableColumn<Bid>[] = [
+  { accessorKey: 'contractor', header: 'Contractor' },
+  { accessorKey: 'amount', header: 'Amount' },
+  { accessorKey: 'status', header: 'Status' },
+  { accessorKey: 'proposal', header: 'Proposals' },
   { accessorKey: 'actions', header: 'Actions' },
 ];
 
@@ -843,6 +949,15 @@ const formatFileSize = (bytes?: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
+const formatCurrency = (value?: number) => {
+  if (!value && value !== 0) return 'N/A';
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 0,
+  }).format(value);
+};
+
 const formatDateTimeLocal = (value?: string) => {
   if (!value) return '';
   const date = new Date(value);
@@ -896,6 +1011,33 @@ const uploadDocumentFile = async (file: File) => {
     method: 'POST',
     body: formData,
   });
+};
+
+const awardBid = async (bidId: number) => {
+  awardingBidId.value = bidId;
+  try {
+    // Lazy-load bid store to avoid heavy initial bundle
+    const { useBidStore } = await import('~/stores/procurement/bid.store');
+    const bidStore = useBidStore();
+
+    await bidStore.changeBidStatus(procurementId.value, bidId, { status: BidStatus.AWARDED });
+    await procurementStore.fetchProcurementById(procurementId.value);
+
+    toast.add({
+      title: 'Bid awarded',
+      description: 'The bid has been marked as awarded.',
+      color: 'success',
+    });
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Error',
+      description: 'Failed to award bid',
+      color: 'error',
+    });
+  } finally {
+    awardingBidId.value = null;
+  }
 };
 
 const resetUploadForm = () => {
@@ -1095,15 +1237,31 @@ const selectedBid = ref<Bid | null>(null);
 const showBidDetailModal = ref(false);
 const updatingBidStatus = ref(false);
 
-const bidStatusOptions = [
-  { label: 'Submitted', value: 'submitted' },
-  { label: 'Under Review', value: 'under_review' },
-  { label: 'Accepted', value: 'accepted' },
-  { label: 'Rejected', value: 'rejected' },
-  { label: 'Awarded', value: 'awarded' },
+const bidStatusOptions: { label: string; value: BidStatus }[] = [
+  { label: 'Submitted', value: BidStatus.SUBMITTED },
+  { label: 'Under Review', value: BidStatus.UNDER_REVIEW },
+  { label: 'Accepted', value: BidStatus.ACCEPTED },
+  { label: 'Rejected', value: BidStatus.REJECTED },
+  { label: 'Awarded', value: BidStatus.AWARDED },
 ];
 
-const updateBidStatus = async (bidId: number, status: string) => {
+const awardingBidId = ref<number | null>(null);
+
+const evaluationRows = computed(() => {
+  if (!procurement.value?.bids) return [] as Bid[];
+  return [...procurement.value.bids].sort(
+    (a, b) => (a.price || a.amount || 0) - (b.price || b.amount || 0),
+  );
+});
+
+const bestBidDisplay = computed(() => {
+  if (!evaluationRows.value.length) return '—';
+  const [top] = evaluationRows.value;
+  if (!top) return '—';
+  return `${formatCurrency(top.price || top.amount)} • ${top.contractor?.companyName || top.contractorNo}`;
+});
+
+const updateBidStatus = async (bidId: number, status: BidStatus) => {
   updatingBidStatus.value = true;
   try {
     // Import bid store
@@ -1111,7 +1269,7 @@ const updateBidStatus = async (bidId: number, status: string) => {
     const bidStore = useBidStore();
 
     await bidStore.changeBidStatus(procurementId.value, bidId, {
-      status: status as any,
+      status,
     });
 
     toast.add({

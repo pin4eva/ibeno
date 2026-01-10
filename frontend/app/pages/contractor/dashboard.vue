@@ -15,7 +15,7 @@
       </div>
 
       <!-- Contractor Number Input -->
-      <UCard v-if="!contractorNo">
+      <UCard v-if="!contractorNo && !isContractorUser">
         <template #header>
           <h3 class="text-lg font-semibold">Enter Your Contractor Number</h3>
         </template>
@@ -38,7 +38,7 @@
       </UCard>
 
       <!-- Loading State -->
-      <div v-else-if="contractorStore.loading" class="text-center py-12">
+      <div v-else-if="isLoadingBids" class="text-center py-12">
         <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary-500" />
         <p class="mt-2 text-gray-600">Loading your bids...</p>
       </div>
@@ -266,10 +266,15 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import type { TableColumn } from '@nuxt/ui';
 import type { Bid } from '~/interfaces/procurement/bid.interface';
+import { useAuthStore } from '~/stores/auth.store';
+import { useBidStore } from '~/stores/procurement/bid.store';
 import { useContractorStore } from '~/stores/procurement/contractor.store';
 
+const authStore = useAuthStore();
+const bidStore = useBidStore();
 const contractorStore = useContractorStore();
 const toast = useToast();
 
@@ -278,6 +283,8 @@ const contractorNoInput = ref('');
 const bids = ref<Bid[]>([]);
 const showBidDetails = ref(false);
 const selectedBid = ref<Bid | null>(null);
+const isLoadingBids = computed(() => contractorStore.loading || bidStore.loading);
+const isContractorUser = computed(() => authStore.user?.role?.toLowerCase() === 'contractor');
 
 const columns: TableColumn<Bid>[] = [
   { accessorKey: 'procurement.referenceNo', header: 'Reference No' },
@@ -301,16 +308,22 @@ const awardedBids = computed(() => {
 });
 
 const loadBids = async () => {
-  if (!contractorNoInput.value) {
-    toast.add({
-      title: 'Error',
-      description: 'Please enter your contractor number',
-      color: 'error',
-    });
-    return;
-  }
-
   try {
+    if (isContractorUser.value) {
+      bids.value = await bidStore.fetchMyBids();
+      contractorNo.value = bids.value[0]?.contractorNo || '';
+      return;
+    }
+
+    if (!contractorNoInput.value) {
+      toast.add({
+        title: 'Error',
+        description: 'Please enter your contractor number',
+        color: 'error',
+      });
+      return;
+    }
+
     contractorNo.value = contractorNoInput.value;
     bids.value = await contractorStore.fetchMyBids(contractorNo.value);
   } catch (error) {
@@ -323,6 +336,12 @@ const loadBids = async () => {
     contractorNo.value = '';
   }
 };
+
+onMounted(async () => {
+  if (isContractorUser.value) {
+    await loadBids();
+  }
+});
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {

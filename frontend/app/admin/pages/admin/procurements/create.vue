@@ -66,7 +66,10 @@
           <!-- Description -->
           <div>
             <UFormField label="Description / Scope" name="description" required>
-              <WysiwygEditor v-model="formState.description" class="max-w-none" />
+              <UEditor v-slot="{editor}" v-model="formState.description" :ui="{ base: 'min-h-[200px] prose prose-sm max-w-none ' }">
+              <UEditorToolbar :editor="editor" :items="editorToolbarItems" layout="fixed" />
+
+              </UEditor>
             </UFormField>
           </div>
 
@@ -171,7 +174,6 @@
 </template>
 
 <script setup lang="ts">
-import WysiwygEditor from '~/components/WysiwygEditor.vue';
 import type { CreateProcurementInput } from '~/interfaces/procurement/procurement.interface';
 import { useAuthStore } from '~/stores/auth.store';
 import { useProcurementStore } from '~/stores/procurement/procurement.store';
@@ -181,7 +183,7 @@ const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
 
-const formState = reactive<CreateProcurementInput & { status?: string }>({
+const formState = reactive<CreateProcurementInput & { status?: string; submissionDeadline: string; publishDate?: string; preBidMeetingDate?: string }>({
   title: '',
   referenceNo: '',
   category: '',
@@ -230,7 +232,14 @@ const handleSubmit = async () => {
         .filter(Boolean);
     }
 
-    const procurement = await procurementStore.createProcurement(formState);
+     await procurementStore.createProcurement({
+      ...formState,
+      submissionDeadline: new Date(formState.submissionDeadline) ,
+      publishDate: formState.publishDate ? new Date(formState.publishDate) : undefined,
+      preBidMeetingDate: formState.preBidMeetingDate
+        ? new Date(formState.preBidMeetingDate)
+        : undefined,
+    });
 
     toast.add({
       title: 'Success',
@@ -238,7 +247,7 @@ const handleSubmit = async () => {
       color: 'success',
     });
 
-    router.push(`/admin/procurements/${procurement.id}`);
+    router.push(`/admin/procurements`);
   } catch (error) {
     console.error(error);
     toast.add({

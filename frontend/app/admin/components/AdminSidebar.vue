@@ -75,7 +75,7 @@
 
       <!-- Footer / Version -->
       <div class="border-t border-gray-200 p-4 dark:border-gray-800">
-        <p class="text-xs text-center text-gray-400 dark:text-gray-500">v1.0.0 &copy; 2025 IHCDT</p>
+        <p class="text-xs text-center text-gray-400 dark:text-gray-500">v1.0.0 &copy; {{new Date().getFullYear()}} IHCDT</p>
       </div>
     </div>
   </aside>

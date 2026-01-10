@@ -18,17 +18,17 @@
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <!-- Program Name -->
-          <UFormGroup label="Program Name" required>
+          <UFormField label="Program Name" required>
             <UInput
               v-model="form.name"
               placeholder="Enter program name"
               :disabled="loading"
               required
             />
-          </UFormGroup>
+          </UFormField>
 
           <!-- Category -->
-          <UFormGroup label="Category" required>
+          <UFormField label="Category" required>
             <USelectMenu
               v-model="form.category"
               :items="categoryOptions"
@@ -37,42 +37,44 @@
               value-key="value"
               required
             />
-          </UFormGroup>
+          </UFormField>
 
           <!-- Sub-Category -->
-          <UFormGroup label="Sub-Category" hint="Optional">
+          <UFormField label="Sub-Category" hint="Optional">
             <UInput
               v-model="form.subCategory"
               placeholder="Enter sub-category"
               :disabled="loading"
             />
-          </UFormGroup>
+          </UFormField>
 
           <!-- Status -->
-          <UFormGroup label="Status">
+          <UFormField label="Status">
             <div class="flex items-center gap-2">
-              <UToggle v-model="form.isActive" :disabled="loading" />
+              <USwitch v-model="form.isActive" :disabled="loading" />
               <span class="text-sm text-gray-600 dark:text-gray-400">
                 {{ form.isActive ? 'Active' : 'Inactive' }}
               </span>
             </div>
-          </UFormGroup>
+          </UFormField>
 
           <!-- Start Date -->
-          <UFormGroup label="Start Date" hint="Optional">
+          <UFormField label="Start Date" hint="Optional">
             <UInput v-model="form.startDate" type="date" :disabled="loading" />
-          </UFormGroup>
+          </UFormField>
 
           <!-- End Date -->
-          <UFormGroup label="End Date" hint="Optional">
+          <UFormField label="End Date" hint="Optional">
             <UInput v-model="form.endDate" type="date" :disabled="loading" />
-          </UFormGroup>
+          </UFormField>
         </div>
 
         <!-- Description -->
-        <UFormGroup label="Description" required>
-          <WysiwygEditor v-model="form.description" :disabled="loading" />
-        </UFormGroup>
+        <UFormField label="Description" required>
+          <UEditor v-slot="{ editor }" v-model="form.description" :editable="!loading">
+            <UEditorToolbar :editor="editor" :items="editorToolbarItems" layout="fixed" />
+          </UEditor>
+        </UFormField>
 
         <!-- Actions -->
         <div class="flex justify-end gap-3">
@@ -98,6 +100,7 @@
 </template>
 
 <script setup lang="ts">
+import { editorToolbarItems } from '~/utils/toolbar-items';
 import { useProgramsStore } from '~/stores/programs.store';
 import { ProgramCategoryEnum, type CreateProgramDTO } from '~/interfaces/programs.interface';
 

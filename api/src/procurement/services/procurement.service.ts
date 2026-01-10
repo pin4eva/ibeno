@@ -116,13 +116,19 @@ export class ProcurementService {
    */
   async createProcurement(input: CreateProcurementDTO) {
     // Validate submission deadline is in the future
-    const deadline = new Date(input.submissionDeadline);
+    const { publishDate: pdate, submissionDeadline: sdate, preBidMeetingDate } = input;
+    const deadline = new Date(sdate);
     if (deadline <= new Date()) {
       throw new BadRequestException('Submission deadline must be in the future');
     }
 
     // Validate publishDate <= submissionDeadline
-    const publishDate = input.publishDate ? new Date(input.publishDate) : new Date();
+    let publishDate = new Date();
+    let submissionDeadline;
+    let preBidDate;
+    if (pdate) publishDate = new Date(pdate);
+    if (sdate) submissionDeadline = new Date(sdate);
+    if (preBidMeetingDate) preBidDate = new Date(preBidMeetingDate);
     if (publishDate > deadline) {
       throw new BadRequestException('Publish date must be before or equal to submission deadline');
     }

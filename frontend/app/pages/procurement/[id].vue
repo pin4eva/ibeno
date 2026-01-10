@@ -217,16 +217,38 @@
 
 <script setup lang="ts">
 import type { Procurement } from '~/interfaces/procurement/procurement.interface';
-import { useProcurementStore } from '~/stores/procurement/procurement.store';
 
 const route = useRoute();
-const procurementStore = useProcurementStore();
+const toast = useToast();
 
 const procurementId = computed(() => parseInt(route.params.id as string));
 const showBidForm = ref(false);
 
-const handleBidSuccess = () => {
-  // refresh data if needed
+const { data: procurement, refresh } = await useAsyncData(
+  `procurement-${route.params.id}`,
+  async () => {
+    try {
+      const procurement = await apiFetch<Procurement>(`/procurements/${procurementId.value}`);
+      return procurement;
+    } catch (error) {
+      console.error({ error });
+      throw error;
+    }
+  },
+);
+
+const handleBidSuccess = async () => {
+  try {
+    toast.add({
+      title: 'Bid submitted',
+      description: 'Thanks! Your bid was received.',
+      color: 'success',
+    });
+    showBidForm.value = false;
+    await refresh();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const formatDate = (dateString: string) => {
@@ -255,13 +277,5 @@ const getStatusColor = (status: string) => {
   return colors[status] || 'gray';
 };
 
-const { data: procurement } = await useAsyncData(`procurement-${route.params.id}`, async () => {
-  try {
-    const procurement = await apiFetch<Procurement>(`/procurements/${procurementId.value}`);
-    return procurement;
-  } catch (error) {
-    console.error({ error });
-    throw error;
-  }
-});
+// procurement data loaded via useAsyncData above
 </script>

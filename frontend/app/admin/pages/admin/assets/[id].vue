@@ -104,6 +104,16 @@
           >
             Cancel
           </UButton>
+          <UButton
+            type="button"
+            color="gray"
+            variant="outline"
+            icon="i-lucide-qr-code"
+            @click="showPrintModal = true"
+            :disabled="loading"
+          >
+            Print Label
+          </UButton>
           <UButton type="submit" color="primary" :loading="loading"> Update Asset </UButton>
         </div>
       </form>
@@ -112,10 +122,35 @@
     <UCard v-else>
       <p class="text-center text-gray-500 py-8">Asset not found</p>
     </UCard>
+
+    <!-- Print Label Modal -->
+    <UModal v-model:open="showPrintModal" :ui="{ width: 'max-w-md' }">
+      <template #header>
+        <h3 class="text-lg font-semibold">Print Asset Label</h3>
+      </template>
+
+      <template #body>
+        <div class="flex flex-col items-center space-y-4 py-4">
+          <canvas ref="qrCanvas" class="border-2 border-gray-200 dark:border-gray-700 rounded"></canvas>
+          <div class="text-center">
+            <p class="font-semibold text-lg">{{ form.name }}</p>
+            <p class="text-sm text-gray-500 font-mono">{{ form.assetNumber }}</p>
+          </div>
+        </div>
+      </template>
+
+      <template #footer>
+        <div class="flex gap-2 justify-end">
+          <UButton color="gray" variant="ghost" @click="showPrintModal = false"> Cancel </UButton>
+          <UButton color="primary" icon="i-lucide-printer" @click="printLabel"> Print </UButton>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
+import QRCode from 'qrcode';
 import type { FetchError } from '~/interfaces/app.interface';
 import type { UpdateAssetDTO } from '~/interfaces/asset.interface';
 import { useAssetsStore } from '~/stores/assets.store';
@@ -130,6 +165,8 @@ const imagePreview = ref<string | null>(null);
 const selectedFile = ref<File | null>(null);
 const loading = ref(false);
 const imageRemoved = ref(false);
+const showPrintModal = ref(false);
+const qrCanvas = ref<HTMLCanvasElement | null>(null);
 
 const form = ref<UpdateAssetDTO>({
   id: 0,
@@ -271,6 +308,125 @@ const loadAsset = async () => {
     });
   }
 };
+
+const generateQRCode = async () => {
+  if (!qrCanvas.value || !form.value.id) return;
+
+  // Generate URL for the asset detail page
+  const assetUrl = `${window.location.origin}/admin/assets/${form.value.id}`;
+
+  try {
+    await QRCode.toCanvas(qrCanvas.value, assetUrl, {
+      width: 256,
+      margin: 2,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF',
+      },
+    });
+  } catch (error) {
+    console.error('Failed to generate QR code:', error);
+    toast.add({
+      title: 'Error',
+      description: 'Failed to generate QR code',
+      color: 'error',
+    });
+  }
+};
+
+const printLabel = () => {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to open print window. Please allow pop-ups.',
+      color: 'error',
+    });
+    return;
+  }
+
+  const qrDataUrl = qrCanvas.value?.toDataURL('image/png') || '';
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Asset Label - ${form.value.name}</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: white;
+          }
+          .label-container {
+            text-align: center;
+            padding: 2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            max-width: 400px;
+          }
+          .qr-code {
+            margin: 0 auto 1.5rem;
+            display: block;
+          }
+          .asset-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #111827;
+          }
+          .asset-number {
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            color: #6b7280;
+          }
+          @media print {
+            body {
+              background: white;
+            }
+            .label-container {
+              border: none;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="label-container">
+          <img src="${qrDataUrl}" alt="QR Code" class="qr-code" />
+          <div class="asset-name">${form.value.name}</div>
+          <div class="asset-number">${form.value.assetNumber}</div>
+        </div>
+      </body>
+    </html>
+  `;
+  
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+  
+  // Trigger print after content is loaded
+  printWindow.onload = () => {
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
+  };
+};
+
+// Watch for modal open to generate QR code
+watch(showPrintModal, (isOpen) => {
+  if (isOpen) {
+    nextTick(() => {
+      generateQRCode();
+    });
+  }
+});
 
 onMounted(() => {
   loadAsset();

@@ -346,12 +346,32 @@ const printLabel = () => {
   }
 
   const qrDataUrl = qrCanvas.value?.toDataURL('image/png') || '';
+  
+  // Validate QR code was generated
+  if (!qrDataUrl) {
+    toast.add({
+      title: 'Error',
+      description: 'QR code not generated. Please try again.',
+      color: 'error',
+    });
+    return;
+  }
+
+  // Escape HTML to prevent XSS
+  const escapeHtml = (text: string) => {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  };
+
+  const escapedName = escapeHtml(form.value.name);
+  const escapedNumber = escapeHtml(form.value.assetNumber);
 
   const htmlContent = `
     <!DOCTYPE html>
     <html>
       <head>
-        <title>Asset Label - ${form.value.name}</title>
+        <title>Asset Label - ${escapedName}</title>
         <style>
           * {
             margin: 0;
@@ -401,8 +421,8 @@ const printLabel = () => {
       <body>
         <div class="label-container">
           <img src="${qrDataUrl}" alt="QR Code" class="qr-code" />
-          <div class="asset-name">${form.value.name}</div>
-          <div class="asset-number">${form.value.assetNumber}</div>
+          <div class="asset-name">${escapedName}</div>
+          <div class="asset-number">${escapedNumber}</div>
         </div>
       </body>
     </html>

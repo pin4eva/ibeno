@@ -71,7 +71,9 @@
 
         <!-- Description -->
         <UFormField label="Description" required>
-          <WysiwygEditor v-model="form.description" :disabled="loading" />
+          <UEditor v-slot="{ editor }" v-model="form.description" :editable="!loading">
+            <UEditorToolbar :editor="editor" :items="editorToolbarItems" layout="fixed" />
+          </UEditor>
         </UFormField>
 
         <!-- Actions -->
@@ -98,6 +100,7 @@
 </template>
 
 <script setup lang="ts">
+import { editorToolbarItems } from '~/utils/toolbar-items';
 import { useProgramsStore } from '~/stores/programs.store';
 import { ProgramCategoryEnum, type CreateProgramDTO } from '~/interfaces/programs.interface';
 

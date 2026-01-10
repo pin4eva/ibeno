@@ -150,6 +150,7 @@
 </template>
 
 <script setup lang="ts">
+import { watch, nextTick } from 'vue';
 import QRCode from 'qrcode';
 import type { FetchError } from '~/interfaces/app.interface';
 import type { UpdateAssetDTO } from '~/interfaces/asset.interface';

@@ -9,14 +9,19 @@ definePageMeta({
   layout: 'applications',
 });
 
-const applicationStore = useApplicationStore();
+const applicantStore = useApplicantStore();
+
+// Initialize store from cookies on mount
+onMounted(() => {
+  applicantStore.initialize();
+});
 
 // Login form state
 const isLoginOpen = ref(false);
 
-const applications = computed(() => applicationStore.userApplications || []);
-const currentApplication = computed(() => applicationStore.application || null);
-const isLoading = computed(() => applicationStore.loading);
+const applications = computed(() => applicantStore.userApplications || []);
+const currentApplication = computed(() => applicantStore.currentApplication || null);
+const isLoading = computed(() => applicantStore.loading);
 
 // Login handler
 
@@ -56,7 +61,7 @@ const getStatusColor = (status?: string) => {
             color="gray"
             variant="ghost"
             label="Logout"
-            @click="applicationStore.logout()"
+            @click="applicantStore.logout()"
           />
         </div>
       </div>
@@ -82,11 +87,11 @@ const getStatusColor = (status?: string) => {
       </div>
 
       <!-- Error state -->
-      <UCard v-else-if="applicationStore.error">
+      <UCard v-else-if="applicantStore.error">
         <template #header>
           <h3 class="font-semibold">Error Loading Applications</h3>
         </template>
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ applicationStore.error }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ applicantStore.error }}</p>
       </UCard>
 
       <!-- Applications list -->

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useBidStore } from '~/stores/procurement/bid.store';
-import { useAuthStore } from '~/stores/auth.store';
 
 const props = defineProps<{
   procurementId: number;
@@ -12,7 +11,6 @@ const open = defineModel<boolean>();
 const emit = defineEmits(['close', 'success']);
 
 const bidStore = useBidStore();
-const authStore = useAuthStore();
 const toast = useToast();
 
 const form = reactive({

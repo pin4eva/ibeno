@@ -2,7 +2,14 @@
 import type { TableColumn } from '@nuxt/ui';
 import type { Application } from '~/interfaces/application.interface';
 import { UserRoleEnum } from '~/interfaces/user.interface';
+import { ApplicationStatusEnum } from '~/interfaces/application.interface';
 import { apiFetch } from '~/utils/api-fetch';
+
+const selectedStatus = ref<'All' | ApplicationStatusEnum>('All');
+const statusOptions = computed(() => {
+  const items = Object.values(ApplicationStatusEnum).map((s) => ({ label: s, value: s }));
+  return [{ label: 'All', value: 'All' }, ...items];
+});
 
 const props = defineProps<{
   applications: Application[];
@@ -11,6 +18,10 @@ const props = defineProps<{
 }>();
 
 const NuxtLink = resolveComponent('NuxtLink');
+const emit = defineEmits<{
+  (e: 'deleted'): void;
+  (e: 'status-changed', status: 'All' | ApplicationStatusEnum): void;
+}>();
 
 const applicationSearch = ref('');
 const selectedIds = ref<Set<number>>(new Set());
@@ -23,9 +34,18 @@ const pageSizeOptions = [5, 10, 20, 50].map((value) => ({ label: `${value} / pag
 
 const filteredApplications = computed(() => {
   const q = applicationSearch.value.trim().toLowerCase();
-  if (!q) return props.applications;
 
-  return props.applications.filter((a) => {
+  // start from program-level applications
+  let list = props.applications;
+
+  // apply status filter
+  if (selectedStatus.value !== 'All') {
+    list = list.filter((a) => (a.status || '') === selectedStatus.value);
+  }
+
+  if (!q) return list;
+
+  return list.filter((a) => {
     const fullName = `${a.firstName || ''} ${a.lastName || ''}`.trim().toLowerCase();
     return (
       String(a.applicationNo || '')
@@ -54,9 +74,22 @@ watch(applicationSearch, () => {
   applicationPage.value = 1;
 });
 
+watch(selectedStatus, () => {
+  applicationPage.value = 1;
+  // notify parent if they care
+  emit('status-changed', selectedStatus.value);
+});
+
 watch(applicationPageSize, () => {
   applicationPage.value = 1;
 });
+
+// Expose a method to retrieve filtered applications for exports
+function getFilteredApplications() {
+  return filteredApplications.value;
+}
+
+defineExpose({ getFilteredApplications });
 
 watch(
   applicationTotalPages,
@@ -132,9 +165,89 @@ function getErrorMessage(error: unknown, fallback: string) {
   return fallback;
 }
 
-const emit = defineEmits<{
-  (e: 'deleted'): void;
-}>();
+function arrayToCSV(rows: Record<string, any>[], columns: { label: string; key: string }[]) {
+  if (!rows || rows.length === 0) return '';
+  const header = columns.map((c) => `"${c.label.replace(/"/g, '""')}"`).join(',');
+  const lines = rows.map((row) =>
+    columns
+      .map((c) => {
+        const val = row[c.key] ?? '';
+        const out =
+          val instanceof Date ? val.toISOString() : typeof val === 'string' ? val : String(val);
+        return `"${out.replace(/"/g, '""')}"`;
+      })
+      .join(','),
+  );
+  return [header, ...lines].join('\n');
+}
+
+async function exportApplicationsCSV() {
+  try {
+    const applicationRows = filteredApplications.value;
+    if (!applicationRows || applicationRows.length === 0) {
+      toast.add({ title: 'No data', description: 'No applications to export', color: 'warning' });
+      return;
+    }
+    const rows = applicationRows.map((a) => ({
+      ...a,
+      ...a.bankDetails,
+      ...a.schoolRecord,
+      createdAt: a.createdAt ? new Date(a.createdAt).toLocaleString() : '-',
+      updatedAt: a.updatedAt ? new Date(a.updatedAt).toLocaleString() : '-',
+    }));
+
+    const columns = [
+      { label: 'Application No', key: 'applicationNo' },
+      { label: 'First Name', key: 'firstName' },
+      { label: 'Middle Name', key: 'middleName' },
+      { label: 'Last Name', key: 'lastName' },
+      { label: 'Email', key: 'email' },
+      { label: 'Phone', key: 'phone' },
+      { label: 'Gender', key: 'gender' },
+      { label: 'Date of Birth', key: 'dob' },
+      { label: 'NIN', key: 'nin' },
+      { label: 'State', key: 'state' },
+      { label: 'LGA', key: 'lga' },
+      { label: 'Ekpuk', key: 'ekpuk' },
+      { label: 'Address', key: 'address' },
+      { label: 'School', key: 'school' },
+      { label: 'Department', key: 'department' },
+      { label: 'Current Level', key: 'level' },
+      { label: 'Program Duration', key: 'programDuration' },
+      { label: 'Registration No.', key: 'regNo' },
+      { label: 'Bank Name', key: 'bankName' },
+      { label: 'Account Number', key: 'accountNo' },
+
+      { label: 'Status', key: 'status' },
+      { label: 'Decision', key: 'decisionMade' },
+      { label: 'Submitted', key: 'createdAt' },
+      { label: 'Updated', key: 'updatedAt' },
+    ];
+
+    const csv = arrayToCSV(rows, columns);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `applications-${props.programId}-${ts}.csv`;
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    toast.add({
+      title: 'Exported',
+      description: `${rows.length} applications exported`,
+      color: 'success',
+    });
+  } catch (err) {
+    toast.add({
+      title: 'Export failed',
+      description: getErrorMessage(err, 'Could not export applications'),
+      color: 'error',
+    });
+  }
+}
 
 async function deleteSelected() {
   if (!selectedIds.value.size) return;
@@ -175,6 +288,24 @@ async function deleteSelected() {
             icon="i-lucide-search"
             class="w-64"
           />
+          <USelect
+            v-model="selectedStatus"
+            :items="statusOptions"
+            size="sm"
+            placeholder="All statuses"
+            class="w-44"
+          />
+          <RoleGuard :roles="[UserRoleEnum.Admin]">
+            <UButton
+              icon="i-lucide-download"
+              color="primary"
+              variant="solid"
+              :disabled="filteredApplications.length === 0"
+              @click="exportApplicationsCSV"
+            >
+              Export CSV
+            </UButton>
+          </RoleGuard>
           <RoleGuard :roles="[UserRoleEnum.Admin]">
             <UButton
               v-if="selectedIds.size"

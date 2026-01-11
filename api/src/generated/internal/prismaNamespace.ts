@@ -1578,6 +1578,7 @@ export const ApplicationScalarFieldEnum = {
   type: 'type',
   programId: 'programId',
   comment: 'comment',
+  decisionMade: 'decisionMade',
   complete: 'complete',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

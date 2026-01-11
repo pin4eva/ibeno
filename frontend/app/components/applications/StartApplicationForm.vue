@@ -37,6 +37,8 @@ const state = reactive<Schema & { programId: number }>({
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+  console.log({ event });
+
   const res = await applicationStore.startApplication({
     ...event.data,
     programId: props.programId,

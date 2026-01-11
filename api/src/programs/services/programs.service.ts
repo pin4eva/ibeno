@@ -105,7 +105,15 @@ export class ProgramsService {
     try {
       const program = await this.prisma.program.findUnique({
         where: { id },
-        include: { applications: true, _count: { select: { applications: true } } },
+        include: {
+          applications: {
+            include: {
+              bankDetails: true,
+              schoolRecord: true,
+            },
+          },
+          _count: { select: { applications: true } },
+        },
       });
       if (!program) {
         throw new NotFoundException('Program not found');

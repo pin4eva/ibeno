@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEmail,
@@ -38,6 +39,7 @@ export class CreateBidDTO {
 
   @ApiPropertyOptional({ description: 'Bid amount' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   amount?: number;
@@ -49,6 +51,7 @@ export class CreateBidDTO {
 
   @ApiPropertyOptional({ description: 'Bid price (legacy)' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   price?: number;

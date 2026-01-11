@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,10 +21,7 @@ import { BidService } from '../services/bid.service';
 @ApiTags('Bids')
 @Controller('procurements/:procurementId/bids')
 export class BidController {
-  constructor(
-    private readonly bidService: BidService,
-    private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  constructor(private readonly bidService: BidService) {}
 
   @Post()
   @UseInterceptors(
@@ -32,13 +31,13 @@ export class BidController {
     ]),
   )
   @ApiOperation({ summary: 'Submit a bid (Contractor)' })
-  @UseInterceptors(FileInterceptor('proposal'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        proposal: { type: 'string', format: 'binary' },
+        technicalProposal: { type: 'string', format: 'binary' },
+        commercialProposal: { type: 'string', format: 'binary' },
         contractorNo: { type: 'string' },
         contactName: { type: 'string' },
         contactEmail: { type: 'string' },
@@ -51,13 +50,13 @@ export class BidController {
   async submitBid(
     @Param('procurementId', ParseIntPipe) procurementId: number,
     @Body() input: CreateBidDTO,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFiles()
+    files?: {
+      technicalProposal?: Express.Multer.File[];
+      commercialProposal?: Express.Multer.File[];
+    },
   ) {
-    if (file) {
-      const result = await this.cloudinaryService.uploadImage(file);
-      input.proposalUrl = result.secure_url;
-    }
-    return this.bidService.submitBid(procurementId, input);
+    return this.bidService.submitBid(procurementId, input, files);
   }
 
   @Get()

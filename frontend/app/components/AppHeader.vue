@@ -20,8 +20,19 @@ const items = [
   },
   {
     label: 'Procurement',
-    to: '/procurement',
     icon: 'i-lucide-briefcase',
+    children: [
+      {
+        label: 'Open Procurements',
+        to: '/procurement',
+        description: 'View all available tenders',
+      },
+      {
+        label: 'Contractor Dashboard',
+        to: '/contractor/dashboard',
+        description: 'Manage your bids and submissions',
+      },
+    ],
   },
   {
     label: 'Support Programs',

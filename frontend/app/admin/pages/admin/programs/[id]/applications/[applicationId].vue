@@ -95,7 +95,7 @@ const handleAction = async () => {
     const statusMap = {
       approve: ApplicationStatusEnum.Accepted,
       reject: ApplicationStatusEnum.Rejected,
-      'request-changes': ApplicationStatusEnum.Reviewed,
+      'request-changes': ApplicationStatusEnum.RequestedChanges,
     };
 
     const status = statusMap[actionType.value];
@@ -110,7 +110,7 @@ const handleAction = async () => {
     await refresh();
     toast.add({
       title: 'Success',
-      description: `Application ${actionType.value === 'approve' ? 'approved' : actionType.value === 'reject' ? 'rejected' : 'marked for review'} successfully`,
+      description: `Application ${actionType.value === 'approve' ? 'approved' : actionType.value === 'reject' ? 'rejected' : 'requested changes'} successfully`,
       color: 'success',
     });
     closeActionModal();
@@ -150,7 +150,13 @@ const actionLabels = {
           <UBadge
             v-if="app?.status"
             :color="
-              app.status === 'Accepted' ? 'success' : app.status === 'Rejected' ? 'error' : 'yellow'
+              app.status === 'Accepted'
+                ? 'success'
+                : app.status === 'Rejected'
+                  ? 'error'
+                  : app.status === 'Requested Changes'
+                    ? 'warning'
+                    : 'primary'
             "
             variant="subtle"
           >
@@ -158,7 +164,15 @@ const actionLabels = {
           </UBadge>
         </div>
       </div>
-      <div v-if="app && app.status === 'Submitted'" class="flex items-center gap-2">
+      <div
+        v-if="
+          app &&
+          (app.status === 'Submitted' ||
+            app.status === 'Reviewed' ||
+            app.status === 'Requested Changes')
+        "
+        class="flex items-center gap-2"
+      >
         <UButton
           icon="i-lucide-check"
           color="green"
@@ -367,6 +381,33 @@ const actionLabels = {
                 </dd>
               </div>
             </dl>
+            <div class="mt-8 border-t pt-6 dark:border-gray-700">
+              <h4 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">
+                Make Decision
+              </h4>
+              <div class="flex flex-wrap gap-3">
+                <UButton
+                  icon="i-lucide-check"
+                  variant="solid"
+                  label="Approve"
+                  @click="openActionModal('approve')"
+                />
+                <UButton
+                  icon="i-lucide-x"
+                  color="error"
+                  variant="solid"
+                  label="Reject"
+                  @click="openActionModal('reject')"
+                />
+                <UButton
+                  icon="i-lucide-alert-circle"
+                  color="warning"
+                  variant="solid"
+                  label="Request Changes"
+                  @click="openActionModal('request-changes')"
+                />
+              </div>
+            </div>
           </UCard>
         </template>
       </UTabs>
@@ -375,7 +416,7 @@ const actionLabels = {
     <!-- Action Modal -->
     <UModal v-model:open="isActionModalOpen" :ui="{ content: 'w-full sm:max-w-lg' }">
       <template #header>
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between w-full">
           <div>
             <h3 class="text-lg font-semibold">
               {{ actionType ? actionLabels[actionType] : '' }}
@@ -418,7 +459,7 @@ const actionLabels = {
             <UButton
               type="submit"
               :color="
-                actionType === 'approve' ? 'success' : actionType === 'reject' ? 'error' : 'yellow'
+                actionType === 'approve' ? 'primary' : actionType === 'reject' ? 'error' : 'warning'
               "
               :loading="isSubmitting"
               :disabled="isSubmitting || (actionType === 'request-changes' && !actionComment)"

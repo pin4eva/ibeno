@@ -5,7 +5,8 @@ import { z } from 'zod';
 const props = defineProps<{ onLoginSuccess?: () => void }>();
 
 const router = useRouter();
-const { loading, loginApplicant } = useApplicationStore();
+const applicantStore = useApplicantStore();
+const loading = computed(() => applicantStore.loading);
 
 const state = reactive({
   applicationNo: '',
@@ -20,7 +21,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const app = await loginApplicant(event.data);
+  const app = await applicantStore.login(event.data);
 
   if (app && app.id) {
     props.onLoginSuccess?.();

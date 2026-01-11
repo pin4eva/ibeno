@@ -154,6 +154,86 @@
         </UCard>
       </div>
 
+      <!-- Active Procurements Section -->
+      <div v-if="contractorNo || isContractorUser" class="space-y-4">
+        <UCard>
+          <template #header>
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Active Procurements</h3>
+              <UButton
+                icon="i-lucide-refresh-cw"
+                color="gray"
+                variant="ghost"
+                size="sm"
+                @click="loadActiveProcurements"
+              >
+                Refresh
+              </UButton>
+            </div>
+          </template>
+
+          <div v-if="loadingProcurements" class="text-center py-8">
+            <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-primary-500 mx-auto" />
+            <p class="mt-2 text-sm text-gray-600">Loading active procurements...</p>
+          </div>
+
+          <div v-else-if="activeProcurements.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <UCard
+              v-for="proc in activeProcurements"
+              :key="proc.id"
+              class="hover:shadow-md transition-shadow"
+            >
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-semibold text-gray-900 dark:text-white line-clamp-2">
+                    {{ proc.title }}
+                  </h4>
+                  <UBadge color="success" variant="subtle" size="xs">{{ proc.status }}</UBadge>
+                </div>
+
+                <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-hash" class="w-4 h-4" />
+                    <span>{{ proc.referenceNo }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-tag" class="w-4 h-4" />
+                    <span>{{ proc.category }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-map-pin" class="w-4 h-4" />
+                    <span>{{ proc.location }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-calendar" class="w-4 h-4" />
+                    <span class="font-medium">
+                      Deadline: {{ formatDate(proc.submissionDeadline) }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                  <UButton
+                    color="primary"
+                    variant="outline"
+                    size="sm"
+                    block
+                    :to="`/procurement/${proc.id}`"
+                  >
+                    View Details
+                  </UButton>
+                </div>
+              </div>
+            </UCard>
+          </div>
+
+          <div v-else class="text-center py-8">
+            <UIcon name="i-lucide-inbox" class="w-12 h-12 mx-auto text-gray-400" />
+            <p class="mt-2 text-sm text-gray-500">No active procurements available</p>
+          </div>
+        </UCard>
+      </div>
+
       <!-- No Bids State -->
       <UCard v-else>
         <div class="text-center py-12">
@@ -269,6 +349,7 @@
 import { onMounted } from 'vue';
 import type { TableColumn } from '@nuxt/ui';
 import type { Bid } from '~/interfaces/procurement/bid.interface';
+import type { Procurement } from '~/interfaces/procurement/procurement.interface';
 import { useAuthStore } from '~/stores/auth.store';
 import { useBidStore } from '~/stores/procurement/bid.store';
 import { useContractorStore } from '~/stores/procurement/contractor.store';
@@ -281,6 +362,8 @@ const toast = useToast();
 const contractorNo = ref('');
 const contractorNoInput = ref('');
 const bids = ref<Bid[]>([]);
+const activeProcurements = ref<Procurement[]>([]);
+const loadingProcurements = ref(false);
 const showBidDetails = ref(false);
 const selectedBid = ref<Bid | null>(null);
 const isLoadingBids = computed(() => contractorStore.loading || bidStore.loading);
@@ -337,10 +420,37 @@ const loadBids = async () => {
   }
 };
 
+const loadActiveProcurements = async () => {
+  loadingProcurements.value = true;
+  try {
+    const procurements = await apiFetch<Procurement[]>('/procurements', {
+      query: {
+        status: 'published',
+      },
+    });
+    // Filter to only show procurements with deadline in the future
+    const now = new Date();
+    activeProcurements.value = procurements.filter(
+      (p) => new Date(p.submissionDeadline) > now,
+    );
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Error',
+      description: 'Failed to load active procurements',
+      color: 'error',
+    });
+  } finally {
+    loadingProcurements.value = false;
+  }
+};
+
 onMounted(async () => {
   if (isContractorUser.value) {
     await loadBids();
   }
+  // Load active procurements for all users
+  await loadActiveProcurements();
 });
 
 const formatDate = (dateString: string) => {

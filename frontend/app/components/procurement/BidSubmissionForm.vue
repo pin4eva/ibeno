@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useBidStore } from '~/stores/procurement/bid.store';
-import { useAuthStore } from '~/stores/auth.store';
 
 const props = defineProps<{
   procurementId: number;
@@ -12,7 +11,6 @@ const open = defineModel<boolean>();
 const emit = defineEmits(['close', 'success']);
 
 const bidStore = useBidStore();
-const authStore = useAuthStore();
 const toast = useToast();
 
 const form = reactive({
@@ -48,6 +46,10 @@ const submitBid = async () => {
     toast.add({ title: 'Error', description: 'Please upload a proposal document', color: 'error' });
     return;
   }
+  if (form.proposal.size === 0) {
+    toast.add({ title: 'Error', description: 'Uploaded file appears empty', color: 'error' });
+    return;
+  }
 
   isSubmitting.value = true;
   try {
@@ -57,7 +59,9 @@ const submitBid = async () => {
     formData.append('contactName', form.contactName);
     formData.append('contactEmail', form.contactEmail);
     formData.append('contactPhone', form.contactPhone);
-    formData.append('proposal', form.proposal);
+    // Backend expects file fields named `technicalProposal` or `commercialProposal`.
+    // Map our single file input to `technicalProposal` for now.
+    formData.append('technicalProposal', form.proposal);
     formData.append('contractorNo', form.contractorNo);
 
     await bidStore.submitBid(props.procurementId, formData);

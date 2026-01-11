@@ -19,6 +19,7 @@ export enum ApplicationStatusEnum {
   Reviewed = 'Reviewed',
   Accepted = 'Accepted',
   Rejected = 'Rejected',
+  RequestedChanges = 'Requested Changes',
 }
 
 export class FilterApplicationsDTO {
@@ -30,6 +31,7 @@ export class FilterApplicationsDTO {
     ApplicationStatusEnum.Reviewed,
     ApplicationStatusEnum.Accepted,
     ApplicationStatusEnum.Rejected,
+    ApplicationStatusEnum.RequestedChanges,
   ])
   status?: ApplicationStatusEnum;
 

@@ -27,6 +27,19 @@ export class ApplicationService {
     private readonly emailService: EmailService,
   ) {}
 
+  private checkApplicationEditable(application: { status: string }) {
+    const lockedStatuses = [
+      ApplicationStatusEnum.Submitted,
+      ApplicationStatusEnum.Reviewed,
+      ApplicationStatusEnum.Accepted,
+      ApplicationStatusEnum.Rejected,
+    ];
+
+    if (lockedStatuses.includes(application.status as ApplicationStatusEnum)) {
+      throw new BadRequestException(`Application is ${application.status} and cannot be edited.`);
+    }
+  }
+
   async createApplication(input: ApplicationDTO, origin: string) {
     const { id, programId, status, type, comment, passport, examsType, ...data } = input;
     const nin = data.nin?.replaceAll('-', '').replaceAll(' ', '').trim();
@@ -65,6 +78,11 @@ export class ApplicationService {
 
       if (id) {
         // update existing application
+        const existingApp = await this.prisma.application.findUnique({ where: { id } });
+        if (!existingApp) {
+          throw new NotFoundException('Application not found');
+        }
+        this.checkApplicationEditable(existingApp);
 
         const updatedApplication = await this.prisma.application.update({
           where: { id },
@@ -120,14 +138,19 @@ export class ApplicationService {
 
   async uploadPassport(applicationId: number, passportUrl: string) {
     try {
+      const existingApp = await this.prisma.application.findUnique({
+        where: { id: applicationId },
+      });
+      if (!existingApp) {
+        throw new NotFoundException('Application not found');
+      }
+      this.checkApplicationEditable(existingApp);
+
       const application = await this.prisma.application.update({
         where: { id: applicationId },
         data: { passport: passportUrl },
       });
 
-      if (!application) {
-        throw new NotFoundException('Application not found for passport upload');
-      }
       return application;
     } catch (error) {
       throw error;
@@ -138,6 +161,14 @@ export class ApplicationService {
   async updateSchoolRecord(input: CreateSchoolRecordDTO) {
     const { applicationId, ...data } = input;
     try {
+      const existingApp = await this.prisma.application.findUnique({
+        where: { id: applicationId },
+      });
+      if (!existingApp) {
+        throw new NotFoundException('Application not found');
+      }
+      this.checkApplicationEditable(existingApp);
+
       const existingRegNo = await this.prisma.schoolRecord.findFirst({
         where: {
           regNo: data.regNo,
@@ -173,6 +204,15 @@ export class ApplicationService {
   async updateBankDetails(input: CreateBankDetailDTO) {
     try {
       const { applicationId, accountNo, accountName, bankName } = input;
+
+      const existingApp = await this.prisma.application.findUnique({
+        where: { id: applicationId },
+      });
+      if (!existingApp) {
+        throw new NotFoundException('Application not found');
+      }
+      this.checkApplicationEditable(existingApp);
+
       const bankDetail = await this.prisma.bankDetail.upsert({
         where: { applicationId },
         create: {
@@ -202,6 +242,15 @@ export class ApplicationService {
   async uploadDocuments(input: CreateDocumentUploadDTO) {
     try {
       const { applicationId, ...data } = input;
+
+      const existingApp = await this.prisma.application.findUnique({
+        where: { id: applicationId },
+      });
+      if (!existingApp) {
+        throw new NotFoundException('Application not found');
+      }
+      this.checkApplicationEditable(existingApp);
+
       const documentUpload = await this.prisma.documentUpload.upsert({
         where: { applicationId },
         create: {
@@ -224,13 +273,19 @@ export class ApplicationService {
   }
 
   async submitApplication(id: number) {
+    const existingApp = await this.prisma.application.findUnique({
+      where: { id },
+    });
+    if (!existingApp) {
+      throw new NotFoundException('Application not found');
+    }
+    this.checkApplicationEditable(existingApp);
+
     const application = await this.prisma.application.update({
       where: { id },
       data: { status: ApplicationStatusEnum.Submitted },
     });
-    if (!application) {
-      throw new NotFoundException('Application not found');
-    }
+
     return application;
   }
 
@@ -447,6 +502,13 @@ export class ApplicationService {
       data: {
         status,
         comment: comment || application.comment,
+        decisionMade: [
+          ApplicationStatusEnum.Accepted,
+          ApplicationStatusEnum.Rejected,
+          ApplicationStatusEnum.RequestedChanges,
+        ].includes(status)
+          ? status
+          : undefined,
       },
       include: {
         bankDetails: true,
@@ -464,6 +526,7 @@ export class ApplicationService {
         [ApplicationStatusEnum.Reviewed]: 'is under review',
         [ApplicationStatusEnum.InProgress]: 'is in progress',
         [ApplicationStatusEnum.Submitted]: 'has been submitted',
+        [ApplicationStatusEnum.RequestedChanges]: 'requires changes',
       };
 
       const message = statusMessages[status] || 'has been updated';

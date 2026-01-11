@@ -103,7 +103,8 @@ model Application {
   type      String?
   programId Int
 
-  comment String?
+  comment      String?
+  decisionMade String? // Accepted, Rejected, Waitlisted, Requested Changes
 
   program  Program @relation(fields: [programId], references: [id])
   complete Boolean @default(false)

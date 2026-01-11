@@ -11,6 +11,9 @@
           <span>{{ contractorStore.totalContractors }} contractors</span>
         </div>
 
+        <UButton color="gray" variant="outline" icon="i-lucide-upload" @click="openImport">
+          Import Excel
+        </UButton>
         <UButton color="primary" icon="i-lucide-plus" @click="openCreate">New Contractor</UButton>
       </div>
     </div>
@@ -128,6 +131,27 @@
             <li>Contact Person (or contactPerson)</li>
             <li>Phone, Email, etc.</li>
           </ul>
+        </div>
+
+        <div v-if="!importResult" class="space-y-3">
+          <UFormField label="Select Excel File" required>
+            <UInput
+              type="file"
+              icon="i-lucide-file-spreadsheet"
+              accept=".xlsx,.xls"
+              @change="handleFileSelect"
+            />
+          </UFormField>
+          <UButton
+            color="primary"
+            icon="i-lucide-upload"
+            :loading="contractorStore.loading"
+            :disabled="!selectedFile"
+            block
+            @click="handleImport"
+          >
+            Import Contractors
+          </UButton>
         </div>
 
         <div
@@ -301,6 +325,43 @@ const openCreate = () => {
 const openEdit = (contractor: Contractor) => {
   editingContractor.value = contractor;
   showModal.value = true;
+};
+
+const openImport = () => {
+  showImportModal.value = true;
+  selectedFile.value = null;
+  importResult.value = null;
+};
+
+const handleFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    selectedFile.value = target.files[0];
+  }
+};
+
+const handleImport = async () => {
+  if (!selectedFile.value) {
+    toast.add({ title: 'Error', description: 'Please select a file', color: 'error' });
+    return;
+  }
+
+  try {
+    const result = await contractorStore.importContractors(selectedFile.value);
+    importResult.value = result;
+    toast.add({
+      title: 'Import Complete',
+      description: `Created: ${result.created}, Updated: ${result.updated}`,
+      color: 'success',
+    });
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Import Failed',
+      description: error instanceof Error ? error.message : 'Failed to import contractors',
+      color: 'error',
+    });
+  }
 };
 
 const handleSaved = () => {

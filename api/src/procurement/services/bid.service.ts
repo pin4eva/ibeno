@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import {
   CreateBidDTO,
@@ -8,10 +8,14 @@ import {
   BidStatusEnum,
 } from '../dto/bid.dto';
 import { ProcurementStatusEnum } from '../dto/procurement.dto';
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 
 @Injectable()
 export class BidService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   /**
    * Validate contractor and procurement for bidding
@@ -54,8 +58,16 @@ export class BidService {
   /**
    * Create or update a bid
    */
-  async submitBid(procurementId: number, input: CreateBidDTO) {
+  async submitBid(
+    procurementId: number,
+    input: CreateBidDTO,
+    files?: {
+      technicalProposal?: Express.Multer.File[];
+      commercialProposal?: Express.Multer.File[];
+    },
+  ) {
     const { contractor } = await this.validateBidding(procurementId, input.contractorNo);
+    const file = files?.technicalProposal?.[0] ?? files?.commercialProposal?.[0];
 
     // Check if bid already exists
     const existingBid = await this.prisma.bid.findUnique({
@@ -66,6 +78,11 @@ export class BidService {
         },
       },
     });
+    if (file) {
+      Logger.log(`Received file: ${file.originalname} (${file.size} bytes)`);
+      const result = await this.cloudinaryService.uploadImage(file);
+      input.proposalUrl = result.secure_url;
+    }
 
     if (existingBid) {
       // Update existing bid

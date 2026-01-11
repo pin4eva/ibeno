@@ -58,6 +58,7 @@ export type ApplicationMinAggregateOutputType = {
   type: string | null
   programId: number | null
   comment: string | null
+  decisionMade: string | null
   complete: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -85,6 +86,7 @@ export type ApplicationMaxAggregateOutputType = {
   type: string | null
   programId: number | null
   comment: string | null
+  decisionMade: string | null
   complete: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -112,6 +114,7 @@ export type ApplicationCountAggregateOutputType = {
   type: number
   programId: number
   comment: number
+  decisionMade: number
   complete: number
   createdAt: number
   updatedAt: number
@@ -151,6 +154,7 @@ export type ApplicationMinAggregateInputType = {
   type?: true
   programId?: true
   comment?: true
+  decisionMade?: true
   complete?: true
   createdAt?: true
   updatedAt?: true
@@ -178,6 +182,7 @@ export type ApplicationMaxAggregateInputType = {
   type?: true
   programId?: true
   comment?: true
+  decisionMade?: true
   complete?: true
   createdAt?: true
   updatedAt?: true
@@ -205,6 +210,7 @@ export type ApplicationCountAggregateInputType = {
   type?: true
   programId?: true
   comment?: true
+  decisionMade?: true
   complete?: true
   createdAt?: true
   updatedAt?: true
@@ -319,6 +325,7 @@ export type ApplicationGroupByOutputType = {
   type: string | null
   programId: number
   comment: string | null
+  decisionMade: string | null
   complete: boolean
   createdAt: Date
   updatedAt: Date
@@ -369,6 +376,7 @@ export type ApplicationWhereInput = {
   type?: Prisma.StringNullableFilter<"Application"> | string | null
   programId?: Prisma.IntFilter<"Application"> | number
   comment?: Prisma.StringNullableFilter<"Application"> | string | null
+  decisionMade?: Prisma.StringNullableFilter<"Application"> | string | null
   complete?: Prisma.BoolFilter<"Application"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
@@ -400,6 +408,7 @@ export type ApplicationOrderByWithRelationInput = {
   type?: Prisma.SortOrderInput | Prisma.SortOrder
   programId?: Prisma.SortOrder
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  decisionMade?: Prisma.SortOrderInput | Prisma.SortOrder
   complete?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -434,6 +443,7 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.StringNullableFilter<"Application"> | string | null
   programId?: Prisma.IntFilter<"Application"> | number
   comment?: Prisma.StringNullableFilter<"Application"> | string | null
+  decisionMade?: Prisma.StringNullableFilter<"Application"> | string | null
   complete?: Prisma.BoolFilter<"Application"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
@@ -465,6 +475,7 @@ export type ApplicationOrderByWithAggregationInput = {
   type?: Prisma.SortOrderInput | Prisma.SortOrder
   programId?: Prisma.SortOrder
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  decisionMade?: Prisma.SortOrderInput | Prisma.SortOrder
   complete?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -500,6 +511,7 @@ export type ApplicationScalarWhereWithAggregatesInput = {
   type?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
   programId?: Prisma.IntWithAggregatesFilter<"Application"> | number
   comment?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
+  decisionMade?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
   complete?: Prisma.BoolWithAggregatesFilter<"Application"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Application"> | Date | string
@@ -525,6 +537,7 @@ export type ApplicationCreateInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -556,6 +569,7 @@ export type ApplicationUncheckedCreateInput = {
   type?: string | null
   programId: number
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -584,6 +598,7 @@ export type ApplicationUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -615,6 +630,7 @@ export type ApplicationUncheckedUpdateInput = {
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   programId?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -645,6 +661,7 @@ export type ApplicationCreateManyInput = {
   type?: string | null
   programId: number
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -670,6 +687,7 @@ export type ApplicationUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -697,6 +715,7 @@ export type ApplicationUncheckedUpdateManyInput = {
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   programId?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +753,7 @@ export type ApplicationCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   programId?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  decisionMade?: Prisma.SortOrder
   complete?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -766,6 +786,7 @@ export type ApplicationMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   programId?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  decisionMade?: Prisma.SortOrder
   complete?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -793,6 +814,7 @@ export type ApplicationMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   programId?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  decisionMade?: Prisma.SortOrder
   complete?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -912,6 +934,7 @@ export type ApplicationCreateWithoutProgramInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -941,6 +964,7 @@ export type ApplicationUncheckedCreateWithoutProgramInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1000,6 +1024,7 @@ export type ApplicationScalarWhereInput = {
   type?: Prisma.StringNullableFilter<"Application"> | string | null
   programId?: Prisma.IntFilter<"Application"> | number
   comment?: Prisma.StringNullableFilter<"Application"> | string | null
+  decisionMade?: Prisma.StringNullableFilter<"Application"> | string | null
   complete?: Prisma.BoolFilter<"Application"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
@@ -1025,6 +1050,7 @@ export type ApplicationCreateWithoutBankDetailsInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1055,6 +1081,7 @@ export type ApplicationUncheckedCreateWithoutBankDetailsInput = {
   type?: string | null
   programId: number
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1098,6 +1125,7 @@ export type ApplicationUpdateWithoutBankDetailsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1128,6 +1156,7 @@ export type ApplicationUncheckedUpdateWithoutBankDetailsInput = {
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   programId?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1155,6 +1184,7 @@ export type ApplicationCreateWithoutDocumentUploadInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1185,6 +1215,7 @@ export type ApplicationUncheckedCreateWithoutDocumentUploadInput = {
   type?: string | null
   programId: number
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1228,6 +1259,7 @@ export type ApplicationUpdateWithoutDocumentUploadInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1258,6 +1290,7 @@ export type ApplicationUncheckedUpdateWithoutDocumentUploadInput = {
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   programId?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1285,6 +1318,7 @@ export type ApplicationCreateWithoutSchoolRecordInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1315,6 +1349,7 @@ export type ApplicationUncheckedCreateWithoutSchoolRecordInput = {
   type?: string | null
   programId: number
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1358,6 +1393,7 @@ export type ApplicationUpdateWithoutSchoolRecordInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1388,6 +1424,7 @@ export type ApplicationUncheckedUpdateWithoutSchoolRecordInput = {
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   programId?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1416,6 +1453,7 @@ export type ApplicationCreateManyProgramInput = {
   status?: string
   type?: string | null
   comment?: string | null
+  decisionMade?: string | null
   complete?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1441,6 +1479,7 @@ export type ApplicationUpdateWithoutProgramInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1470,6 +1509,7 @@ export type ApplicationUncheckedUpdateWithoutProgramInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1499,6 +1539,7 @@ export type ApplicationUncheckedUpdateManyWithoutProgramInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionMade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1528,6 +1569,7 @@ export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   type?: boolean
   programId?: boolean
   comment?: boolean
+  decisionMade?: boolean
   complete?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1559,6 +1601,7 @@ export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   type?: boolean
   programId?: boolean
   comment?: boolean
+  decisionMade?: boolean
   complete?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1587,6 +1630,7 @@ export type ApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   type?: boolean
   programId?: boolean
   comment?: boolean
+  decisionMade?: boolean
   complete?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1615,12 +1659,13 @@ export type ApplicationSelectScalar = {
   type?: boolean
   programId?: boolean
   comment?: boolean
+  decisionMade?: boolean
   complete?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "applicationNo" | "middleName" | "lastName" | "dob" | "gender" | "state" | "lga" | "village" | "address" | "ekpuk" | "phone" | "nin" | "passport" | "examsType" | "status" | "type" | "programId" | "comment" | "complete" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "applicationNo" | "middleName" | "lastName" | "dob" | "gender" | "state" | "lga" | "village" | "address" | "ekpuk" | "phone" | "nin" | "passport" | "examsType" | "status" | "type" | "programId" | "comment" | "decisionMade" | "complete" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
 export type ApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   program?: boolean | Prisma.ProgramDefaultArgs<ExtArgs>
   bankDetails?: boolean | Prisma.Application$bankDetailsArgs<ExtArgs>
@@ -1664,6 +1709,7 @@ export type $ApplicationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     type: string | null
     programId: number
     comment: string | null
+    decisionMade: string | null
     complete: boolean
     createdAt: Date
     updatedAt: Date
@@ -2115,6 +2161,7 @@ export interface ApplicationFieldRefs {
   readonly type: Prisma.FieldRef<"Application", 'String'>
   readonly programId: Prisma.FieldRef<"Application", 'Int'>
   readonly comment: Prisma.FieldRef<"Application", 'String'>
+  readonly decisionMade: Prisma.FieldRef<"Application", 'String'>
   readonly complete: Prisma.FieldRef<"Application", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Application", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Application", 'DateTime'>

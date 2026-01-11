@@ -41,10 +41,6 @@
               </div>
             </div>
 
-            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-              {{ procurement.description }}
-            </p>
-
             <div class="flex gap-2 pt-4 border-t">
               <UButton
                 :color="procurement?.status === ProcurementStatus.PUBLISHED ? 'primary' : 'error'"

@@ -11,6 +11,7 @@ This module provides comprehensive asset management functionality for the admin 
 - ✅ Delete assets (with automatic image cleanup)
 - ✅ Search assets by name or asset number
 - ✅ Filter assets by location and type
+- ✅ Generate and print QR code labels for assets
 
 ### Asset Properties
 - **Name**: Name of the asset (required)
@@ -76,6 +77,23 @@ This module provides comprehensive asset management functionality for the admin 
    - Click "Remove" to delete the current image
 5. Click "Update Asset"
 
+### Printing Asset Labels
+
+1. Navigate to `/admin/assets`
+2. Click the eye icon on the asset you want to print a label for
+3. Click the "Print Label" button
+4. A modal will appear showing:
+   - QR code containing the asset's URL
+   - Asset name
+   - Asset number
+5. Click "Print" to open a print-friendly window
+6. The print dialog will automatically open for easy printing
+
+**QR Code Features:**
+- Scans to the asset's detail page for quick access
+- 256x256 pixel size for optimal scanning
+- Print-optimized layout for clean labels
+
 ### Deleting an Asset
 
 1. Navigate to `/admin/assets`
@@ -119,7 +137,7 @@ This module provides comprehensive asset management functionality for the admin 
 **Asset Pages** (`frontend/app/admin/pages/admin/assets/`)
 - `index.vue`: List view with search, filter, and delete functionality
 - `create.vue`: Form for creating new assets with image upload
-- `[id].vue`: Form for editing existing assets
+- `[id].vue`: Form for editing existing assets with QR code label printing
 
 ## Database Schema
 
@@ -156,3 +174,5 @@ model Asset {
 - Images are stored in Cloudinary
 - When updating an asset's image, the old image is automatically deleted
 - When deleting an asset, its image is also deleted from Cloudinary
+- QR codes generated for asset labels link directly to the asset detail page
+- QR codes use the asset's full URL (including domain) for universal scanning

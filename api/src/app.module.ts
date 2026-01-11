@@ -16,6 +16,7 @@ import { ProgramsModule } from './programs/programs.module';
 import { UploadModule } from './upload/upload.module';
 import { AssetsModule } from './assets/assets.module';
 import { ProcurementModule } from './procurement/procurement.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -30,6 +31,9 @@ import { ProcurementModule } from './procurement/procurement.module';
           }),
         ),
       ],
+    }),
+    MulterModule.register({
+      dest: './uploads',
     }),
 
     UserModule,

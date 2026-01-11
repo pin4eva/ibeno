@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { apiFetch } from '~/utils/api-fetch';
 import type {
   Bid,
-  CreateBidInput,
   UpdateBidInput,
   FilterBidsInput,
   ChangeBidStatusInput,

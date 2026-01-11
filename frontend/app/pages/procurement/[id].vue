@@ -2,7 +2,7 @@
   <UContainer>
     <div class="container mx-auto py-8 space-y-6">
       <!-- Loading State -->
-      <div v-if="procurementStore.loading && !procurement" class="text-center py-12">
+      <div v-if="pending && !procurement" class="text-center py-12">
         <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary-500" />
         <p class="mt-2 text-gray-600">Loading procurement details...</p>
       </div>
@@ -224,18 +224,19 @@ const toast = useToast();
 const procurementId = computed(() => parseInt(route.params.id as string));
 const showBidForm = ref(false);
 
-const { data: procurement, refresh } = await useAsyncData(
-  `procurement-${route.params.id}`,
-  async () => {
-    try {
-      const procurement = await apiFetch<Procurement>(`/procurements/${procurementId.value}`);
-      return procurement;
-    } catch (error) {
-      console.error({ error });
-      throw error;
-    }
-  },
-);
+const {
+  data: procurement,
+  pending,
+  refresh,
+} = await useAsyncData(`procurement-${route.params.id}`, async () => {
+  try {
+    const procurement = await apiFetch<Procurement>(`/procurements/${procurementId.value}`);
+    return procurement;
+  } catch (error) {
+    console.error({ error });
+    throw error;
+  }
+});
 
 const handleBidSuccess = async () => {
   try {

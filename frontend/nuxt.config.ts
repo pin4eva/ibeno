@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   alias: {
+    // Alias @vueuse/core to our shim so imports that expect `toValue` from
+    // `@vueuse/core` still work in compiled code.
     '@vueuse/core': fileURLToPath(new URL('./app/utils/vueuse-core-shim.ts', import.meta.url)),
     'vueuse-core-original': fileURLToPath(
       new URL('./node_modules/@vueuse/core/dist/index.js', import.meta.url),

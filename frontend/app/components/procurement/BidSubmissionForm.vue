@@ -46,6 +46,10 @@ const submitBid = async () => {
     toast.add({ title: 'Error', description: 'Please upload a proposal document', color: 'error' });
     return;
   }
+  if (form.proposal.size === 0) {
+    toast.add({ title: 'Error', description: 'Uploaded file appears empty', color: 'error' });
+    return;
+  }
 
   isSubmitting.value = true;
   try {
@@ -55,7 +59,9 @@ const submitBid = async () => {
     formData.append('contactName', form.contactName);
     formData.append('contactEmail', form.contactEmail);
     formData.append('contactPhone', form.contactPhone);
-    formData.append('proposal', form.proposal);
+    // Backend expects file fields named `technicalProposal` or `commercialProposal`.
+    // Map our single file input to `technicalProposal` for now.
+    formData.append('technicalProposal', form.proposal);
     formData.append('contractorNo', form.contractorNo);
 
     await bidStore.submitBid(props.procurementId, formData);

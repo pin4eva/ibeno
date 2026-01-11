@@ -34,7 +34,6 @@ export const useAuth = () => {
         },
       });
       user.value = response;
-      console.log({ response });
 
       return response;
     } catch (err) {
@@ -83,6 +82,12 @@ export const useAuth = () => {
         console.error('Error refreshing tokens on unmount:', error);
       });
     }
+  });
+
+  onMounted(() => {
+    setUser().catch((error) => {
+      console.error('Error setting user on mount:', error);
+    });
   });
 
   return {

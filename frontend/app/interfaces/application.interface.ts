@@ -4,6 +4,7 @@ export enum ApplicationStatusEnum {
   Reviewed = 'Reviewed',
   Accepted = 'Accepted',
   Rejected = 'Rejected',
+  RequestedChanges = 'Requested Changes',
 }
 
 export enum GenderEnum {

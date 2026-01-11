@@ -245,6 +245,7 @@ async function bulkSendStartedEmails() {
         >
           Send Start Emails
         </UButton>
+
         <UButton
           icon="i-lucide-trash-2"
           color="error"
@@ -337,6 +338,7 @@ async function bulkSendStartedEmails() {
 
     <ApplicationsTable
       v-if="program"
+      ref="applicationsTableRef"
       :applications="applications"
       :pending="pending"
       :program-id="programId"
